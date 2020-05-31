@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Java JS Speed Test</title>
+</head>
+<body>
+<!---
+<h4>
+  Java Tetris Test: Writing multi-platform games that run in Java and Transpile to JS
+</h4>
+--->
+
+<script>
+var btn = document.createElement("BUTTON");   // Create a <button> element
+btn.innerHTML = "Open Window";                   // Insert text
+document.body.appendChild(btn);               // Append <button> to <body>
+
+
+// popup allowed
+btn.onclick = () => {
+  window.open('index.html');
+
+  let params = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,
+width=0,height=0,left=-1000,top=-1000`;
+
+open('griddle.html', 'test', params);
+
+};
+
+</script>
+
+</body>
+</html>
+

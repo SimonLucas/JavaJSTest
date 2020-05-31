@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>XMLHTTP Test</title>
+</head>
+<body>
+<!---
+<h4>
+  Java Tetris Test: Writing multi-platform games that run in Java and Transpile to JS
+</h4>
+--->
+
+<script type="text/javascript" src="./jquery.js"></script>
+
+<script type="text/javascript" src="../../../../build/js/packages/JavaJSTest/kotlin-dce/kotlin.js"></script>
+<script type="text/javascript" src="../../../../build/js/packages/JavaJSTest/kotlin-dce/JavaJSTest.js"></script>
+
+
+<p id="demo">Demo p</p>
+
+
+<script>
+
+console.log("Running script");
+
+var btn = document.createElement("BUTTON");   // Create a <button> element
+btn.addEventListener("click", loadDoc);
+var nCalls = 0;
+btn.innerHTML = "Can you still see the button?: " + nCalls;                   // Insert text
+document.body.appendChild(btn);               // Append <button> to <body>
+
+var btn2 = document.createElement("BUTTON");   // Create a <button> element
+btn2.addEventListener("click", fetchTest);
+btn2.innerHTML = "Fetch test";                   // Insert text
+document.body.appendChild(btn2);               // Append <button> to <body>
+
+function fetchTest() {
+var textURL = "./index.html";
+console.log(textURL + " : " + ++nCalls);
+fetch( textURL )
+   .then(async r=> console.log(await r.text()))
+   .catch(e=>console.error('Boo...' + e));
+}
+
+function loadDoc() {
+  nCalls++;
+  btn.innerHTML = "nCalls: " + nCalls;
+    var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      document.getElementById("demo").innerHTML = this.responseText;
+    }
+  };
+  xhttp.open("GET", "./index.html", true);
+  xhttp.send();
+  document.body.innerHTML += "<p>Made another call</p>" ;
+
+}
+
+
+
+</script>
+
+</body>
+</html>
+
