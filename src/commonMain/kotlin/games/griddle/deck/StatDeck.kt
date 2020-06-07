@@ -42,6 +42,16 @@ class FastSampleDeck(val cha: Array<Char>, var ix: Int = 0) {
         }
     }
 
+    fun shuffleRemainingDealtCards() {
+        // this is a "cheat" version for comparison where the
+        // shuffle is always on the cards that will be deaalt
+        for (i in ix  until dealSize) {
+            val sw: Int = i + rand.nextInt(dealSize - i)
+            swap(cha, i, sw)
+
+        }
+    }
+
     fun swap(a: Array<Char>, i: Int, j: Int) {
         val tmp = a[i]
         a[i] = a[j]
@@ -116,7 +126,7 @@ class StatDeck {
         // for now just do random shuffles
         val deck = makeCards()
 
-        println("Seed = " + seed)
+        // println("Seed = " + seed)
         var nTries = 0
         do {
             deck.shuffle(rand)

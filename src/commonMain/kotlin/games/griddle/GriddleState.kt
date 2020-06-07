@@ -20,7 +20,7 @@ class GriddleGame (var control: GriddleControl = DefaultControl()){
 
     init {
         gridScan.dict = dict
-        println("Control seed = " + control.getSeed())
+        // println("Control seed = " + control.getSeed())
     }
 
     var state: GriddleState = GriddleState.Ready
@@ -106,7 +106,7 @@ class GriddleGame (var control: GriddleControl = DefaultControl()){
         deck = StatDeck().getDeck(control.getSeed())
         current = '?'
         currentScore = 0
-        println("Reset the game")
+        // println("Reset the game")
     }
 }
 

@@ -3283,6 +3283,9 @@
     simpleName: 'CommonTest',
     interfaces: []
   };
+  function main_1() {
+    println('Hello');
+  }
   function ElapsedTimer() {
     this.oldTime_8be2vx$ = L0;
   }
@@ -3480,10 +3483,10 @@
       new Platform();
     }return Platform_instance;
   }
-  function main_1(args) {
+  function main_2(args) {
     println('println() test just in main()');
   }
-  function main_2() {
+  function main_3() {
     println('Trick main');
   }
   var canvas;
@@ -4052,6 +4055,7 @@
   package$sample.hello = hello;
   var package$test = _.test || (_.test = {});
   package$test.CommonTest = CommonTest;
+  package$test.main = main_1;
   var package$util = _.util || (_.util = {});
   package$util.ElapsedTimer = ElapsedTimer;
   Object.defineProperty(StatSummary, 'Companion', {
@@ -4062,8 +4066,8 @@
   Object.defineProperty(package$sample, 'Platform', {
     get: Platform_getInstance
   });
-  package$sample.main_kand9s$ = main_1;
-  package$sample.main = main_2;
+  package$sample.main_kand9s$ = main_2;
+  package$sample.main = main_3;
   Object.defineProperty(package$sample, 'canvas', {
     get: function () {
       return canvas;

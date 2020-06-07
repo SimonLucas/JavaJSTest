@@ -26,4 +26,6 @@ class WordReader {
         File(path).forEachLine { if (!it.contains('`')) list.add(it.trim()) }
         return list
     }
+
+
 }

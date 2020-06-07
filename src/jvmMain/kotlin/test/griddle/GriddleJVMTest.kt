@@ -1,5 +1,6 @@
 package test.griddle
 
+import games.griddle.GriddleControl
 import games.griddle.GriddleController
 import games.griddle.words.GridUtil
 import test.EasyComponent
@@ -13,7 +14,12 @@ fun main() {
     val frame = JEasyFrame(ec, "X Griddle JVM Test")
     val xg = XGraphicsJVM(ec)
     ec.xg = xg
-    val game: GriddleController = GriddleController()
+    class MyControl : GriddleControl {
+        override fun getSeed(): Long = 13
+    }
+
+    val game: GriddleController = GriddleController( MyControl() )
+
     // game.game.dict = WordReader().readIntoTrie()
     game.loadWords(WordReader().readWordList())
     // game.game.a = GridUtil.sampleGrid

@@ -2,6 +2,7 @@ package gui
 
 import math.Vec2d
 import kotlin.math.*
+import kotlin.random.Random
 
 
 data class XColor(var r:Float = 0f, var g:Float=0f, var b:Float=0f, var a:Float=1f) {
@@ -20,6 +21,19 @@ data class XColor(var r:Float = 0f, var g:Float=0f, var b:Float=0f, var a:Float=
     }
 }
 
+// provide a reusable palette of colors - use RGB space for now,
+// but would be better to generate in HSV space to get niccer colours more easily
+data class XPalette(val nColors: Int = 30, val min:Double = 0.4, val max:Double = 0.9,
+                    val seed:Long=1L, val alpha:Float = 1.0f) {
+    val colors = ArrayList<XColor>()
+    val rand = Random(seed)
+    init {
+        for (i in 0 until nColors)
+            colors.add(XColor(v(), v(), v(), alpha))
+    }
+    fun v() = rand.nextDouble(min, max).toFloat()
+}
+
 data class OldXColor(var r:Double=0.0, var g:Double=0.0, var b:Double=0.0, var a:Double = 1.0)
 
 
@@ -27,23 +41,16 @@ data class OldXColor(var r:Double=0.0, var g:Double=0.0, var b:Double=0.0, var a
 interface XGraphics {
     fun width() : Double
     fun height() : Double
-    // fun drawRect(rect: XRect)
-
     fun draw(toDraw: Drawable)
-    // what about them all using the same draw method?
-    // fun draw(rect: XRect)
     fun drawables() : ArrayList<Drawable>
     fun redraw()
-
     var style: XStyle
-
 }
 
 interface Drawable {
-
     var dStyle: XStyle
-
 }
+
 
 data class XStyle (
     // default background, foreground and line colours
@@ -89,7 +96,16 @@ data class XEllipse (var centre: Vec2d, var w: Double, var h: Double, override v
 data class XLine (var a:Vec2d, var b: Vec2d, override var dStyle: XStyle): Drawable
 data class XText (var str: String, var p: Vec2d, var tStyle: TStyle, override var dStyle: XStyle) : Drawable
 
-data class XPoly (var start: Vec2d, val points: ArrayList<Vec2d>) : Drawable {
+data class XPoly (var start: Vec2d = Vec2d(), val points: ArrayList<Vec2d>,
+                  override var dStyle: XStyle = XStyle(), var closed:Boolean = true
+) : Drawable {
+//    private var intStyle = XStyle()
+//    override var dStyle: XStyle
+//        get() = intStyle
+//        set(value) {intStyle = value}
+}
+
+data class XPolyOld (var start: Vec2d, val points: ArrayList<Vec2d>) : Drawable {
     private var intStyle = XStyle()
     override var dStyle: XStyle
         get() = intStyle

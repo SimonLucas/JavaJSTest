@@ -36,19 +36,25 @@ class EasyComponent(val prefWidth: Int = 600, val prefHeight: Int = 400) : JComp
     }
 }
 
-class XMouseAdapter (val xApp: XApp): MouseAdapter() {
+class XMouseAdapter(val xApp: XApp) : MouseAdapter() {
     override fun mouseClicked(e: MouseEvent?) {
         // super.mouseClicked(e)
         if (e != null)
-            xApp.handleMouseEvent(XMouseEvent(
-                XMouseEventType.Clicked, Vec2d(e.x.toDouble(), e.y.toDouble())))
+            xApp.handleMouseEvent(
+                XMouseEvent(
+                    XMouseEventType.Clicked, Vec2d(e.x.toDouble(), e.y.toDouble())
+                )
+            )
     }
 
     override fun mousePressed(e: MouseEvent?) {
         super.mousePressed(e)
         if (e != null)
-            xApp.handleMouseEvent(XMouseEvent(
-                XMouseEventType.Down, Vec2d(e.x.toDouble(), e.y.toDouble())))
+            xApp.handleMouseEvent(
+                XMouseEvent(
+                    XMouseEventType.Down, Vec2d(e.x.toDouble(), e.y.toDouble())
+                )
+            )
     }
 
     // can do this for the other types of MouseEvent also
@@ -158,7 +164,7 @@ class XGraphicsJVM(val jc: JComponent) : XGraphics {
         with(poly) {
             path.moveTo(points[0].x, points[0].y)
             for (v in points) path.lineTo(v.x, v.y)
-            path.closePath()
+            if (poly.closed) path.closePath()
         }
         val g = graphics2D
         if (g != null) {
