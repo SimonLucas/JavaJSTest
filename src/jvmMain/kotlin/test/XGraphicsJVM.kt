@@ -1,12 +1,14 @@
 package test
 
 import gui.*
+import gui.layout.LRect
 import math.Vec2d
 import java.awt.*
 import java.awt.event.KeyAdapter
 import java.awt.event.KeyEvent
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
+import java.awt.geom.Ellipse2D
 import java.awt.geom.Line2D
 import java.awt.geom.Path2D
 import java.awt.geom.Rectangle2D
@@ -57,6 +59,26 @@ class XMouseAdapter(val xApp: XApp) : MouseAdapter() {
             )
     }
 
+    override fun mouseMoved(e: MouseEvent?) {
+        super.mouseMoved(e)
+        if (e != null)
+            xApp.handleMouseEvent(
+                XMouseEvent(
+                    XMouseEventType.Moved, Vec2d(e.x.toDouble(), e.y.toDouble())
+                )
+            )
+    }
+
+    override fun mouseDragged(e: MouseEvent?) {
+        super.mouseDragged(e)
+        if (e != null)
+            xApp.handleMouseEvent(
+                XMouseEvent(
+                    XMouseEventType.Dragged, Vec2d(e.x.toDouble(), e.y.toDouble())
+                )
+            )
+    }
+
     // can do this for the other types of MouseEvent also
 
 }
@@ -83,21 +105,49 @@ class XGraphicsJVM(val jc: JComponent) : XGraphics {
 
     val drawables = ArrayList<Drawable>()
 
+    // var transform = Transform
+
+    var rect: LRect? = null
+    override fun setBounds(rect: LRect) {
+        this.rect = rect
+    }
+
+    override fun releaseBounds() {
+        rect = null
+    }
+
     override fun width(): Double {
-        return jc.width.toDouble()
+        val bounds = rect
+        return if (bounds != null) bounds.width else jc.width.toDouble()
     }
 
     override fun height(): Double {
-        return jc.height.toDouble()
+        val bounds = rect
+        return if (bounds != null) bounds.height else jc.height.toDouble()
     }
 
     var graphics2D: Graphics2D? = null
 
     override fun draw(toDraw: Drawable) {
-        if (toDraw is XRect) drawRect(toDraw)
-        if (toDraw is XPoly) drawPoly(toDraw)
-        if (toDraw is XLine) drawLine(toDraw)
-        if (toDraw is XText) drawText(toDraw)
+        val g = graphics2D
+        if (g != null) {
+            // apply the translation if necessary
+
+            val bounds = rect
+            if (bounds != null)
+                g.translate(bounds.xLeft, bounds.yTop)
+
+            if (toDraw is XRect) drawRect(toDraw)
+            if (toDraw is XEllipse) drawEllipse(toDraw)
+            if (toDraw is XPoly) drawPoly(toDraw)
+            if (toDraw is XLine) drawLine(toDraw)
+            if (toDraw is XText) drawText(toDraw)
+
+            if (bounds != null)
+                g.translate(-bounds.xLeft, -bounds.yTop)
+
+
+        }
     }
 
     fun getColor(c: XColor): Color {
@@ -109,7 +159,10 @@ class XGraphicsJVM(val jc: JComponent) : XGraphics {
         val g = graphics2D
         if (g != null) {
             with(rect) {
-                val r2d = Rectangle2D.Double(centre.x - w / 2, centre.y - h / 2, w, h)
+                val at = g.transform
+                g.translate(centre.x, centre.y)
+                g.rotate(rotation)
+                val r2d = Rectangle2D.Double(-w / 2, - h / 2, w, h)
                 with(rect.dStyle) {
                     if (fill) {
                         g.color = getColor(fg)
@@ -121,6 +174,31 @@ class XGraphicsJVM(val jc: JComponent) : XGraphics {
                         g.draw(r2d)
                     }
                 }
+                g.transform = at
+            }
+        }
+    }
+
+    fun drawEllipse(ellipse: XEllipse) {
+        val g = graphics2D
+        if (g != null) {
+            with(ellipse) {
+                val at = g.transform
+                g.translate(centre.x, centre.y)
+                g.rotate(rotation)
+                val r2d = Ellipse2D.Double(-w / 2, - h / 2, w, h)
+                with(ellipse.dStyle) {
+                    if (fill) {
+                        g.color = getColor(fg)
+                        g.fill(r2d)
+                    }
+                    if (stroke) {
+                        g.color = getColor(lc) // Color(lc.r.toFloat(), lc.g.toFloat(), lc.b.toFloat())
+                        g.stroke = BasicStroke(lineWidth.toFloat())
+                        g.draw(r2d)
+                    }
+                }
+                g.transform = at
             }
         }
     }
@@ -161,6 +239,7 @@ class XGraphicsJVM(val jc: JComponent) : XGraphics {
 
     fun drawPoly(poly: XPoly) {
         val path = Path2D.Double()
+        // path.contains(0.0, 0.0)
         with(poly) {
             path.moveTo(points[0].x, points[0].y)
             for (v in points) path.lineTo(v.x, v.y)
@@ -170,7 +249,8 @@ class XGraphicsJVM(val jc: JComponent) : XGraphics {
         if (g != null) {
             with(poly.dStyle) {
                 val at = g.transform
-                g.translate(poly.start.x, poly.start.y)
+                g.translate(poly.centre.x, poly.centre.y)
+                g.rotate(poly.rotation)
                 if (fill) {
                     g.color = getColor(fg)
                     g.fill(path)

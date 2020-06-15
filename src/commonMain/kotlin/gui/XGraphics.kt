@@ -1,11 +1,13 @@
 package gui
 
+import gui.geometry.Poly
+import gui.layout.LRect
 import math.Vec2d
 import kotlin.math.*
 import kotlin.random.Random
 
 
-data class XColor(var r:Float = 0f, var g:Float=0f, var b:Float=0f, var a:Float=1f) {
+data class XColor(var r: Float = 0f, var g: Float = 0f, var b: Float = 0f, var a: Float = 1f) {
     companion object {
         val red = XColor(r = 1f)
         val green = XColor(g = 1f)
@@ -23,36 +25,47 @@ data class XColor(var r:Float = 0f, var g:Float=0f, var b:Float=0f, var a:Float=
 
 // provide a reusable palette of colors - use RGB space for now,
 // but would be better to generate in HSV space to get niccer colours more easily
-data class XPalette(val nColors: Int = 30, val min:Double = 0.4, val max:Double = 0.9,
-                    val seed:Long=1L, val alpha:Float = 1.0f) {
+data class XPalette(
+    val nColors: Int = 30, val min: Double = 0.4, val max: Double = 0.9,
+    val seed: Long = 1L, val alpha: Float = 1.0f
+) {
     val colors = ArrayList<XColor>()
-    val rand = Random(seed)
+    val rand = if (seed == -1L) Random else Random(seed)
+
     init {
         for (i in 0 until nColors)
             colors.add(XColor(v(), v(), v(), alpha))
     }
+
     fun v() = rand.nextDouble(min, max).toFloat()
 }
 
-data class OldXColor(var r:Double=0.0, var g:Double=0.0, var b:Double=0.0, var a:Double = 1.0)
-
+data class OldXColor(var r: Double = 0.0, var g: Double = 0.0, var b: Double = 0.0, var a: Double = 1.0)
 
 
 interface XGraphics {
-    fun width() : Double
-    fun height() : Double
+    fun width(): Double
+    fun height(): Double
     fun draw(toDraw: Drawable)
-    fun drawables() : ArrayList<Drawable>
+    fun drawables(): ArrayList<Drawable>
     fun redraw()
     var style: XStyle
+    fun centre() = Vec2d(width() / 2, height() / 2)
+
+    // do nothing by default to not break anything
+    fun setBounds(rect: LRect) {}
+    fun releaseBounds() {}
+
+    // var pane: LRect
 }
 
-interface Drawable {
-    var dStyle: XStyle
-}
+
+//abstract class Rotatable (var rotation: Double = 0.0) : Drawable {
+//
+//}
 
 
-data class XStyle (
+data class XStyle(
     // default background, foreground and line colours
     var fg: XColor = XColor.black,
     var bg: XColor = XColor.white,
@@ -62,7 +75,7 @@ data class XStyle (
     var lineWidth: Double = 2.0
 )
 
-data class TStyle (
+data class TStyle(
     // default background, foreground and line colours
     var fg: XColor = XColor.cyan,
     var font: String = "Arial",
@@ -75,10 +88,10 @@ interface XApp {
     fun handleKeyEvent(e: XKeyEvent)
 }
 
-enum class XMouseEventType {Down, Up, Moved, Dragged, Clicked}
-data class XMouseEvent (val t: XMouseEventType, val s: Vec2d)
+enum class XMouseEventType { Down, Up, Moved, Dragged, Clicked }
+data class XMouseEvent(val t: XMouseEventType, val s: Vec2d)
 
-enum class XKeyEventType {Pressed, Released, Typed, Down}
+enum class XKeyEventType { Pressed, Released, Typed, Down }
 data class XKeyEvent(val t: XKeyEventType, val keyCode: Int)
 
 class XKeyMap {
@@ -91,27 +104,78 @@ class XKeyMap {
     }
 }
 
-data class XRect (var centre: Vec2d, var w: Double, var h: Double, override var dStyle: XStyle): Drawable
-data class XEllipse (var centre: Vec2d, var w: Double, var h: Double, override var dStyle: XStyle): Drawable
-data class XLine (var a:Vec2d, var b: Vec2d, override var dStyle: XStyle): Drawable
-data class XText (var str: String, var p: Vec2d, var tStyle: TStyle, override var dStyle: XStyle) : Drawable
 
-data class XPoly (var start: Vec2d = Vec2d(), val points: ArrayList<Vec2d>,
-                  override var dStyle: XStyle = XStyle(), var closed:Boolean = true
-) : Drawable {
+interface Drawable {
+    var dStyle: XStyle
+    var rotation: Double
+}
+
+interface GeomDrawable : Drawable {
+    fun contains(p: Vec2d?) : Boolean
+}
+
+data class XRect(
+    var centre: Vec2d, var w: Double, var h: Double,
+    override var dStyle: XStyle = XStyle(), override var rotation: Double = 0.0
+) : GeomDrawable {
+    override fun contains(p: Vec2d?): Boolean {
+        if (p == null) return false
+        // also need to cope with rotation
+        // - so transform the point first, then counter-rotate it
+
+        val tp = (p-centre).rotatedBy(-rotation)
+        return abs(tp.x) <= w/2 && abs(tp.y) <= h/2
+
+    }
+}
+
+
+data class XEllipse(
+    var centre: Vec2d, var w: Double, var h:
+    Double, override var dStyle: XStyle = XStyle(),
+    override var rotation: Double = 0.0
+) : GeomDrawable {
+    val a2 = (w/2) * (w/2)
+    val b2 = (h/2) * (h/2)
+    override fun contains(p: Vec2d?): Boolean {
+        if (p == null) return false
+        // also need to cope with rotation
+        // - so transform the point first, then counter-rotate it
+        val tp = (p-centre).rotatedBy(-rotation)
+        return (tp.x*tp.x) / a2 + (tp.y*tp.y) / b2 <= 1
+    }
+}
+
+data class XLine(
+    var a: Vec2d, var b: Vec2d,
+    override var dStyle: XStyle = XStyle(), override var rotation: Double = 0.0
+) : Drawable
+
+data class XText(
+    var str: String, var p: Vec2d, var tStyle: TStyle = TStyle(),
+    override var dStyle: XStyle = XStyle(), override var rotation: Double = 0.0
+) : Drawable
+
+data class XPoly(
+    var centre: Vec2d = Vec2d(), val points: ArrayList<Vec2d>,
+    override var dStyle: XStyle = XStyle(),
+    override var rotation: Double = 0.0,
+    var closed: Boolean = true
+) : GeomDrawable {
+    override fun contains(p: Vec2d?): Boolean {
+        if (p == null) return false
+        val tp = (p-centre).rotatedBy(-rotation)
+        return Poly().contains(tp, points)
+    }
+}
+
+//data class XPolyOld (var start: Vec2d, val points: ArrayList<Vec2d>) : Drawable {
 //    private var intStyle = XStyle()
 //    override var dStyle: XStyle
 //        get() = intStyle
 //        set(value) {intStyle = value}
-}
-
-data class XPolyOld (var start: Vec2d, val points: ArrayList<Vec2d>) : Drawable {
-    private var intStyle = XStyle()
-    override var dStyle: XStyle
-        get() = intStyle
-        set(value) {intStyle = value}
-}
-
+//}
+//
 // data class XPolyRegular (val centre: Vec2d, val vRad: Double, val startAngle: Double) : Drawable
 
 fun makePolygon(n: Int = 6, rad: Double = 10.0, startAngle: Double = 0.0): ArrayList<Vec2d> {

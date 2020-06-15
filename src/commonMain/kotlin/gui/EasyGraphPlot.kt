@@ -12,6 +12,12 @@ class EasyGraphPlot (var seed:Int = 1): XApp {
 
     override fun paint(xg: XGraphics) {
         // now draw them all
+
+        // todo: note that the randLines method
+        // calls the xg.width() and xg.height()
+        // methods - need a way to intercept the calls
+        // when this is being drawn as a sub-pane
+        // how best to do that?
         randLines(xg).forEach { xg.draw(it) }
     }
 

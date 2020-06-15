@@ -91,6 +91,7 @@ class XGraphicsJS(var canvas: HTMLCanvasElement) : XGraphics {
         with(poly) {
             path.moveTo(points[0].x, points[0].y)
             for (v in points) path.lineTo(v.x, v.y)
+
             path.closePath()
         }
         val g = canvas
@@ -102,7 +103,7 @@ class XGraphicsJS(var canvas: HTMLCanvasElement) : XGraphics {
                 context.lineWidth = lineWidth
 
                 // fg.b = 0.5
-                context.translate(poly.start.x, poly.start.y)
+                context.translate(poly.centre.x, poly.centre.y)
                 context.fillStyle = rgba(fg)
 
                 // context.moveTo(poly.start.x, poly.start.y)
