@@ -256,7 +256,7 @@ class XGraphicsJVM(val jc: JComponent) : XGraphics {
                     g.fill(path)
                 }
                 if (stroke) {
-                    g.color = getColor(fg)
+                    g.color = getColor(lc)
                     g.stroke = BasicStroke(lineWidth.toFloat())
                     g.draw(path)
                 }

@@ -1,5 +1,6 @@
 package gui.geometry
 
+import games.arcade.vehicles.Asteroid
 import gui.*
 import math.Vec2d
 import kotlin.math.PI
@@ -11,6 +12,8 @@ class ContainsTestApp : XApp {
     val outColour = xp.colors[1]
     var mp: Vec2d? = null
     var rot = 0.0
+
+    val rock = Asteroid(12, 20.0).getPoly()
 
     override fun paint(xg: XGraphics) {
         val rect = XRect(xg.centre(), xg.width() / 2, xg.height() / 2)
@@ -28,6 +31,11 @@ class ContainsTestApp : XApp {
         poly.dStyle.fg =
             if (poly.contains(mp)) xp.colors[2] else xp.colors[3]
         xg.draw(poly)
+
+        rock.centre = Vec2d(xg.width()/4, xg.height()/4)
+        rock.rotation = rot
+        rock.dStyle.fill = rock.contains(mp)
+        xg.draw(rock)
 
         val ellipse = XEllipse(Vec2d(xg.width() * 0.75, xg.height()/2),
             xg.width() / 2, xg.height() / 4)
