@@ -162,9 +162,14 @@ data class XPoly(
     override var rotation: Double = 0.0,
     var closed: Boolean = true
 ) : GeomDrawable {
+
+    var rad = 0.0
+    init { points.forEach { rad = max( rad , it.mag ) }}
+
     override fun contains(p: Vec2d?): Boolean {
         if (p == null) return false
         val tp = (p-centre).rotatedBy(-rotation)
+        if (tp.mag > rad) return false
         return Poly().contains(tp, points)
     }
 }
