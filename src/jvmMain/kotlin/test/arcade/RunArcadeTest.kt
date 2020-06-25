@@ -10,7 +10,7 @@ import utilities.JEasyFrame
 
 fun main() {
     val ec = EasyComponent()
-    val frame = JEasyFrame(ec, "X Graphics JVM Test")
+    val frame = JEasyFrame(ec, "X Graphics Arcade Test")
     val xg = XGraphicsJVM(ec)
     ec.xg = xg
     val app = ArcadeTestApp()

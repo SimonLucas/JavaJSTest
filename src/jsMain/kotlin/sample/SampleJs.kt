@@ -81,6 +81,8 @@ class Dispatcher() {
             title.contains("Tetris") -> BasicTest().run()
             title.contains("Speed") -> SpeedTest().run()
             title.contains("Griddle") -> GriddleTest().run()
+            title.contains("Poly") -> PolyTest().run()
+            title.contains("Asteroids") -> AsteroidsTest().run()
             title.contains("XMLHTTP") -> HTTPTest().run()
         }
     }

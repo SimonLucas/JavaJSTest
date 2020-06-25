@@ -16,6 +16,11 @@ class ContainsTestApp : XApp {
     val rock = Asteroid(12, 20.0).getPoly()
 
     override fun paint(xg: XGraphics) {
+
+
+        val bgRect = XRect(xg.centre(), xg.width(), xg.height(), XStyle(fg = XColor.yellow))
+        xg.draw(bgRect)
+
         val rect = XRect(xg.centre(), xg.width() / 2, xg.height() / 2)
         rect.rotation = rot
         rect.dStyle.fg =

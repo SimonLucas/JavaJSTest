@@ -2,6 +2,7 @@ package test
 
 import gui.*
 import org.w3c.dom.*
+import kotlin.math.PI
 
 class XGraphicsJS(var canvas: HTMLCanvasElement) : XGraphics {
 
@@ -13,6 +14,7 @@ class XGraphicsJS(var canvas: HTMLCanvasElement) : XGraphics {
 
     override fun draw(toDraw: Drawable) {
         if (toDraw is XRect) drawRect(toDraw)
+        if (toDraw is XEllipse) drawEllipse(toDraw)
         if (toDraw is XPoly) drawPoly(toDraw)
         if (toDraw is XLine) drawLine(toDraw)
         if (toDraw is XText) drawText(toDraw)
@@ -25,15 +27,49 @@ class XGraphicsJS(var canvas: HTMLCanvasElement) : XGraphics {
                 val context = g.getContext("2d") as CanvasRenderingContext2D
                 context.save()
                 context.globalAlpha = 1.0;
+                context.translate(rect.centre.x, rect.centre.y)
+                context.rotate(rect.rotation)
 
                 if (fill) {
                     context.fillStyle = rgba(fg)
-                    context.fillRect(centre.x - w / 2, centre.y - h / 2, w, h)
+//                    context.fillRect(centre.x - w / 2, centre.y - h / 2, w, h)
+                    context.fillRect(-w / 2,  - h / 2, w, h)
                 }
                 if (stroke) {
                     context.strokeStyle = rgba(lc)
                     context.lineWidth = lineWidth
-                    context.strokeRect(centre.x - w / 2, centre.y - h / 2, w, h)
+//                    context.strokeRect(centre.x - w / 2, centre.y - h / 2, w, h)
+                    context.strokeRect(-w / 2,  - h / 2, w, h)
+
+                }
+                context.restore()
+            }
+        }
+    }
+
+    fun drawEllipse(ellipse: XEllipse) {
+        // this is not working yet
+        val g = canvas
+        with(ellipse) {
+            with(ellipse.dStyle) {
+                val context = g.getContext("2d") as CanvasRenderingContext2D
+                context.save()
+                context.globalAlpha = 1.0;
+                context.translate(ellipse.centre.x, ellipse.centre.y)
+                context.rotate(ellipse.rotation)
+
+                // note: must call beginPath before adding the ellipse
+                context.beginPath()
+                context.ellipse(0.0,  0.0, w/2, h/2, 0.0,  0.0, PI * 2, true)
+
+                if (fill) {
+                    context.fillStyle = rgba(fg)
+                    context.fill()
+                }
+                if (stroke) {
+                    context.strokeStyle = rgba(lc)
+                    context.lineWidth = lineWidth
+                    context.stroke()
                 }
                 context.restore()
             }
@@ -104,6 +140,7 @@ class XGraphicsJS(var canvas: HTMLCanvasElement) : XGraphics {
 
                 // fg.b = 0.5
                 context.translate(poly.centre.x, poly.centre.y)
+                context.rotate(poly.rotation)
                 context.fillStyle = rgba(fg)
 
                 // context.moveTo(poly.start.x, poly.start.y)

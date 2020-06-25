@@ -33,3 +33,31 @@ class Asteroid (val n: Int, val rad: Double,
     }
 
 }
+
+//// define the shape of the ship
+//static int[] xp = {-2, 0, 2, 0};
+//static int[] yp = {2, -2, 2, 0};
+//
+//// this is the thrust poly that will be drawn when the ship
+//// is thrusting
+//static int[] xpThrust = {-2, 0, 2, 0};
+//static int[] ypThrust = {2, 3, 2, 0};
+//// public static double scale = 15;
+//
+
+class Ship (
+    val l: Double = 20.0
+) : Shape {
+    override fun getPoly(): XPoly {
+        val points = arrayListOf<Vec2d>(
+            Vec2d(-l,l),
+            Vec2d(0.0,-l),
+            Vec2d(l,l),
+            Vec2d(0.0,0.0)
+        )
+        val style = XStyle(stroke = false, fill=true, fg = XColor.white, lc = XColor.white,
+            bg = XColor.cyan, lineWidth = 2.0)
+        return XPoly(Vec2d(), points, dStyle = style)
+    }
+
+}

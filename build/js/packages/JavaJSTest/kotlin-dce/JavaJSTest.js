@@ -18,45 +18,58 @@
   var L_1 = Kotlin.Long.NEG_ONE;
   var ensureNotNull = Kotlin.ensureNotNull;
   var ArrayList_init = Kotlin.kotlin.collections.ArrayList_init_287e2$;
-  var Kind_INTERFACE = Kotlin.Kind.INTERFACE;
-  var unboxChar = Kotlin.unboxChar;
   var Enum = Kotlin.kotlin.Enum;
   var throwISE = Kotlin.throwISE;
-  var toBoxedChar = Kotlin.toBoxedChar;
+  var L0 = Kotlin.Long.ZERO;
+  var arrayListOf = Kotlin.kotlin.collections.arrayListOf_i5x0yv$;
+  var to = Kotlin.kotlin.to_ujzrz7$;
+  var hashMapOf = Kotlin.kotlin.collections.hashMapOf_qfcya0$;
   var Kind_OBJECT = Kotlin.Kind.OBJECT;
-  var toString = Kotlin.toString;
+  var HashMap_init = Kotlin.kotlin.collections.HashMap_init_q3lmfv$;
+  var math = Kotlin.kotlin.math;
+  var sequenceOf = Kotlin.kotlin.sequences.sequenceOf_i5x0yv$;
+  var Math_0 = Math;
+  var NotImplementedError_init = Kotlin.kotlin.NotImplementedError;
+  var Kind_INTERFACE = Kotlin.Kind.INTERFACE;
+  var unboxChar = Kotlin.unboxChar;
+  var toBoxedChar = Kotlin.toBoxedChar;
   var charArray = Kotlin.charArray;
   var Array_0 = Array;
   var numberToInt = Kotlin.numberToInt;
-  var Math_0 = Math;
   var StringBuilder_init = Kotlin.kotlin.text.StringBuilder_init;
-  var HashMap_init = Kotlin.kotlin.collections.HashMap_init_q3lmfv$;
   var RuntimeException_init = Kotlin.kotlin.RuntimeException_init_pdl1vj$;
-  var NotImplementedError_init = Kotlin.kotlin.NotImplementedError;
   var sortedWith = Kotlin.kotlin.collections.sortedWith_eknfly$;
   var wrapFunction = Kotlin.wrapFunction;
   var Comparator = Kotlin.kotlin.Comparator;
   var iterator = Kotlin.kotlin.text.iterator_gw00vp$;
   var split = Kotlin.kotlin.text.split_ip8yn$;
   var Random_0 = Kotlin.kotlin.random.Random_s8cxhz$;
-  var shuffle = Kotlin.kotlin.collections.shuffle_9jeydg$;
+  var shuffle_0 = Kotlin.kotlin.collections.shuffle_9jeydg$;
   var copyToArray = Kotlin.kotlin.collections.copyToArray;
+  var toString = Kotlin.toString;
   var throwCCE = Kotlin.throwCCE;
   var trim = Kotlin.kotlin.text.trim_gw00vp$;
-  var to = Kotlin.kotlin.to_ujzrz7$;
-  var hashMapOf = Kotlin.kotlin.collections.hashMapOf_qfcya0$;
-  var L0 = Kotlin.Long.ZERO;
   var abs = Kotlin.kotlin.math.abs_za3lpa$;
-  var math = Kotlin.kotlin.math;
+  var L1 = Kotlin.Long.ONE;
+  var Random_1 = Kotlin.kotlin.random.Random_za3lpa$;
+  var equals = Kotlin.equals;
+  var L76 = Kotlin.Long.fromInt(76);
+  var IntRange = Kotlin.kotlin.ranges.IntRange;
   var kotlin_js_internal_DoubleCompanionObject = Kotlin.kotlin.js.internal.DoubleCompanionObject;
   var numberToDouble = Kotlin.numberToDouble;
   var Comparable = Kotlin.kotlin.Comparable;
-  var contains = Kotlin.kotlin.text.contains_li3zpu$;
   var Unit = Kotlin.kotlin.Unit;
+  var contains = Kotlin.kotlin.text.contains_li3zpu$;
   var toLong = Kotlin.kotlin.text.toLong_pdl1vz$;
   var L10 = Kotlin.Long.fromInt(10);
   var appendText = Kotlin.kotlin.dom.appendText_46n0ku$;
   var TestTimeSource = Kotlin.kotlin.time.TestTimeSource;
+  MoveAction.prototype = Object.create(Enum.prototype);
+  MoveAction.prototype.constructor = MoveAction;
+  ObjectType.prototype = Object.create(Enum.prototype);
+  ObjectType.prototype.constructor = ObjectType;
+  PlayerShip.prototype = Object.create(GameObject.prototype);
+  PlayerShip.prototype.constructor = PlayerShip;
   GriddleState.prototype = Object.create(Enum.prototype);
   GriddleState.prototype.constructor = GriddleState;
   Dir.prototype = Object.create(Enum.prototype);
@@ -412,6 +425,548 @@
   SimpleEvoAgent.prototype.equals = function (other) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.flipAtLeastOneValue, other.flipAtLeastOneValue) && Kotlin.equals(this.probMutation, other.probMutation) && Kotlin.equals(this.sequenceLength, other.sequenceLength) && Kotlin.equals(this.nEvals, other.nEvals) && Kotlin.equals(this.useShiftBuffer, other.useShiftBuffer) && Kotlin.equals(this.useMutationTransducer, other.useMutationTransducer) && Kotlin.equals(this.repeatProb, other.repeatProb) && Kotlin.equals(this.discountFactor, other.discountFactor) && Kotlin.equals(this.opponentModel, other.opponentModel)))));
   };
+  function MoveAction(name, ordinal) {
+    Enum.call(this);
+    this.name$ = name;
+    this.ordinal$ = ordinal;
+  }
+  function MoveAction_initFields() {
+    MoveAction_initFields = function () {
+    };
+    MoveAction$Neutral_instance = new MoveAction('Neutral', 0);
+    MoveAction$Left_instance = new MoveAction('Left', 1);
+    MoveAction$Right_instance = new MoveAction('Right', 2);
+    MoveAction$Up_instance = new MoveAction('Up', 3);
+    MoveAction$Down_instance = new MoveAction('Down', 4);
+    MoveAction$Fire_instance = new MoveAction('Fire', 5);
+    MoveAction$Jump_instance = new MoveAction('Jump', 6);
+    MoveAction$Thrust_instance = new MoveAction('Thrust', 7);
+  }
+  var MoveAction$Neutral_instance;
+  function MoveAction$Neutral_getInstance() {
+    MoveAction_initFields();
+    return MoveAction$Neutral_instance;
+  }
+  var MoveAction$Left_instance;
+  function MoveAction$Left_getInstance() {
+    MoveAction_initFields();
+    return MoveAction$Left_instance;
+  }
+  var MoveAction$Right_instance;
+  function MoveAction$Right_getInstance() {
+    MoveAction_initFields();
+    return MoveAction$Right_instance;
+  }
+  var MoveAction$Up_instance;
+  function MoveAction$Up_getInstance() {
+    MoveAction_initFields();
+    return MoveAction$Up_instance;
+  }
+  var MoveAction$Down_instance;
+  function MoveAction$Down_getInstance() {
+    MoveAction_initFields();
+    return MoveAction$Down_instance;
+  }
+  var MoveAction$Fire_instance;
+  function MoveAction$Fire_getInstance() {
+    MoveAction_initFields();
+    return MoveAction$Fire_instance;
+  }
+  var MoveAction$Jump_instance;
+  function MoveAction$Jump_getInstance() {
+    MoveAction_initFields();
+    return MoveAction$Jump_instance;
+  }
+  var MoveAction$Thrust_instance;
+  function MoveAction$Thrust_getInstance() {
+    MoveAction_initFields();
+    return MoveAction$Thrust_instance;
+  }
+  MoveAction.$metadata$ = {kind: Kind_CLASS, simpleName: 'MoveAction', interfaces: [Enum]};
+  function MoveAction$values() {
+    return [MoveAction$Neutral_getInstance(), MoveAction$Left_getInstance(), MoveAction$Right_getInstance(), MoveAction$Up_getInstance(), MoveAction$Down_getInstance(), MoveAction$Fire_getInstance(), MoveAction$Jump_getInstance(), MoveAction$Thrust_getInstance()];
+  }
+  MoveAction.values = MoveAction$values;
+  function MoveAction$valueOf(name) {
+    switch (name) {
+      case 'Neutral':
+        return MoveAction$Neutral_getInstance();
+      case 'Left':
+        return MoveAction$Left_getInstance();
+      case 'Right':
+        return MoveAction$Right_getInstance();
+      case 'Up':
+        return MoveAction$Up_getInstance();
+      case 'Down':
+        return MoveAction$Down_getInstance();
+      case 'Fire':
+        return MoveAction$Fire_getInstance();
+      case 'Jump':
+        return MoveAction$Jump_getInstance();
+      case 'Thrust':
+        return MoveAction$Thrust_getInstance();
+      default:throwISE('No enum constant games.arcade.MoveAction.' + name);
+    }
+  }
+  MoveAction.valueOf_61zpoe$ = MoveAction$valueOf;
+  function ObjectType(name, ordinal) {
+    Enum.call(this);
+    this.name$ = name;
+    this.ordinal$ = ordinal;
+  }
+  function ObjectType_initFields() {
+    ObjectType_initFields = function () {
+    };
+    ObjectType$Avatar_instance = new ObjectType('Avatar', 0);
+    ObjectType$P1Missile_instance = new ObjectType('P1Missile', 1);
+    ObjectType$AlienMissile_instance = new ObjectType('AlienMissile', 2);
+    ObjectType$AlienObject_instance = new ObjectType('AlienObject', 3);
+  }
+  var ObjectType$Avatar_instance;
+  function ObjectType$Avatar_getInstance() {
+    ObjectType_initFields();
+    return ObjectType$Avatar_instance;
+  }
+  var ObjectType$P1Missile_instance;
+  function ObjectType$P1Missile_getInstance() {
+    ObjectType_initFields();
+    return ObjectType$P1Missile_instance;
+  }
+  var ObjectType$AlienMissile_instance;
+  function ObjectType$AlienMissile_getInstance() {
+    ObjectType_initFields();
+    return ObjectType$AlienMissile_instance;
+  }
+  var ObjectType$AlienObject_instance;
+  function ObjectType$AlienObject_getInstance() {
+    ObjectType_initFields();
+    return ObjectType$AlienObject_instance;
+  }
+  ObjectType.$metadata$ = {kind: Kind_CLASS, simpleName: 'ObjectType', interfaces: [Enum]};
+  function ObjectType$values() {
+    return [ObjectType$Avatar_getInstance(), ObjectType$P1Missile_getInstance(), ObjectType$AlienMissile_getInstance(), ObjectType$AlienObject_getInstance()];
+  }
+  ObjectType.values = ObjectType$values;
+  function ObjectType$valueOf(name) {
+    switch (name) {
+      case 'Avatar':
+        return ObjectType$Avatar_getInstance();
+      case 'P1Missile':
+        return ObjectType$P1Missile_getInstance();
+      case 'AlienMissile':
+        return ObjectType$AlienMissile_getInstance();
+      case 'AlienObject':
+        return ObjectType$AlienObject_getInstance();
+      default:throwISE('No enum constant games.arcade.ObjectType.' + name);
+    }
+  }
+  ObjectType.valueOf_61zpoe$ = ObjectType$valueOf;
+  function AsteroidsGame(w, h, gobs, ticks) {
+    AsteroidsGame$Companion_getInstance();
+    if (w === void 0)
+      w = 640.0;
+    if (h === void 0)
+      h = 480.0;
+    if (gobs === void 0)
+      gobs = ArrayList_init();
+    if (ticks === void 0)
+      ticks = 0;
+    this.w = w;
+    this.h = h;
+    this.gobs = gobs;
+    this.ticks = ticks;
+    this.rockSize = 0.05;
+    this.velocityFactor = 1.0;
+    this.n = 5;
+    this.rand = Random.Default;
+    this.gobMap = HashMap_init();
+    if (this.gobs.isEmpty())
+      this.randomInitialState();
+    this.actionMap = hashMapOf([to(0, MoveAction$Neutral_getInstance()), to(1, MoveAction$Left_getInstance()), to(2, MoveAction$Right_getInstance()), to(3, MoveAction$Fire_getInstance()), to(4, MoveAction$Thrust_getInstance())]);
+    this.intScore = 0;
+  }
+  AsteroidsGame.prototype.createRocks_lu1900$ = function (w, h) {
+    var tmp$;
+    var bm = new BoxMuller();
+    var size = Math_0.min(w, h);
+    tmp$ = this.n;
+    for (var i = 0; i < tmp$; i++) {
+      var poly = (new Asteroid(8, size * this.rockSize)).getPoly();
+      var s = new Vec2d(this.rand.nextDouble_14dthe$(w), this.rand.nextDouble_14dthe$(h));
+      var v = (new Vec2d(bm.nextGaussian(), bm.nextGaussian())).times_14dthe$(this.velocityFactor);
+      this.gobs.add_11rb$(new GameObject(poly, ObjectType$AlienObject_getInstance(), s, v));
+    }
+  };
+  AsteroidsGame.prototype.gameObjects = function () {
+    return this.gobs;
+  };
+  function AsteroidsGame$Companion() {
+    AsteroidsGame$Companion_instance = this;
+    this.totalTicks_8be2vx$ = L0;
+    this.collisionMap = hashMapOf([to(ObjectType$Avatar_getInstance(), arrayListOf([ObjectType$AlienObject_getInstance()]))]);
+    this.actionAdapter = new ActionAdapter();
+    this.neutralAction = new ShipAction();
+  }
+  AsteroidsGame$Companion.$metadata$ = {kind: Kind_OBJECT, simpleName: 'Companion', interfaces: []};
+  var AsteroidsGame$Companion_instance = null;
+  function AsteroidsGame$Companion_getInstance() {
+    if (AsteroidsGame$Companion_instance === null) {
+      new AsteroidsGame$Companion();
+    }return AsteroidsGame$Companion_instance;
+  }
+  AsteroidsGame.prototype.testCollisions_mybawp$ = function (gobs) {
+    var tmp$, tmp$_0;
+    this.gobMap.clear();
+    tmp$ = gobs.iterator();
+    while (tmp$.hasNext()) {
+      var g = tmp$.next();
+      if (this.gobMap.get_11rb$(g.type) == null) {
+        var $receiver = this.gobMap;
+        var key = g.type;
+        var value = ArrayList_init();
+        $receiver.put_xwzc9p$(key, value);
+      }(tmp$_0 = this.gobMap.get_11rb$(g.type)) != null ? tmp$_0.add_11rb$(g) : null;
+    }
+    this.testCollisions_dqfcs2$(this.gobMap);
+  };
+  AsteroidsGame.prototype.testCollisions_dqfcs2$ = function (obMap) {
+    var tmp$, tmp$_0;
+    tmp$ = AsteroidsGame$Companion_getInstance().collisionMap.keys.iterator();
+    while (tmp$.hasNext()) {
+      var a = tmp$.next();
+      var canCollideWith = AsteroidsGame$Companion_getInstance().collisionMap.get_11rb$(a);
+      if (canCollideWith != null) {
+        tmp$_0 = canCollideWith.iterator();
+        while (tmp$_0.hasNext()) {
+          var b = tmp$_0.next();
+          this.testCollisions_1wevv8$(this.gobMap.get_11rb$(a), this.gobMap.get_11rb$(b));
+        }
+      }}
+  };
+  AsteroidsGame.prototype.testCollisions_1wevv8$ = function (al, bl) {
+    var tmp$, tmp$_0;
+    if (al == null || bl == null)
+      return;
+    tmp$ = al.iterator();
+    while (tmp$.hasNext()) {
+      var a = tmp$.next();
+      tmp$_0 = bl.iterator();
+      while (tmp$_0.hasNext()) {
+        var b = tmp$_0.next();
+        if (a.testCollision_bqu2si$(b)) {
+          this.intScore = this.intScore + 10 | 0;
+        }}
+    }
+  };
+  AsteroidsGame.prototype.totalTicks = function () {
+    return AsteroidsGame$Companion_getInstance().totalTicks_8be2vx$;
+  };
+  AsteroidsGame.prototype.resetTotalTicks = function () {
+    AsteroidsGame$Companion_getInstance().totalTicks_8be2vx$ = L0;
+  };
+  AsteroidsGame.prototype.randomInitialState = function () {
+    this.createRocks_lu1900$(this.w, this.h);
+    this.addShip_0();
+    return this;
+  };
+  AsteroidsGame.prototype.addShip_0 = function () {
+    this.gobs.add_11rb$(new PlayerShip(new Vec2d(this.w / 2, this.h / 2)));
+  };
+  AsteroidsGame.prototype.copy = function () {
+    var cp = ArrayList_init();
+    var tmp$;
+    tmp$ = this.gobs.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      cp.add_11rb$(element.copy());
+    }
+    return new AsteroidsGame(this.w, this.h, cp, this.ticks);
+  };
+  AsteroidsGame.prototype.next_q5rwfd$ = function (actions) {
+    return this.next_g5da3n$(AsteroidsGame$Companion_getInstance().actionAdapter.getAction_za3lpa$(actions[0]));
+  };
+  AsteroidsGame.prototype.next_g5da3n$ = function (action) {
+    var tmp$;
+    if (action == null)
+      return this;
+    this.testCollisions_mybawp$(this.gobs);
+    var tmp$_0;
+    tmp$_0 = this.gobs.iterator();
+    while (tmp$_0.hasNext()) {
+      var element = tmp$_0.next();
+      element.update_ys2idj$(this.w, this.h, action);
+    }
+    tmp$ = AsteroidsGame$Companion_getInstance().totalTicks_8be2vx$;
+    AsteroidsGame$Companion_getInstance().totalTicks_8be2vx$ = tmp$.inc();
+    this.ticks = this.ticks + 1 | 0;
+    return this;
+  };
+  AsteroidsGame.prototype.nActions = function () {
+    return this.actionMap.size;
+  };
+  AsteroidsGame.prototype.score = function () {
+    return this.intScore;
+  };
+  AsteroidsGame.prototype.isTerminal = function () {
+    throw new NotImplementedError_init('An operation is not implemented: ' + 'Not yet implemented');
+  };
+  AsteroidsGame.prototype.nTicks = function () {
+    return this.ticks;
+  };
+  AsteroidsGame.$metadata$ = {kind: Kind_CLASS, simpleName: 'AsteroidsGame', interfaces: [ExtendedAbstractGameState]};
+  function GameObject(poly, type, s, v, rot, rotRate, alive, age) {
+    if (type === void 0)
+      type = ObjectType$AlienObject_getInstance();
+    if (s === void 0)
+      s = new Vec2d();
+    if (v === void 0)
+      v = new Vec2d();
+    if (rot === void 0)
+      rot = 0.0;
+    if (rotRate === void 0)
+      rotRate = math.PI / 180;
+    if (alive === void 0)
+      alive = true;
+    if (age === void 0)
+      age = 0;
+    this.poly = poly;
+    this.type = type;
+    this.s = s;
+    this.v = v;
+    this.rot = rot;
+    this.rotRate = rotRate;
+    this.alive = alive;
+    this.age = age;
+  }
+  GameObject.prototype.copy = function () {
+    return new GameObject(this.poly, this.type, this.s, this.v, this.rot, this.rotRate, this.alive, this.age);
+  };
+  GameObject.prototype.testCollision_bqu2si$ = function (b) {
+    if (this.poly.contains_vi8533$(b.poly.centre)) {
+      return true;
+    } else
+      return false;
+  };
+  GameObject.prototype.applyCollision_bqu2si$ = function (b) {
+  };
+  GameObject.prototype.update_ys2idj$$default = function (w, h, action) {
+    this.s = this.s.plus_5lk9kw$(this.v);
+    this.s = this.wrap_r9gazo$(this.s, w, h);
+    this.rot += this.rotRate;
+    this.poly.centre = this.s;
+    this.poly.rotation = this.rot;
+    this.age = this.age + 1 | 0;
+  };
+  GameObject.prototype.update_ys2idj$ = function (w, h, action, callback$default) {
+    if (action === void 0)
+      action = AsteroidsGame$Companion_getInstance().neutralAction;
+    callback$default ? callback$default(w, h, action) : this.update_ys2idj$$default(w, h, action);
+  };
+  GameObject.prototype.wrap_r9gazo$ = function (v, w, h) {
+    return new Vec2d((v.x + w) % w, (v.y + h) % h);
+  };
+  GameObject.$metadata$ = {kind: Kind_CLASS, simpleName: 'GameObject', interfaces: []};
+  function PlayerShip(s) {
+    GameObject.call(this, (new Ship()).getPoly(), ObjectType$Avatar_getInstance(), s, void 0, void 0, 0.0);
+    this.d = new Vec2d(0.0, -1.0);
+    this.turn = 10 * math.PI / 180.0;
+    this.thrustFac = 0.5;
+    this.lossFac = 0.99;
+  }
+  PlayerShip.prototype.update_ys2idj$$default = function (w, h, action) {
+    if (action.fire)
+      this.fireMissile_0();
+    if (action.thrust)
+      this.v = this.v.plus_5lk9kw$(this.d.rotatedBy_14dthe$(this.rot).times_14dthe$(this.thrustFac));
+    this.v = this.v.times_14dthe$(this.lossFac);
+    this.rot = this.rot + action.turn * this.turn;
+    this.update_ys2idj$(w, h, action, GameObject.prototype.update_ys2idj$$default.bind(this));
+  };
+  PlayerShip.prototype.fireMissile_0 = function () {
+  };
+  PlayerShip.$metadata$ = {kind: Kind_CLASS, simpleName: 'PlayerShip', interfaces: [GameObject]};
+  function ArcadeTestApp() {
+    this.mp = null;
+    this.game = null;
+    this.controller = new AsteroidsKeyController();
+  }
+  ArcadeTestApp.prototype.paint_vzjx8w$ = function (xg) {
+    if (this.game == null)
+      this.game = new AsteroidsGame(xg.width(), xg.height());
+    var safe = this.game;
+    if (safe == null)
+      return;
+    safe.next_g5da3n$(this.controller.getAction_84v5ee$(safe, 0));
+    var gobs = safe.gameObjects();
+    var bgstyle = new XStyle(XColor$Companion_getInstance().black);
+    xg.draw_dvdmun$(new XRect(xg.centre(), xg.width(), xg.height(), bgstyle));
+    var tmp$;
+    tmp$ = gobs.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      xg.draw_dvdmun$(element.poly);
+    }
+  };
+  ArcadeTestApp.prototype.handleMouseEvent_x4hb96$ = function (e) {
+    this.mp = e.s;
+  };
+  ArcadeTestApp.prototype.handleKeyEvent_wtf8cg$ = function (e) {
+    this.controller.handleKeyEvent_wtf8cg$(e);
+  };
+  ArcadeTestApp.$metadata$ = {kind: Kind_CLASS, simpleName: 'ArcadeTestApp', interfaces: [XApp]};
+  function AsteroidsKeyController() {
+    this.action = new ShipAction();
+  }
+  AsteroidsKeyController.prototype.handleKeyEvent_wtf8cg$ = function (e) {
+    println(e);
+    if (e.t === XKeyEventType$Pressed_getInstance() || e.t === XKeyEventType$Down_getInstance()) {
+      this.keyPressed_za3lpa$(e.keyCode);
+    } else if (e.t === XKeyEventType$Released_getInstance()) {
+      this.keyReleased_za3lpa$(e.keyCode);
+    }};
+  AsteroidsKeyController.prototype.keyPressed_za3lpa$ = function (keyCode) {
+    switch (keyCode) {
+      case 37:
+        this.action.turn = -1.0;
+        break;
+      case 39:
+        this.action.turn = 1.0;
+        break;
+      case 32:
+        this.action.fire = true;
+        break;
+      case 38:
+        this.action.thrust = true;
+        break;
+    }
+  };
+  AsteroidsKeyController.prototype.keyReleased_za3lpa$ = function (keyCode) {
+    switch (keyCode) {
+      case 37:
+        this.action.turn = 0.0;
+        break;
+      case 39:
+        this.action.turn = 0.0;
+        break;
+      case 32:
+        this.action.fire = false;
+        break;
+      case 38:
+        this.action.thrust = false;
+        break;
+    }
+  };
+  AsteroidsKeyController.prototype.getAction_84v5ee$ = function (gameState, playerId) {
+    return this.action;
+  };
+  AsteroidsKeyController.prototype.getAgentType = function () {
+    return 'Asteroids Key Controller';
+  };
+  AsteroidsKeyController.$metadata$ = {kind: Kind_CLASS, simpleName: 'AsteroidsKeyController', interfaces: []};
+  function ShipAction(turn, thrust, fire) {
+    if (turn === void 0)
+      turn = 0.0;
+    if (thrust === void 0)
+      thrust = false;
+    if (fire === void 0)
+      fire = false;
+    this.turn = turn;
+    this.thrust = thrust;
+    this.fire = fire;
+  }
+  ShipAction.$metadata$ = {kind: Kind_CLASS, simpleName: 'ShipAction', interfaces: []};
+  ShipAction.prototype.component1 = function () {
+    return this.turn;
+  };
+  ShipAction.prototype.component2 = function () {
+    return this.thrust;
+  };
+  ShipAction.prototype.component3 = function () {
+    return this.fire;
+  };
+  ShipAction.prototype.copy_7trt9e$ = function (turn, thrust, fire) {
+    return new ShipAction(turn === void 0 ? this.turn : turn, thrust === void 0 ? this.thrust : thrust, fire === void 0 ? this.fire : fire);
+  };
+  ShipAction.prototype.toString = function () {
+    return 'ShipAction(turn=' + Kotlin.toString(this.turn) + (', thrust=' + Kotlin.toString(this.thrust)) + (', fire=' + Kotlin.toString(this.fire)) + ')';
+  };
+  ShipAction.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.turn) | 0;
+    result = result * 31 + Kotlin.hashCode(this.thrust) | 0;
+    result = result * 31 + Kotlin.hashCode(this.fire) | 0;
+    return result;
+  };
+  ShipAction.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.turn, other.turn) && Kotlin.equals(this.thrust, other.thrust) && Kotlin.equals(this.fire, other.fire)))));
+  };
+  function ActionAdapter() {
+    this.actions = ArrayList_init();
+    var tmp$, tmp$_0, tmp$_1;
+    tmp$ = sequenceOf([-1.0, 0.0, 1.0]).iterator();
+    while (tmp$.hasNext()) {
+      var turn = tmp$.next();
+      tmp$_0 = sequenceOf([false, true]).iterator();
+      while (tmp$_0.hasNext()) {
+        var thrust = tmp$_0.next();
+        tmp$_1 = sequenceOf([false, true]).iterator();
+        while (tmp$_1.hasNext()) {
+          var fire = tmp$_1.next();
+          this.actions.add_11rb$(new ShipAction(turn, thrust, fire));
+        }
+      }
+    }
+  }
+  ActionAdapter.prototype.getAction_za3lpa$ = function (i) {
+    return this.actions.get_za3lpa$(i);
+  };
+  ActionAdapter.$metadata$ = {kind: Kind_CLASS, simpleName: 'ActionAdapter', interfaces: []};
+  function Shape() {
+  }
+  Shape.$metadata$ = {kind: Kind_INTERFACE, simpleName: 'Shape', interfaces: []};
+  function Asteroid(n, rad, radRange, angRange, rand) {
+    if (radRange === void 0)
+      radRange = rad * 0.7;
+    if (angRange === void 0)
+      angRange = 0.2 * math.PI / n;
+    if (rand === void 0)
+      rand = Random.Default;
+    this.n = n;
+    this.rad = rad;
+    this.radRange = radRange;
+    this.angRange = angRange;
+    this.rand = rand;
+  }
+  Asteroid.prototype.getPoly = function () {
+    var tmp$, tmp$_0, tmp$_1;
+    var points = ArrayList_init();
+    var angleStep = 2 * math.PI / this.n;
+    tmp$ = this.n;
+    for (var i = 0; i < tmp$; i++) {
+      var theta = i * angleStep + this.rand.nextDouble_lu1900$(-this.angRange, this.angRange);
+      var r = this.rad + this.rand.nextDouble_lu1900$(-this.radRange, this.radRange);
+      points.add_11rb$(new Vec2d(r * Math_0.cos(theta), r * Math_0.sin(theta)));
+    }
+    tmp$_0 = XColor$Companion_getInstance().red;
+    tmp$_1 = XColor$Companion_getInstance().green;
+    var style = new XStyle(tmp$_0, XColor$Companion_getInstance().cyan, tmp$_1, true, false, 3.0);
+    return new XPoly(new Vec2d(), points, style);
+  };
+  Asteroid.$metadata$ = {kind: Kind_CLASS, simpleName: 'Asteroid', interfaces: [Shape]};
+  function Ship(l) {
+    if (l === void 0)
+      l = 20.0;
+    this.l = l;
+  }
+  Ship.prototype.getPoly = function () {
+    var tmp$, tmp$_0;
+    var points = arrayListOf([new Vec2d(-this.l, this.l), new Vec2d(0.0, -this.l), new Vec2d(this.l, this.l), new Vec2d(0.0, 0.0)]);
+    tmp$ = XColor$Companion_getInstance().white;
+    tmp$_0 = XColor$Companion_getInstance().white;
+    var style = new XStyle(tmp$, XColor$Companion_getInstance().cyan, tmp$_0, false, true, 2.0);
+    return new XPoly(new Vec2d(), points, style);
+  };
+  Ship.$metadata$ = {kind: Kind_CLASS, simpleName: 'Ship', interfaces: [Shape]};
   function GriddleControl() {
   }
   GriddleControl.$metadata$ = {kind: Kind_INTERFACE, simpleName: 'GriddleControl', interfaces: []};
@@ -511,7 +1066,6 @@
     this.dict = new TrieDict();
     this.gridScan = new GridScan();
     this.gridScan.dict = this.dict;
-    println('Control seed = ' + toString(this.control.getSeed()));
     this.state = GriddleState$Ready_getInstance();
     this.nCols = 5;
     this.nRows = 5;
@@ -623,7 +1177,6 @@
     this.deck = (new StatDeck()).getDeck_s8cxhz$(this.control.getSeed());
     this.current = toBoxedChar(63);
     this.currentScore = 0;
-    println('Reset the game');
   };
   GriddleGame.$metadata$ = {kind: Kind_CLASS, simpleName: 'GriddleGame', interfaces: []};
   function GridCell(x, y) {
@@ -852,6 +1405,15 @@
   LetterGridModel.prototype.isFull = function () {
     throw new NotImplementedError_init('An operation is not implemented: ' + 'Not yet implemented');
   };
+  LetterGridModel.prototype.randSwapTwo_57bg73$ = function (rand) {
+    var ix = rand.nextInt_za3lpa$(this.n());
+    var iy = rand.nextInt_za3lpa$(this.n());
+    var jx = rand.nextInt_za3lpa$(this.n());
+    var jy = rand.nextInt_za3lpa$(this.n());
+    var tmp = this.grid[ix][iy];
+    this.grid[ix][iy] = this.grid[jx][jy];
+    this.grid[jx][jy] = tmp;
+  };
   LetterGridModel.prototype.n = function () {
     return 5;
   };
@@ -859,65 +1421,92 @@
   function Player() {
   }
   Player.$metadata$ = {kind: Kind_INTERFACE, simpleName: 'Player', interfaces: []};
-  function MCPlayer(dict) {
-    this.dict = dict;
-    this.sorted = ArrayList_init();
-  }
-  function MCPlayer$ScoredCell(cell, score) {
+  function ScoredCell(cell, score, scoreTrace) {
+    if (scoreTrace === void 0)
+      scoreTrace = null;
     this.cell = cell;
     this.score = score;
+    this.scoreTrace = scoreTrace;
   }
-  MCPlayer$ScoredCell.$metadata$ = {kind: Kind_CLASS, simpleName: 'ScoredCell', interfaces: []};
-  MCPlayer$ScoredCell.prototype.component1 = function () {
+  ScoredCell.$metadata$ = {kind: Kind_CLASS, simpleName: 'ScoredCell', interfaces: []};
+  ScoredCell.prototype.component1 = function () {
     return this.cell;
   };
-  MCPlayer$ScoredCell.prototype.component2 = function () {
+  ScoredCell.prototype.component2 = function () {
     return this.score;
   };
-  MCPlayer$ScoredCell.prototype.copy_bsu0le$ = function (cell, score) {
-    return new MCPlayer$ScoredCell(cell === void 0 ? this.cell : cell, score === void 0 ? this.score : score);
+  ScoredCell.prototype.component3 = function () {
+    return this.scoreTrace;
   };
-  MCPlayer$ScoredCell.prototype.toString = function () {
-    return 'ScoredCell(cell=' + Kotlin.toString(this.cell) + (', score=' + Kotlin.toString(this.score)) + ')';
+  ScoredCell.prototype.copy_w0imxm$ = function (cell, score, scoreTrace) {
+    return new ScoredCell(cell === void 0 ? this.cell : cell, score === void 0 ? this.score : score, scoreTrace === void 0 ? this.scoreTrace : scoreTrace);
   };
-  MCPlayer$ScoredCell.prototype.hashCode = function () {
+  ScoredCell.prototype.toString = function () {
+    return 'ScoredCell(cell=' + Kotlin.toString(this.cell) + (', score=' + Kotlin.toString(this.score)) + (', scoreTrace=' + Kotlin.toString(this.scoreTrace)) + ')';
+  };
+  ScoredCell.prototype.hashCode = function () {
     var result = 0;
     result = result * 31 + Kotlin.hashCode(this.cell) | 0;
     result = result * 31 + Kotlin.hashCode(this.score) | 0;
+    result = result * 31 + Kotlin.hashCode(this.scoreTrace) | 0;
     return result;
   };
-  MCPlayer$ScoredCell.prototype.equals = function (other) {
-    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.cell, other.cell) && Kotlin.equals(this.score, other.score)))));
+  ScoredCell.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.cell, other.cell) && Kotlin.equals(this.score, other.score) && Kotlin.equals(this.scoreTrace, other.scoreTrace)))));
   };
-  MCPlayer.prototype.swap_w2dapk$ = function (grid, a, b) {
+  function swap(grid, a, b) {
     var tmp = grid[a.x][a.y];
     grid[a.x][a.y] = grid[b.x][b.y];
     grid[b.x][b.y] = tmp;
-  };
+  }
+  function MCPlayer(dict) {
+    MCPlayer$Companion_getInstance();
+    this.dict = dict;
+    this.sorted = ArrayList_init();
+  }
+  function MCPlayer$Companion() {
+    MCPlayer$Companion_instance = this;
+    this.nShuffles = 200;
+    this.fairPlayout = true;
+  }
+  MCPlayer$Companion.$metadata$ = {kind: Kind_OBJECT, simpleName: 'Companion', interfaces: []};
+  var MCPlayer$Companion_instance = null;
+  function MCPlayer$Companion_getInstance() {
+    if (MCPlayer$Companion_instance === null) {
+      new MCPlayer$Companion();
+    }return MCPlayer$Companion_instance;
+  }
   function MCPlayer$getAction$lambda(it) {
     return it.score;
   }
   MCPlayer.prototype.getAction_x2ua0m$ = function (model, deck, toPlace) {
-    var tmp$, tmp$_0, tmp$_1;
+    var tmp$, tmp$_0, tmp$_1, tmp$_2;
     var scoreMap = HashMap_init();
+    var scoreTraceMap = HashMap_init();
     var vacancies = model.vacancies();
-    var tmp$_2;
-    tmp$_2 = vacancies.iterator();
-    while (tmp$_2.hasNext()) {
-      var element = tmp$_2.next();
+    var tmp$_3;
+    tmp$_3 = vacancies.iterator();
+    while (tmp$_3.hasNext()) {
+      var element = tmp$_3.next();
       var value = new StatSummary();
       scoreMap.put_xwzc9p$(element, value);
+      var value_0 = ArrayList_init();
+      scoreTraceMap.put_xwzc9p$(element, value_0);
     }
-    var nShuffles = 1000;
     var nScores = 0;
-    for (var n = 0; n < nShuffles; n++) {
+    tmp$ = MCPlayer$Companion_getInstance().nShuffles;
+    for (var n = 0; n < tmp$; n++) {
       var modelCopy = new LetterGridModel(model.grid);
       var first = vacancies.get_za3lpa$(0);
       modelCopy.grid[first.x][first.y] = toPlace;
       var deckCopy = deck.deepCopy();
-      deckCopy.shuffleRemainingCards();
-      tmp$ = vacancies.size;
-      for (var i = 1; i < tmp$; i++) {
+      if (MCPlayer$Companion_getInstance().fairPlayout) {
+        deckCopy.shuffleRemainingCards();
+      } else {
+        deckCopy.shuffleRemainingDealtCards();
+      }
+      tmp$_0 = vacancies.size;
+      for (var i = 1; i < tmp$_0; i++) {
         var v = vacancies.get_za3lpa$(i);
         var next = unboxChar(deckCopy.next());
         if (next != null) {
@@ -927,41 +1516,37 @@
       }
       var gridScan = new GridScan();
       gridScan.dict = this.dict;
-      tmp$_0 = vacancies.size;
-      for (var i_0 = 0; i_0 < tmp$_0; i_0++) {
-        this.swap_w2dapk$(modelCopy.grid, vacancies.get_za3lpa$(0), vacancies.get_za3lpa$(i_0));
-        var tmp$_3;
+      tmp$_1 = vacancies.size;
+      for (var i_0 = 0; i_0 < tmp$_1; i_0++) {
+        swap(modelCopy.grid, vacancies.get_za3lpa$(0), vacancies.get_za3lpa$(i_0));
+        var tmp$_4;
         var sum = 0;
-        tmp$_3 = gridScan.findWords_lyd8co$(modelCopy.grid).iterator();
-        while (tmp$_3.hasNext()) {
-          var element_0 = tmp$_3.next();
+        tmp$_4 = gridScan.findWords_lyd8co$(modelCopy.grid).iterator();
+        while (tmp$_4.hasNext()) {
+          var element_0 = tmp$_4.next();
           sum = sum + element_0.score() | 0;
         }
         var score = sum;
         nScores = nScores + 1 | 0;
         var ss = scoreMap.get_11rb$(vacancies.get_za3lpa$(i_0));
-        if (ss != null)
+        if (ss != null) {
           ss.add_3p81yu$(score);
-        this.swap_w2dapk$(modelCopy.grid, vacancies.get_za3lpa$(0), vacancies.get_za3lpa$(i_0));
+          var trace = scoreTraceMap.get_11rb$(vacancies.get_za3lpa$(i_0));
+          if (trace != null)
+            trace.add_11rb$(ss.sum());
+        }swap(modelCopy.grid, vacancies.get_za3lpa$(0), vacancies.get_za3lpa$(i_0));
       }
     }
     var scoredList = ArrayList_init();
-    tmp$_1 = scoreMap.entries.iterator();
-    while (tmp$_1.hasNext()) {
-      var tmp$_4 = tmp$_1.next();
-      var k = tmp$_4.key;
-      var v_0 = tmp$_4.value;
-      scoredList.add_11rb$(new MCPlayer$ScoredCell(k, v_0.mean()));
+    tmp$_2 = scoreMap.entries.iterator();
+    while (tmp$_2.hasNext()) {
+      var tmp$_5 = tmp$_2.next();
+      var k = tmp$_5.key;
+      var v_0 = tmp$_5.value;
+      scoredList.add_11rb$(new ScoredCell(k, v_0.mean(), scoreTraceMap.get_11rb$(k)));
     }
-    var sorted = sortedWith(scoredList, new Comparator$ObjectLiteral(compareByDescending$lambda(MCPlayer$getAction$lambda)));
-    var tmp$_5;
-    tmp$_5 = sorted.iterator();
-    while (tmp$_5.hasNext()) {
-      var element_1 = tmp$_5.next();
-      println(element_1.cell.toString() + '\t' + ' ' + element_1.score);
-    }
-    println(nScores.toString() + ' calls to score function');
-    return sorted.get_za3lpa$(0).cell;
+    this.sorted = sortedWith(scoredList, new Comparator$ObjectLiteral(compareByDescending$lambda(MCPlayer$getAction$lambda)));
+    return this.sorted.get_za3lpa$(0).cell;
   };
   MCPlayer.$metadata$ = {kind: Kind_CLASS, simpleName: 'MCPlayer', interfaces: [Player]};
   function FastSampleDeck(cha, ix) {
@@ -1002,6 +1587,15 @@
     tmp$_0 = FastSampleDeck$Companion_getInstance().dealSize;
     for (var i = tmp$; i < tmp$_0; i++) {
       var sw = i + this.rand.nextInt_za3lpa$(this.cha.length - i | 0) | 0;
+      this.swap_lizitn$(this.cha, i, sw);
+    }
+  };
+  FastSampleDeck.prototype.shuffleRemainingDealtCards = function () {
+    var tmp$, tmp$_0;
+    tmp$ = this.ix;
+    tmp$_0 = FastSampleDeck$Companion_getInstance().dealSize;
+    for (var i = tmp$; i < tmp$_0; i++) {
+      var sw = i + this.rand.nextInt_za3lpa$(FastSampleDeck$Companion_getInstance().dealSize - i | 0) | 0;
       this.swap_lizitn$(this.cha, i, sw);
     }
   };
@@ -1053,10 +1647,9 @@
     var tmp$;
     var rand = seed.toNumber() < 0 ? Random.Default : Random_0(seed);
     var deck = StatDeck$Companion_getInstance().makeCards();
-    println('Seed = ' + toString(seed));
     var nTries = 0;
     do {
-      shuffle(deck, rand);
+      shuffle_0(deck, rand);
       var deal = copyToArray(deck.subList_vux9f0$(0, 25));
       if (ShuffleValidator_getInstance().accept_eh991n$(deal)) {
         return new FastSampleDeck(copyToArray(deck));
@@ -2154,12 +2747,76 @@
   XColor.prototype.equals = function (other) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.r, other.r) && Kotlin.equals(this.g, other.g) && Kotlin.equals(this.b, other.b) && Kotlin.equals(this.a, other.a)))));
   };
+  function XPalette(nColors, min, max, seed, alpha) {
+    if (nColors === void 0)
+      nColors = 30;
+    if (min === void 0)
+      min = 0.4;
+    if (max === void 0)
+      max = 0.9;
+    if (seed === void 0)
+      seed = L1;
+    if (alpha === void 0)
+      alpha = 1.0;
+    this.nColors = nColors;
+    this.min = min;
+    this.max = max;
+    this.seed = seed;
+    this.alpha = alpha;
+    this.colors = ArrayList_init();
+    this.rand = equals(this.seed, L_1) ? Random.Default : Random_0(this.seed);
+    var tmp$;
+    tmp$ = this.nColors;
+    for (var i = 0; i < tmp$; i++)
+      this.colors.add_11rb$(new XColor(this.v(), this.v(), this.v(), this.alpha));
+  }
+  XPalette.prototype.v = function () {
+    return this.rand.nextDouble_lu1900$(this.min, this.max);
+  };
+  XPalette.$metadata$ = {kind: Kind_CLASS, simpleName: 'XPalette', interfaces: []};
+  XPalette.prototype.component1 = function () {
+    return this.nColors;
+  };
+  XPalette.prototype.component2 = function () {
+    return this.min;
+  };
+  XPalette.prototype.component3 = function () {
+    return this.max;
+  };
+  XPalette.prototype.component4 = function () {
+    return this.seed;
+  };
+  XPalette.prototype.component5 = function () {
+    return this.alpha;
+  };
+  XPalette.prototype.copy_144i7c$ = function (nColors, min, max, seed, alpha) {
+    return new XPalette(nColors === void 0 ? this.nColors : nColors, min === void 0 ? this.min : min, max === void 0 ? this.max : max, seed === void 0 ? this.seed : seed, alpha === void 0 ? this.alpha : alpha);
+  };
+  XPalette.prototype.toString = function () {
+    return 'XPalette(nColors=' + Kotlin.toString(this.nColors) + (', min=' + Kotlin.toString(this.min)) + (', max=' + Kotlin.toString(this.max)) + (', seed=' + Kotlin.toString(this.seed)) + (', alpha=' + Kotlin.toString(this.alpha)) + ')';
+  };
+  XPalette.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.nColors) | 0;
+    result = result * 31 + Kotlin.hashCode(this.min) | 0;
+    result = result * 31 + Kotlin.hashCode(this.max) | 0;
+    result = result * 31 + Kotlin.hashCode(this.seed) | 0;
+    result = result * 31 + Kotlin.hashCode(this.alpha) | 0;
+    return result;
+  };
+  XPalette.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.nColors, other.nColors) && Kotlin.equals(this.min, other.min) && Kotlin.equals(this.max, other.max) && Kotlin.equals(this.seed, other.seed) && Kotlin.equals(this.alpha, other.alpha)))));
+  };
   function XGraphics() {
   }
+  XGraphics.prototype.centre = function () {
+    return new Vec2d(this.width() / 2, this.height() / 2);
+  };
+  XGraphics.prototype.setBounds_z39lsx$ = function (rect) {
+  };
+  XGraphics.prototype.releaseBounds = function () {
+  };
   XGraphics.$metadata$ = {kind: Kind_INTERFACE, simpleName: 'XGraphics', interfaces: []};
-  function Drawable() {
-  }
-  Drawable.$metadata$ = {kind: Kind_INTERFACE, simpleName: 'Drawable', interfaces: []};
   function XStyle(fg, bg, lc, stroke, fill, lineWidth) {
     if (fg === void 0)
       fg = XColor$Companion_getInstance().black;
@@ -2440,18 +3097,45 @@
       new XKeyMap$Companion();
     }return XKeyMap$Companion_instance;
   }
-  function XRect(centre, w, h, dStyle) {
+  function Drawable() {
+  }
+  Drawable.$metadata$ = {kind: Kind_INTERFACE, simpleName: 'Drawable', interfaces: []};
+  function GeomDrawable() {
+  }
+  GeomDrawable.$metadata$ = {kind: Kind_INTERFACE, simpleName: 'GeomDrawable', interfaces: [Drawable]};
+  function XRect(centre, w, h, dStyle, rotation) {
+    if (dStyle === void 0)
+      dStyle = new XStyle();
+    if (rotation === void 0)
+      rotation = 0.0;
     this.centre = centre;
     this.w = w;
     this.h = h;
     this.dStyle_i0iva0$_0 = dStyle;
+    this.rotation_tbjryh$_0 = rotation;
   }
   Object.defineProperty(XRect.prototype, 'dStyle', {get: function () {
     return this.dStyle_i0iva0$_0;
   }, set: function (dStyle) {
     this.dStyle_i0iva0$_0 = dStyle;
   }});
-  XRect.$metadata$ = {kind: Kind_CLASS, simpleName: 'XRect', interfaces: [Drawable]};
+  Object.defineProperty(XRect.prototype, 'rotation', {get: function () {
+    return this.rotation_tbjryh$_0;
+  }, set: function (rotation) {
+    this.rotation_tbjryh$_0 = rotation;
+  }});
+  XRect.prototype.contains_vi8533$ = function (p) {
+    if (p == null)
+      return false;
+    var tp = p.minus_5lk9kw$(this.centre).rotatedBy_14dthe$(-this.rotation);
+    var x = tp.x;
+    var tmp$ = Math_0.abs(x) <= this.w / 2;
+    if (tmp$) {
+      var x_0 = tp.y;
+      tmp$ = Math_0.abs(x_0) <= this.h / 2;
+    }return tmp$;
+  };
+  XRect.$metadata$ = {kind: Kind_CLASS, simpleName: 'XRect', interfaces: [GeomDrawable]};
   XRect.prototype.component1 = function () {
     return this.centre;
   };
@@ -2464,11 +3148,14 @@
   XRect.prototype.component4 = function () {
     return this.dStyle;
   };
-  XRect.prototype.copy_ul7ru4$ = function (centre, w, h, dStyle) {
-    return new XRect(centre === void 0 ? this.centre : centre, w === void 0 ? this.w : w, h === void 0 ? this.h : h, dStyle === void 0 ? this.dStyle : dStyle);
+  XRect.prototype.component5 = function () {
+    return this.rotation;
+  };
+  XRect.prototype.copy_fh3pay$ = function (centre, w, h, dStyle, rotation) {
+    return new XRect(centre === void 0 ? this.centre : centre, w === void 0 ? this.w : w, h === void 0 ? this.h : h, dStyle === void 0 ? this.dStyle : dStyle, rotation === void 0 ? this.rotation : rotation);
   };
   XRect.prototype.toString = function () {
-    return 'XRect(centre=' + Kotlin.toString(this.centre) + (', w=' + Kotlin.toString(this.w)) + (', h=' + Kotlin.toString(this.h)) + (', dStyle=' + Kotlin.toString(this.dStyle)) + ')';
+    return 'XRect(centre=' + Kotlin.toString(this.centre) + (', w=' + Kotlin.toString(this.w)) + (', h=' + Kotlin.toString(this.h)) + (', dStyle=' + Kotlin.toString(this.dStyle)) + (', rotation=' + Kotlin.toString(this.rotation)) + ')';
   };
   XRect.prototype.hashCode = function () {
     var result = 0;
@@ -2476,20 +3163,94 @@
     result = result * 31 + Kotlin.hashCode(this.w) | 0;
     result = result * 31 + Kotlin.hashCode(this.h) | 0;
     result = result * 31 + Kotlin.hashCode(this.dStyle) | 0;
+    result = result * 31 + Kotlin.hashCode(this.rotation) | 0;
     return result;
   };
   XRect.prototype.equals = function (other) {
-    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.centre, other.centre) && Kotlin.equals(this.w, other.w) && Kotlin.equals(this.h, other.h) && Kotlin.equals(this.dStyle, other.dStyle)))));
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.centre, other.centre) && Kotlin.equals(this.w, other.w) && Kotlin.equals(this.h, other.h) && Kotlin.equals(this.dStyle, other.dStyle) && Kotlin.equals(this.rotation, other.rotation)))));
   };
-  function XLine(a, b, dStyle) {
+  function XEllipse(centre, w, h, dStyle, rotation) {
+    if (dStyle === void 0)
+      dStyle = new XStyle();
+    if (rotation === void 0)
+      rotation = 0.0;
+    this.centre = centre;
+    this.w = w;
+    this.h = h;
+    this.dStyle_tow9o8$_0 = dStyle;
+    this.rotation_1bvzif$_0 = rotation;
+    this.a2 = this.w / 2 * (this.w / 2);
+    this.b2 = this.h / 2 * (this.h / 2);
+  }
+  Object.defineProperty(XEllipse.prototype, 'dStyle', {get: function () {
+    return this.dStyle_tow9o8$_0;
+  }, set: function (dStyle) {
+    this.dStyle_tow9o8$_0 = dStyle;
+  }});
+  Object.defineProperty(XEllipse.prototype, 'rotation', {get: function () {
+    return this.rotation_1bvzif$_0;
+  }, set: function (rotation) {
+    this.rotation_1bvzif$_0 = rotation;
+  }});
+  XEllipse.prototype.contains_vi8533$ = function (p) {
+    if (p == null)
+      return false;
+    var tp = p.minus_5lk9kw$(this.centre).rotatedBy_14dthe$(-this.rotation);
+    return tp.x * tp.x / this.a2 + tp.y * tp.y / this.b2 <= 1;
+  };
+  XEllipse.$metadata$ = {kind: Kind_CLASS, simpleName: 'XEllipse', interfaces: [GeomDrawable]};
+  XEllipse.prototype.component1 = function () {
+    return this.centre;
+  };
+  XEllipse.prototype.component2 = function () {
+    return this.w;
+  };
+  XEllipse.prototype.component3 = function () {
+    return this.h;
+  };
+  XEllipse.prototype.component4 = function () {
+    return this.dStyle;
+  };
+  XEllipse.prototype.component5 = function () {
+    return this.rotation;
+  };
+  XEllipse.prototype.copy_fh3pay$ = function (centre, w, h, dStyle, rotation) {
+    return new XEllipse(centre === void 0 ? this.centre : centre, w === void 0 ? this.w : w, h === void 0 ? this.h : h, dStyle === void 0 ? this.dStyle : dStyle, rotation === void 0 ? this.rotation : rotation);
+  };
+  XEllipse.prototype.toString = function () {
+    return 'XEllipse(centre=' + Kotlin.toString(this.centre) + (', w=' + Kotlin.toString(this.w)) + (', h=' + Kotlin.toString(this.h)) + (', dStyle=' + Kotlin.toString(this.dStyle)) + (', rotation=' + Kotlin.toString(this.rotation)) + ')';
+  };
+  XEllipse.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.centre) | 0;
+    result = result * 31 + Kotlin.hashCode(this.w) | 0;
+    result = result * 31 + Kotlin.hashCode(this.h) | 0;
+    result = result * 31 + Kotlin.hashCode(this.dStyle) | 0;
+    result = result * 31 + Kotlin.hashCode(this.rotation) | 0;
+    return result;
+  };
+  XEllipse.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.centre, other.centre) && Kotlin.equals(this.w, other.w) && Kotlin.equals(this.h, other.h) && Kotlin.equals(this.dStyle, other.dStyle) && Kotlin.equals(this.rotation, other.rotation)))));
+  };
+  function XLine(a, b, dStyle, rotation) {
+    if (dStyle === void 0)
+      dStyle = new XStyle();
+    if (rotation === void 0)
+      rotation = 0.0;
     this.a = a;
     this.b = b;
     this.dStyle_l6u5e0$_0 = dStyle;
+    this.rotation_qiubsp$_0 = rotation;
   }
   Object.defineProperty(XLine.prototype, 'dStyle', {get: function () {
     return this.dStyle_l6u5e0$_0;
   }, set: function (dStyle) {
     this.dStyle_l6u5e0$_0 = dStyle;
+  }});
+  Object.defineProperty(XLine.prototype, 'rotation', {get: function () {
+    return this.rotation_qiubsp$_0;
+  }, set: function (rotation) {
+    this.rotation_qiubsp$_0 = rotation;
   }});
   XLine.$metadata$ = {kind: Kind_CLASS, simpleName: 'XLine', interfaces: [Drawable]};
   XLine.prototype.component1 = function () {
@@ -2501,32 +3262,48 @@
   XLine.prototype.component3 = function () {
     return this.dStyle;
   };
-  XLine.prototype.copy_7isnck$ = function (a, b, dStyle) {
-    return new XLine(a === void 0 ? this.a : a, b === void 0 ? this.b : b, dStyle === void 0 ? this.dStyle : dStyle);
+  XLine.prototype.component4 = function () {
+    return this.rotation;
+  };
+  XLine.prototype.copy_pv9aji$ = function (a, b, dStyle, rotation) {
+    return new XLine(a === void 0 ? this.a : a, b === void 0 ? this.b : b, dStyle === void 0 ? this.dStyle : dStyle, rotation === void 0 ? this.rotation : rotation);
   };
   XLine.prototype.toString = function () {
-    return 'XLine(a=' + Kotlin.toString(this.a) + (', b=' + Kotlin.toString(this.b)) + (', dStyle=' + Kotlin.toString(this.dStyle)) + ')';
+    return 'XLine(a=' + Kotlin.toString(this.a) + (', b=' + Kotlin.toString(this.b)) + (', dStyle=' + Kotlin.toString(this.dStyle)) + (', rotation=' + Kotlin.toString(this.rotation)) + ')';
   };
   XLine.prototype.hashCode = function () {
     var result = 0;
     result = result * 31 + Kotlin.hashCode(this.a) | 0;
     result = result * 31 + Kotlin.hashCode(this.b) | 0;
     result = result * 31 + Kotlin.hashCode(this.dStyle) | 0;
+    result = result * 31 + Kotlin.hashCode(this.rotation) | 0;
     return result;
   };
   XLine.prototype.equals = function (other) {
-    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.a, other.a) && Kotlin.equals(this.b, other.b) && Kotlin.equals(this.dStyle, other.dStyle)))));
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.a, other.a) && Kotlin.equals(this.b, other.b) && Kotlin.equals(this.dStyle, other.dStyle) && Kotlin.equals(this.rotation, other.rotation)))));
   };
-  function XText(str, p, tStyle, dStyle) {
+  function XText(str, p, tStyle, dStyle, rotation) {
+    if (tStyle === void 0)
+      tStyle = new TStyle();
+    if (dStyle === void 0)
+      dStyle = new XStyle();
+    if (rotation === void 0)
+      rotation = 0.0;
     this.str = str;
     this.p = p;
     this.tStyle = tStyle;
     this.dStyle_ayoq6n$_0 = dStyle;
+    this.rotation_17n0w0$_0 = rotation;
   }
   Object.defineProperty(XText.prototype, 'dStyle', {get: function () {
     return this.dStyle_ayoq6n$_0;
   }, set: function (dStyle) {
     this.dStyle_ayoq6n$_0 = dStyle;
+  }});
+  Object.defineProperty(XText.prototype, 'rotation', {get: function () {
+    return this.rotation_17n0w0$_0;
+  }, set: function (rotation) {
+    this.rotation_17n0w0$_0 = rotation;
   }});
   XText.$metadata$ = {kind: Kind_CLASS, simpleName: 'XText', interfaces: [Drawable]};
   XText.prototype.component1 = function () {
@@ -2541,11 +3318,14 @@
   XText.prototype.component4 = function () {
     return this.dStyle;
   };
-  XText.prototype.copy_gcbicq$ = function (str, p, tStyle, dStyle) {
-    return new XText(str === void 0 ? this.str : str, p === void 0 ? this.p : p, tStyle === void 0 ? this.tStyle : tStyle, dStyle === void 0 ? this.dStyle : dStyle);
+  XText.prototype.component5 = function () {
+    return this.rotation;
+  };
+  XText.prototype.copy_6n30n0$ = function (str, p, tStyle, dStyle, rotation) {
+    return new XText(str === void 0 ? this.str : str, p === void 0 ? this.p : p, tStyle === void 0 ? this.tStyle : tStyle, dStyle === void 0 ? this.dStyle : dStyle, rotation === void 0 ? this.rotation : rotation);
   };
   XText.prototype.toString = function () {
-    return 'XText(str=' + Kotlin.toString(this.str) + (', p=' + Kotlin.toString(this.p)) + (', tStyle=' + Kotlin.toString(this.tStyle)) + (', dStyle=' + Kotlin.toString(this.dStyle)) + ')';
+    return 'XText(str=' + Kotlin.toString(this.str) + (', p=' + Kotlin.toString(this.p)) + (', tStyle=' + Kotlin.toString(this.tStyle)) + (', dStyle=' + Kotlin.toString(this.dStyle)) + (', rotation=' + Kotlin.toString(this.rotation)) + ')';
   };
   XText.prototype.hashCode = function () {
     var result = 0;
@@ -2553,43 +3333,154 @@
     result = result * 31 + Kotlin.hashCode(this.p) | 0;
     result = result * 31 + Kotlin.hashCode(this.tStyle) | 0;
     result = result * 31 + Kotlin.hashCode(this.dStyle) | 0;
+    result = result * 31 + Kotlin.hashCode(this.rotation) | 0;
     return result;
   };
   XText.prototype.equals = function (other) {
-    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.str, other.str) && Kotlin.equals(this.p, other.p) && Kotlin.equals(this.tStyle, other.tStyle) && Kotlin.equals(this.dStyle, other.dStyle)))));
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.str, other.str) && Kotlin.equals(this.p, other.p) && Kotlin.equals(this.tStyle, other.tStyle) && Kotlin.equals(this.dStyle, other.dStyle) && Kotlin.equals(this.rotation, other.rotation)))));
   };
-  function XPoly(start, points) {
-    this.start = start;
+  function XPoly(centre, points, dStyle, rotation, closed) {
+    if (centre === void 0)
+      centre = new Vec2d();
+    if (dStyle === void 0)
+      dStyle = new XStyle();
+    if (rotation === void 0)
+      rotation = 0.0;
+    if (closed === void 0)
+      closed = true;
+    this.centre = centre;
     this.points = points;
-    this.intStyle_0 = new XStyle();
+    this.dStyle_ykpo0$_0 = dStyle;
+    this.rotation_mlbdzz$_0 = rotation;
+    this.closed = closed;
+    this.rad = 0.0;
+    var tmp$;
+    tmp$ = this.points.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      var a = this.rad;
+      var b = element.mag;
+      this.rad = Math_0.max(a, b);
+    }
   }
   Object.defineProperty(XPoly.prototype, 'dStyle', {get: function () {
-    return this.intStyle_0;
-  }, set: function (value) {
-    this.intStyle_0 = value;
+    return this.dStyle_ykpo0$_0;
+  }, set: function (dStyle) {
+    this.dStyle_ykpo0$_0 = dStyle;
   }});
-  XPoly.$metadata$ = {kind: Kind_CLASS, simpleName: 'XPoly', interfaces: [Drawable]};
+  Object.defineProperty(XPoly.prototype, 'rotation', {get: function () {
+    return this.rotation_mlbdzz$_0;
+  }, set: function (rotation) {
+    this.rotation_mlbdzz$_0 = rotation;
+  }});
+  XPoly.prototype.contains_vi8533$ = function (p) {
+    if (p == null)
+      return false;
+    var tp = p.minus_5lk9kw$(this.centre).rotatedBy_14dthe$(-this.rotation);
+    if (tp.mag > this.rad)
+      return false;
+    return (new Poly()).contains_i2bviv$(tp, this.points);
+  };
+  XPoly.$metadata$ = {kind: Kind_CLASS, simpleName: 'XPoly', interfaces: [GeomDrawable]};
   XPoly.prototype.component1 = function () {
-    return this.start;
+    return this.centre;
   };
   XPoly.prototype.component2 = function () {
     return this.points;
   };
-  XPoly.prototype.copy_j8a7hb$ = function (start, points) {
-    return new XPoly(start === void 0 ? this.start : start, points === void 0 ? this.points : points);
+  XPoly.prototype.component3 = function () {
+    return this.dStyle;
+  };
+  XPoly.prototype.component4 = function () {
+    return this.rotation;
+  };
+  XPoly.prototype.component5 = function () {
+    return this.closed;
+  };
+  XPoly.prototype.copy_frr6jo$ = function (centre, points, dStyle, rotation, closed) {
+    return new XPoly(centre === void 0 ? this.centre : centre, points === void 0 ? this.points : points, dStyle === void 0 ? this.dStyle : dStyle, rotation === void 0 ? this.rotation : rotation, closed === void 0 ? this.closed : closed);
   };
   XPoly.prototype.toString = function () {
-    return 'XPoly(start=' + Kotlin.toString(this.start) + (', points=' + Kotlin.toString(this.points)) + ')';
+    return 'XPoly(centre=' + Kotlin.toString(this.centre) + (', points=' + Kotlin.toString(this.points)) + (', dStyle=' + Kotlin.toString(this.dStyle)) + (', rotation=' + Kotlin.toString(this.rotation)) + (', closed=' + Kotlin.toString(this.closed)) + ')';
   };
   XPoly.prototype.hashCode = function () {
     var result = 0;
-    result = result * 31 + Kotlin.hashCode(this.start) | 0;
+    result = result * 31 + Kotlin.hashCode(this.centre) | 0;
     result = result * 31 + Kotlin.hashCode(this.points) | 0;
+    result = result * 31 + Kotlin.hashCode(this.dStyle) | 0;
+    result = result * 31 + Kotlin.hashCode(this.rotation) | 0;
+    result = result * 31 + Kotlin.hashCode(this.closed) | 0;
     return result;
   };
   XPoly.prototype.equals = function (other) {
-    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.start, other.start) && Kotlin.equals(this.points, other.points)))));
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.centre, other.centre) && Kotlin.equals(this.points, other.points) && Kotlin.equals(this.dStyle, other.dStyle) && Kotlin.equals(this.rotation, other.rotation) && Kotlin.equals(this.closed, other.closed)))));
   };
+  function ContainsTestApp() {
+    this.xp = new XPalette(void 0, 0.2, void 0, L76);
+    this.inColor = this.xp.colors.get_za3lpa$(0);
+    this.outColour = this.xp.colors.get_za3lpa$(1);
+    this.mp = null;
+    this.rot = 0.0;
+    this.rock = (new Asteroid(12, 20.0)).getPoly();
+  }
+  ContainsTestApp.prototype.paint_vzjx8w$ = function (xg) {
+    var bgRect = new XRect(xg.centre(), xg.width(), xg.height(), new XStyle(XColor$Companion_getInstance().yellow));
+    xg.draw_dvdmun$(bgRect);
+    var rect = new XRect(xg.centre(), xg.width() / 2, xg.height() / 2);
+    rect.rotation = this.rot;
+    rect.dStyle.fg = rect.contains_vi8533$(this.mp) ? this.inColor : this.outColour;
+    xg.draw_dvdmun$(rect);
+    this.rot += math.PI / 180;
+    var a = xg.width();
+    var b = xg.height();
+    var a_0 = Math_0.min(a, b) / 4;
+    var points = arrayListOf([new Vec2d(0.0, a_0), new Vec2d(a_0, 0.0), new Vec2d(0.0, -a_0), new Vec2d(-a_0, 0.0)]);
+    var poly = new XPoly(new Vec2d(xg.width() / 4, xg.height() / 2), points, void 0, this.rot);
+    poly.dStyle.fg = poly.contains_vi8533$(this.mp) ? this.xp.colors.get_za3lpa$(2) : this.xp.colors.get_za3lpa$(3);
+    xg.draw_dvdmun$(poly);
+    this.rock.centre = new Vec2d(xg.width() / 4, xg.height() / 4);
+    this.rock.rotation = this.rot;
+    this.rock.dStyle.fill = this.rock.contains_vi8533$(this.mp);
+    xg.draw_dvdmun$(this.rock);
+    var ellipse = new XEllipse(new Vec2d(xg.width() * 0.75, xg.height() / 2), xg.width() / 2, xg.height() / 4);
+    ellipse.rotation = this.rot;
+    ellipse.dStyle.fg = ellipse.contains_vi8533$(this.mp) ? this.xp.colors.get_za3lpa$(4) : this.xp.colors.get_za3lpa$(5);
+    xg.draw_dvdmun$(ellipse);
+  };
+  ContainsTestApp.prototype.handleMouseEvent_x4hb96$ = function (e) {
+    this.mp = e.s;
+  };
+  ContainsTestApp.prototype.handleKeyEvent_wtf8cg$ = function (e) {
+  };
+  ContainsTestApp.$metadata$ = {kind: Kind_CLASS, simpleName: 'ContainsTestApp', interfaces: [XApp]};
+  function Poly() {
+  }
+  Poly.prototype.contains_i2bviv$ = function (p, points) {
+    var tmp$;
+    var result = false;
+    var j = points.size - 1 | 0;
+    tmp$ = points.size;
+    for (var i = 0; i < tmp$; i++) {
+      var pi = points.get_za3lpa$(i);
+      var pj = points.get_za3lpa$(j);
+      if (pi.y < p.y && pj.y >= p.y || (pj.y < p.y && pi.y >= p.y)) {
+        if (pi.x + (p.y - pi.y) / (pj.y - pi.y) * (pj.x - pi.x) < p.x) {
+          result = !result;
+        }}j = i;
+    }
+    return result;
+  };
+  Poly.$metadata$ = {kind: Kind_CLASS, simpleName: 'Poly', interfaces: []};
+  var Horizontal$Left_instance;
+  var Horizontal$Center_instance;
+  var Horizontal$Right_instance;
+  var Horizontal$Any_instance;
+  var Vertical$Top_instance;
+  var Vertical$Middle_instance;
+  var Vertical$Bottom_instance;
+  var Vertical$Any_instance;
+  var Expansion$Fill_instance;
+  var Expansion$Squash_instance;
   function v(x, y) {
     return new Vec2d(x, y);
   }
@@ -2634,6 +3525,10 @@
   Object.defineProperty(Vec2d.prototype, 'sqr', {get: function () {
     return this.x * this.x + this.y * this.y;
   }});
+  Object.defineProperty(Vec2d.prototype, 'mag', {get: function () {
+    var x = this.sqr;
+    return Math_0.sqrt(x);
+  }});
   Object.defineProperty(Vec2d.prototype, 'normalized', {get: function () {
     var x = this.sqr;
     return this.times_14dthe$(1.0 / Math_0.sqrt(x));
@@ -2666,6 +3561,29 @@
   Vec2d.prototype.equals = function (other) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.x, other.x) && Kotlin.equals(this.y, other.y)))));
   };
+  function BoxMuller(rand) {
+    if (rand === void 0)
+      rand = Random.Default;
+    this.rand = rand;
+    this.saved = null;
+  }
+  BoxMuller.prototype.nextGaussian = function () {
+    var safe = this.saved;
+    if (safe != null) {
+      this.saved = null;
+      return safe;
+    } else {
+      var u1 = this.rand.nextDouble();
+      var u2 = this.rand.nextDouble();
+      var x = -2.0 * Math_0.log(u1);
+      var r = Math_0.sqrt(x);
+      var theta = u2 * 2 * math.PI;
+      this.saved = r * Math_0.sin(theta);
+      return r * Math_0.cos(theta);
+    }
+  };
+  BoxMuller.$metadata$ = {kind: Kind_CLASS, simpleName: 'BoxMuller', interfaces: []};
+  var Picker$Companion_instance = null;
   function StatSummary(name) {
     StatSummary$Companion_getInstance();
     if (name === void 0)
@@ -2822,6 +3740,106 @@
     }return StatSummary$Companion_instance;
   }
   StatSummary.$metadata$ = {kind: Kind_CLASS, simpleName: 'StatSummary', interfaces: [Comparable]};
+  function AsteroidsTest() {
+    var tmp$;
+    this.context = Kotlin.isType(tmp$ = canvas.getContext('2d'), CanvasRenderingContext2D) ? tmp$ : throwCCE();
+    this.height = canvas.height;
+    this.width = canvas.width;
+    this.x = 0;
+    this.xg = new XGraphicsJS(canvas);
+    this.frameRate = 25;
+    this.intervalTime = 1000 / this.frameRate | 0;
+    this.app = new ArcadeTestApp();
+  }
+  AsteroidsTest.prototype.update = function () {
+    this.app.paint_vzjx8w$(this.xg);
+  };
+  function AsteroidsTest$run$lambda(this$AsteroidsTest) {
+    return function (e) {
+      if (Kotlin.isType(e, KeyboardEvent)) {
+        var eventType = XKeyEventType$Pressed_getInstance();
+        this$AsteroidsTest.app.handleKeyEvent_wtf8cg$(new XKeyEvent(eventType, e.keyCode));
+      }return Unit;
+    };
+  }
+  function AsteroidsTest$run$lambda_0(this$AsteroidsTest) {
+    return function (e) {
+      if (Kotlin.isType(e, KeyboardEvent)) {
+        var eventType = XKeyEventType$Down_getInstance();
+        this$AsteroidsTest.app.handleKeyEvent_wtf8cg$(new XKeyEvent(eventType, e.keyCode));
+      }return Unit;
+    };
+  }
+  function AsteroidsTest$run$lambda_1(this$AsteroidsTest) {
+    return function (e) {
+      if (Kotlin.isType(e, KeyboardEvent)) {
+        var eventType = XKeyEventType$Released_getInstance();
+        this$AsteroidsTest.app.handleKeyEvent_wtf8cg$(new XKeyEvent(eventType, e.keyCode));
+      }return Unit;
+    };
+  }
+  function AsteroidsTest$run$lambda_2(this$AsteroidsTest) {
+    return function () {
+      this$AsteroidsTest.update();
+      return Unit;
+    };
+  }
+  AsteroidsTest.prototype.run = function () {
+    document.bgColor = 'black';
+    document.onkeypress = AsteroidsTest$run$lambda(this);
+    document.onkeydown = AsteroidsTest$run$lambda_0(this);
+    document.onkeyup = AsteroidsTest$run$lambda_1(this);
+    window.setInterval(AsteroidsTest$run$lambda_2(this), this.intervalTime);
+  };
+  AsteroidsTest.$metadata$ = {kind: Kind_CLASS, simpleName: 'AsteroidsTest', interfaces: []};
+  function PolyTest() {
+    var tmp$;
+    this.context = Kotlin.isType(tmp$ = canvas.getContext('2d'), CanvasRenderingContext2D) ? tmp$ : throwCCE();
+    this.height = canvas.height;
+    this.width = canvas.width;
+    this.x = 0;
+    this.xg = new XGraphicsJS(canvas);
+    this.frameRate = 25;
+    this.intervalTime = 1000 / this.frameRate | 0;
+    this.app = null;
+    document.bgColor = 'green';
+    this.app = new ContainsTestApp();
+    this.rect = canvas.getBoundingClientRect();
+  }
+  PolyTest.prototype.update = function () {
+    this.app.paint_vzjx8w$(this.xg);
+  };
+  function PolyTest$run$lambda(this$PolyTest) {
+    return function () {
+      this$PolyTest.update();
+      return Unit;
+    };
+  }
+  function PolyTest$run$lambda_0(this$PolyTest) {
+    return function (e) {
+      if (Kotlin.isType(e, MouseEvent)) {
+        var eventType = XMouseEventType$Down_getInstance();
+        this$PolyTest.app.handleMouseEvent_x4hb96$(new XMouseEvent(eventType, new Vec2d(e.x - this$PolyTest.rect.left, e.y - this$PolyTest.rect.top)));
+        println(e.y);
+      }return Unit;
+    };
+  }
+  function PolyTest$run$lambda_1(this$PolyTest) {
+    return function (e) {
+      if (Kotlin.isType(e, MouseEvent)) {
+        var eventType = XMouseEventType$Moved_getInstance();
+        this$PolyTest.app.handleMouseEvent_x4hb96$(new XMouseEvent(eventType, new Vec2d(e.x - this$PolyTest.rect.left, e.y - this$PolyTest.rect.top)));
+        println(e.y);
+      }return Unit;
+    };
+  }
+  PolyTest.prototype.run = function () {
+    console.log('In Poly Contains run()');
+    window.setInterval(PolyTest$run$lambda(this), this.intervalTime);
+    canvas.onmousedown = PolyTest$run$lambda_0(this);
+    canvas.onmousemove = PolyTest$run$lambda_1(this);
+  };
+  PolyTest.$metadata$ = {kind: Kind_CLASS, simpleName: 'PolyTest', interfaces: []};
   var Platform_instance = null;
   var canvas;
   var test;
@@ -2843,6 +3861,10 @@
       (new SpeedTest()).run();
     else if (contains(this.title, 'Griddle'))
       (new GriddleTest()).run();
+    else if (contains(this.title, 'Poly'))
+      (new PolyTest()).run();
+    else if (contains(this.title, 'Asteroids'))
+      (new AsteroidsTest()).run();
     else if (contains(this.title, 'XMLHTTP'))
       (new HTTPTest()).run();
   }
@@ -3068,6 +4090,8 @@
   XGraphicsJS.prototype.draw_dvdmun$ = function (toDraw) {
     if (Kotlin.isType(toDraw, XRect))
       this.drawRect_ax8lih$(toDraw);
+    if (Kotlin.isType(toDraw, XEllipse))
+      this.drawEllipse_lu1dfr$(toDraw);
     if (Kotlin.isType(toDraw, XPoly))
       this.drawPoly_ax7j69$(toDraw);
     if (Kotlin.isType(toDraw, XLine))
@@ -3082,13 +4106,35 @@
     var context = Kotlin.isType(tmp$ = g.getContext('2d'), CanvasRenderingContext2D) ? tmp$ : throwCCE();
     context.save();
     context.globalAlpha = 1.0;
+    context.translate(rect.centre.x, rect.centre.y);
+    context.rotate(rect.rotation);
     if (receiver.fill) {
       context.fillStyle = this.rgba_gr83cy$(receiver.fg);
-      context.fillRect(rect.centre.x - rect.w / 2, rect.centre.y - rect.h / 2, rect.w, rect.h);
+      context.fillRect(-rect.w / 2, -rect.h / 2, rect.w, rect.h);
     }if (receiver.stroke) {
       context.strokeStyle = this.rgba_gr83cy$(receiver.lc);
       context.lineWidth = receiver.lineWidth;
-      context.strokeRect(rect.centre.x - rect.w / 2, rect.centre.y - rect.h / 2, rect.w, rect.h);
+      context.strokeRect(-rect.w / 2, -rect.h / 2, rect.w, rect.h);
+    }context.restore();
+  };
+  XGraphicsJS.prototype.drawEllipse_lu1dfr$ = function (ellipse) {
+    var g = this.canvas;
+    var receiver = ellipse.dStyle;
+    var tmp$;
+    var context = Kotlin.isType(tmp$ = g.getContext('2d'), CanvasRenderingContext2D) ? tmp$ : throwCCE();
+    context.save();
+    context.globalAlpha = 1.0;
+    context.translate(ellipse.centre.x, ellipse.centre.y);
+    context.rotate(ellipse.rotation);
+    context.beginPath();
+    context.ellipse(0.0, 0.0, ellipse.w / 2, ellipse.h / 2, 0.0, 0.0, math.PI * 2, true);
+    if (receiver.fill) {
+      context.fillStyle = this.rgba_gr83cy$(receiver.fg);
+      context.fill();
+    }if (receiver.stroke) {
+      context.strokeStyle = this.rgba_gr83cy$(receiver.lc);
+      context.lineWidth = receiver.lineWidth;
+      context.stroke();
     }context.restore();
   };
   XGraphicsJS.prototype.drawLine_ax4ut5$ = function (line) {
@@ -3144,7 +4190,8 @@
       var context = Kotlin.isType(tmp$_0 = g.getContext('2d'), CanvasRenderingContext2D) ? tmp$_0 : throwCCE();
       context.save();
       context.lineWidth = $receiver.lineWidth;
-      context.translate(poly.start.x, poly.start.y);
+      context.translate(poly.centre.x, poly.centre.y);
+      context.rotate(poly.rotation);
       context.fillStyle = this.rgba_gr83cy$($receiver.fg);
       if ($receiver.fill)
         context.fill(path);
@@ -3171,7 +4218,34 @@
   package$agents.MutationTransducer = MutationTransducer;
   package$agents.RandomAgent = RandomAgent;
   package$agents.SimpleEvoAgent = SimpleEvoAgent;
+  Object.defineProperty(MoveAction, 'Neutral', {get: MoveAction$Neutral_getInstance});
+  Object.defineProperty(MoveAction, 'Left', {get: MoveAction$Left_getInstance});
+  Object.defineProperty(MoveAction, 'Right', {get: MoveAction$Right_getInstance});
+  Object.defineProperty(MoveAction, 'Up', {get: MoveAction$Up_getInstance});
+  Object.defineProperty(MoveAction, 'Down', {get: MoveAction$Down_getInstance});
+  Object.defineProperty(MoveAction, 'Fire', {get: MoveAction$Fire_getInstance});
+  Object.defineProperty(MoveAction, 'Jump', {get: MoveAction$Jump_getInstance});
+  Object.defineProperty(MoveAction, 'Thrust', {get: MoveAction$Thrust_getInstance});
   var package$games = _.games || (_.games = {});
+  var package$arcade = package$games.arcade || (package$games.arcade = {});
+  package$arcade.MoveAction = MoveAction;
+  Object.defineProperty(ObjectType, 'Avatar', {get: ObjectType$Avatar_getInstance});
+  Object.defineProperty(ObjectType, 'P1Missile', {get: ObjectType$P1Missile_getInstance});
+  Object.defineProperty(ObjectType, 'AlienMissile', {get: ObjectType$AlienMissile_getInstance});
+  Object.defineProperty(ObjectType, 'AlienObject', {get: ObjectType$AlienObject_getInstance});
+  package$arcade.ObjectType = ObjectType;
+  Object.defineProperty(AsteroidsGame, 'Companion', {get: AsteroidsGame$Companion_getInstance});
+  package$arcade.AsteroidsGame = AsteroidsGame;
+  package$arcade.GameObject = GameObject;
+  package$arcade.PlayerShip = PlayerShip;
+  package$arcade.ArcadeTestApp = ArcadeTestApp;
+  package$arcade.AsteroidsKeyController = AsteroidsKeyController;
+  package$arcade.ShipAction = ShipAction;
+  package$arcade.ActionAdapter = ActionAdapter;
+  var package$vehicles = package$arcade.vehicles || (package$arcade.vehicles = {});
+  package$vehicles.Shape = Shape;
+  package$vehicles.Asteroid = Asteroid;
+  package$vehicles.Ship = Ship;
   var package$griddle = package$games.griddle || (package$games.griddle = {});
   package$griddle.GriddleControl = GriddleControl;
   package$griddle.DefaultControl = DefaultControl;
@@ -3189,7 +4263,9 @@
   var package$ai = package$griddle.ai || (package$griddle.ai = {});
   package$ai.LetterGridModel = LetterGridModel;
   package$ai.Player = Player;
-  MCPlayer.ScoredCell = MCPlayer$ScoredCell;
+  package$ai.ScoredCell = ScoredCell;
+  package$ai.swap_w2dapk$ = swap;
+  Object.defineProperty(MCPlayer, 'Companion', {get: MCPlayer$Companion_getInstance});
   package$ai.MCPlayer = MCPlayer;
   Object.defineProperty(FastSampleDeck, 'Companion', {get: FastSampleDeck$Companion_getInstance});
   var package$deck = package$griddle.deck || (package$griddle.deck = {});
@@ -3240,8 +4316,8 @@
   var package$gui = _.gui || (_.gui = {});
   Object.defineProperty(XColor, 'Companion', {get: XColor$Companion_getInstance});
   package$gui.XColor = XColor;
+  package$gui.XPalette = XPalette;
   package$gui.XGraphics = XGraphics;
-  package$gui.Drawable = Drawable;
   package$gui.XStyle = XStyle;
   package$gui.TStyle = TStyle;
   package$gui.XApp = XApp;
@@ -3260,18 +4336,27 @@
   package$gui.XKeyEvent = XKeyEvent;
   Object.defineProperty(XKeyMap, 'Companion', {get: XKeyMap$Companion_getInstance});
   package$gui.XKeyMap = XKeyMap;
+  package$gui.Drawable = Drawable;
+  package$gui.GeomDrawable = GeomDrawable;
   package$gui.XRect = XRect;
+  package$gui.XEllipse = XEllipse;
   package$gui.XLine = XLine;
   package$gui.XText = XText;
   package$gui.XPoly = XPoly;
+  var package$geometry = package$gui.geometry || (package$gui.geometry = {});
+  package$geometry.ContainsTestApp = ContainsTestApp;
+  package$geometry.Poly = Poly;
   var package$math = _.math || (_.math = {});
   package$math.v_lu1900$ = v;
   package$math.Vec2d = Vec2d;
   var package$sample = _.sample || (_.sample = {});
   var package$test = _.test || (_.test = {});
   var package$util = _.util || (_.util = {});
+  package$util.BoxMuller = BoxMuller;
   Object.defineProperty(StatSummary, 'Companion', {get: StatSummary$Companion_getInstance});
   package$util.StatSummary = StatSummary;
+  package$sample.AsteroidsTest = AsteroidsTest;
+  package$sample.PolyTest = PolyTest;
   package$sample.initalizeCanvas = initalizeCanvas;
   package$sample.Dispatcher = Dispatcher;
   package$sample.GriddleTest = GriddleTest;
@@ -3279,6 +4364,9 @@
   package$sample.SpeedTest = SpeedTest;
   package$sample.BasicTest = BasicTest;
   package$test.XGraphicsJS = XGraphicsJS;
+  XGraphicsJS.prototype.centre = XGraphics.prototype.centre;
+  XGraphicsJS.prototype.releaseBounds = XGraphics.prototype.releaseBounds;
+  XGraphicsJS.prototype.setBounds_z39lsx$ = XGraphics.prototype.setBounds_z39lsx$;
   canvas = initalizeCanvas();
   test = new Dispatcher();
   main([]);

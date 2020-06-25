@@ -112,10 +112,11 @@ interface Drawable {
 
 interface GeomDrawable : Drawable {
     fun contains(p: Vec2d?) : Boolean
+    var centre: Vec2d
 }
 
 data class XRect(
-    var centre: Vec2d, var w: Double, var h: Double,
+    override var centre: Vec2d, var w: Double, var h: Double,
     override var dStyle: XStyle = XStyle(), override var rotation: Double = 0.0
 ) : GeomDrawable {
     override fun contains(p: Vec2d?): Boolean {
@@ -131,7 +132,7 @@ data class XRect(
 
 
 data class XEllipse(
-    var centre: Vec2d, var w: Double, var h:
+    override var centre: Vec2d, var w: Double, var h:
     Double, override var dStyle: XStyle = XStyle(),
     override var rotation: Double = 0.0
 ) : GeomDrawable {
@@ -144,6 +145,7 @@ data class XEllipse(
         val tp = (p-centre).rotatedBy(-rotation)
         return (tp.x*tp.x) / a2 + (tp.y*tp.y) / b2 <= 1
     }
+
 }
 
 data class XLine(
@@ -157,7 +159,7 @@ data class XText(
 ) : Drawable
 
 data class XPoly(
-    var centre: Vec2d = Vec2d(), val points: ArrayList<Vec2d>,
+    override var centre: Vec2d = Vec2d(), val points: ArrayList<Vec2d>,
     override var dStyle: XStyle = XStyle(),
     override var rotation: Double = 0.0,
     var closed: Boolean = true
@@ -172,6 +174,7 @@ data class XPoly(
         if (tp.mag > rad) return false
         return Poly().contains(tp, points)
     }
+
 }
 
 //data class XPolyOld (var start: Vec2d, val points: ArrayList<Vec2d>) : Drawable {

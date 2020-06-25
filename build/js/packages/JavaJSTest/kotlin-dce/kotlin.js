@@ -1214,6 +1214,13 @@
     TestTimeSource.prototype.constructor = TestTimeSource;
     NotImplementedError.prototype = Object.create(Error_0.prototype);
     NotImplementedError.prototype.constructor = NotImplementedError;
+    function Sequence$ObjectLiteral(closure$iterator) {
+      this.closure$iterator = closure$iterator;
+    }
+    Sequence$ObjectLiteral.prototype.iterator = function () {
+      return this.closure$iterator();
+    };
+    Sequence$ObjectLiteral.$metadata$ = {kind: Kind_CLASS, interfaces: [Sequence]};
     function contains($receiver, element) {
       return indexOf($receiver, element) >= 0;
     }
@@ -1255,6 +1262,16 @@
     }
     function get_lastIndex($receiver) {
       return $receiver.length - 1 | 0;
+    }
+    function asSequence$lambda(this$asSequence) {
+      return function () {
+        return Kotlin.arrayIterator(this$asSequence);
+      };
+    }
+    function asSequence($receiver) {
+      if ($receiver.length === 0)
+        return emptySequence();
+      return new Sequence$ObjectLiteral(asSequence$lambda($receiver));
     }
     function single_17($receiver) {
       if (Kotlin.isType($receiver, List))
@@ -4954,7 +4971,34 @@
     var State_Ready;
     var State_Done;
     var State_Failed;
+    function sequenceOf(elements) {
+      return elements.length === 0 ? emptySequence() : asSequence(elements);
+    }
+    function emptySequence() {
+      return EmptySequence_getInstance();
+    }
+    function EmptySequence() {
+      EmptySequence_instance = this;
+    }
+    EmptySequence.prototype.iterator = function () {
+      return EmptyIterator_getInstance();
+    };
+    EmptySequence.prototype.drop_za3lpa$ = function (n) {
+      return EmptySequence_getInstance();
+    };
+    EmptySequence.prototype.take_za3lpa$ = function (n) {
+      return EmptySequence_getInstance();
+    };
+    EmptySequence.$metadata$ = {kind: Kind_OBJECT, simpleName: 'EmptySequence', interfaces: [DropTakeSequence, Sequence]};
     var EmptySequence_instance = null;
+    function EmptySequence_getInstance() {
+      if (EmptySequence_instance === null) {
+        new EmptySequence();
+      }return EmptySequence_instance;
+    }
+    function DropTakeSequence() {
+    }
+    DropTakeSequence.$metadata$ = {kind: Kind_INTERFACE, simpleName: 'DropTakeSequence', interfaces: [Sequence]};
     var EmptySet_instance = null;
     function compareValues(a, b) {
       var tmp$;
@@ -6466,6 +6510,7 @@
     package$kotlin.UnsupportedOperationException_init_pdl1vj$ = UnsupportedOperationException_init_0;
     package$collections.listOf_mh5how$ = listOf;
     package$collections.collectionSizeOrDefault_ba2ldo$ = collectionSizeOrDefault;
+    package$collections.asSequence_us0mfu$ = asSequence;
     package$collections.get_lastIndex_55thoc$ = get_lastIndex_12;
     package$collections.single_7wnvza$ = single_17;
     package$collections.single_2p1efm$ = single_18;
@@ -6703,6 +6748,9 @@
     package$collections.removeAll_uhyeqt$ = removeAll_3;
     package$collections.removeAll_qafx1e$ = removeAll_4;
     package$collections.shuffle_9jeydg$ = shuffle_0;
+    package$sequences.sequenceOf_i5x0yv$ = sequenceOf;
+    package$sequences.emptySequence_287e2$ = emptySequence;
+    package$sequences.DropTakeSequence = DropTakeSequence;
     package$coroutines.Continuation = Continuation;
     package$kotlin.Result = Result;
     package$intrinsics.get_COROUTINE_SUSPENDED = get_COROUTINE_SUSPENDED;
