@@ -6,41 +6,58 @@ import kotlin.random.Random
 
 class EasyGraphPlot (var seed:Int = 1): XApp {
 
-    val xp = XPalette()
+    val xp = XPalette(50, 0.2)
     val rand = Random(seed)
     // val lines = ArrayList<Drawable>()
 
     override fun paint(xg: XGraphics) {
-        // now draw them all
-
-        // todo: note that the randLines method
-        // calls the xg.width() and xg.height()
-        // methods - need a way to intercept the calls
-        // when this is being drawn as a sub-pane
-        // how best to do that?
-        randLines(xg).forEach { xg.draw(it) }
+        dataLines(xg, data).forEach { xg.draw(it) }
     }
 
-    fun randLines(xg: XGraphics, rand:Random = Random(1L)) : List<Drawable> {
+    fun dataLines(xg: XGraphics, data: List<DoubleArray>? ) : List<Drawable> {
         val lines = ArrayList<XPoly>()
+        if (data == null) return lines
         // make a random line for each color
-        val ss = StatSummary()
-        for (i in 0 until xp.nColors) {
-            val style = XStyle(fg = xp.colors[i], fill = false)
+        val ss = StatSummary("Score Data")
+        val maxLen = data.map{it.size}.max()
+        // all the arrays are empty if maxLen is null
+        if (maxLen == null) return lines
+
+
+        for (a in data) ss.add(a.asList())
+        ss.add(0)
+        ss.add(500)
+
+
+
+        val ssy = StatSummary("Y")
+        val ssx = StatSummary("X")
+
+        for (i in 0 until data.size) {
+            val style = XStyle(lc = xp.getColor(i), fill = false)
             // make a random set of points
             val points = ArrayList<Vec2d>()
-            for (j in 0 until  xg.width().toInt()  step 20 ) {
-                val y = rand.nextDouble(0.0, xg.height())
-                ss.add(y)
-                points.add( Vec2d(j.toDouble(), y ) )
+            val xStep = xg.width() / maxLen
+            val da = data[i]
+            for (j in 0 until da.size) {
+                val p = Vec2d(j * xStep, xg.height() * (1.0 - yVal(da[j], ss) ) )
+                points.add( p )
+                ssx.add(p.x)
+                ssy.add(p.y)
             }
             val line = XPoly(points =  points, dStyle = style, closed = false)
             lines.add(line)
         }
-        // println(xg.height())
-        // println("Max = ${ss.max().toInt()}, min = ${ss.min().toInt()}")
+//        println("Returning nLines: " + lines.size)
+//        println(ssx)
+//        println(ssy)
+//        println(ss)
+//        println(data[0].asList())
         return lines
     }
+
+    fun yVal(y: Double, ss: StatSummary) : Double =
+        (0.01 + y - ss.min()) / (1.0 + ss.max() - ss.min())
 
     override fun handleMouseEvent(e: XMouseEvent) {
         // do nothing for now
@@ -48,6 +65,11 @@ class EasyGraphPlot (var seed:Int = 1): XApp {
 
     override fun handleKeyEvent(e: XKeyEvent) {
         // do nothing for now
+    }
+
+    private var data: List<DoubleArray>? = null
+    fun setData(data: List<DoubleArray>?) {
+        this.data = data
     }
 
 }

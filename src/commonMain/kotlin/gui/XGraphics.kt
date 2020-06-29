@@ -37,6 +37,8 @@ data class XPalette(
             colors.add(XColor(v(), v(), v(), alpha))
     }
 
+    fun getColor(ix: Int) = colors[ix % colors.size]
+
     fun v() = rand.nextDouble(min, max).toFloat()
 }
 
@@ -112,7 +114,11 @@ interface Drawable {
 
 interface GeomDrawable : Drawable {
     fun contains(p: Vec2d?) : Boolean
+    // this radius is just a rough approximation -
+    // non circular shapes should return radius of bounding circle
+    fun radius() : Double
     var centre: Vec2d
+
 }
 
 data class XRect(
@@ -126,8 +132,9 @@ data class XRect(
 
         val tp = (p-centre).rotatedBy(-rotation)
         return abs(tp.x) <= w/2 && abs(tp.y) <= h/2
-
     }
+
+    override fun radius()= max(w/2,h/2)
 }
 
 
@@ -145,7 +152,7 @@ data class XEllipse(
         val tp = (p-centre).rotatedBy(-rotation)
         return (tp.x*tp.x) / a2 + (tp.y*tp.y) / b2 <= 1
     }
-
+    override fun radius()= max(w/2,h/2)
 }
 
 data class XLine(
@@ -175,6 +182,7 @@ data class XPoly(
         return Poly().contains(tp, points)
     }
 
+    override fun radius() = rad
 }
 
 //data class XPolyOld (var start: Vec2d, val points: ArrayList<Vec2d>) : Drawable {

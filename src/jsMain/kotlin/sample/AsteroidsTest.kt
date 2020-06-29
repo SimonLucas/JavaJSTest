@@ -22,12 +22,13 @@ class AsteroidsTest {
     val height = canvas.height.toDouble()
     val width = canvas.width.toDouble()
 
-    var x = 0
+    // var x = 0
     val xg = XGraphicsJS(canvas)
 
     val frameRate = 25
     val intervalTime = 1000 / frameRate
     val app: XApp = ArcadeTestApp()
+
 
     fun update() {
         // document.title = "Paint: ${app.}"

@@ -110,6 +110,7 @@ class XGraphicsJVM(val jc: JComponent) : XGraphics {
     var rect: LRect? = null
     override fun setBounds(rect: LRect) {
         this.rect = rect
+
     }
 
     override fun releaseBounds() {
@@ -134,8 +135,10 @@ class XGraphicsJVM(val jc: JComponent) : XGraphics {
             // apply the translation if necessary
 
             val bounds = rect
-            if (bounds != null)
+            if (bounds != null) {
                 g.translate(bounds.xLeft, bounds.yTop)
+                g.setClip(0, 0, width().toInt(), height().toInt())
+            }
 
             if (toDraw is XRect) drawRect(toDraw)
             if (toDraw is XEllipse) drawEllipse(toDraw)
@@ -143,8 +146,10 @@ class XGraphicsJVM(val jc: JComponent) : XGraphics {
             if (toDraw is XLine) drawLine(toDraw)
             if (toDraw is XText) drawText(toDraw)
 
-            if (bounds != null)
+            if (bounds != null) {
+                g.clip = null
                 g.translate(-bounds.xLeft, -bounds.yTop)
+            }
 
 
         }
@@ -153,7 +158,6 @@ class XGraphicsJVM(val jc: JComponent) : XGraphics {
     fun getColor(c: XColor): Color {
         return Color(c.r, c.g, c.b, c.a)
     }
-
 
     fun drawRect(rect: XRect) {
         val g = graphics2D

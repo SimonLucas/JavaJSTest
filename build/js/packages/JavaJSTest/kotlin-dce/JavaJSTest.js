@@ -25,11 +25,12 @@
   var to = Kotlin.kotlin.to_ujzrz7$;
   var hashMapOf = Kotlin.kotlin.collections.hashMapOf_qfcya0$;
   var Kind_OBJECT = Kotlin.Kind.OBJECT;
+  var Unit = Kotlin.kotlin.Unit;
   var HashMap_init = Kotlin.kotlin.collections.HashMap_init_q3lmfv$;
   var math = Kotlin.kotlin.math;
+  var toString = Kotlin.toString;
   var sequenceOf = Kotlin.kotlin.sequences.sequenceOf_i5x0yv$;
   var Math_0 = Math;
-  var NotImplementedError_init = Kotlin.kotlin.NotImplementedError;
   var Kind_INTERFACE = Kotlin.Kind.INTERFACE;
   var unboxChar = Kotlin.unboxChar;
   var toBoxedChar = Kotlin.toBoxedChar;
@@ -38,6 +39,7 @@
   var numberToInt = Kotlin.numberToInt;
   var StringBuilder_init = Kotlin.kotlin.text.StringBuilder_init;
   var RuntimeException_init = Kotlin.kotlin.RuntimeException_init_pdl1vj$;
+  var NotImplementedError_init = Kotlin.kotlin.NotImplementedError;
   var sortedWith = Kotlin.kotlin.collections.sortedWith_eknfly$;
   var wrapFunction = Kotlin.wrapFunction;
   var Comparator = Kotlin.kotlin.Comparator;
@@ -46,7 +48,6 @@
   var Random_0 = Kotlin.kotlin.random.Random_s8cxhz$;
   var shuffle_0 = Kotlin.kotlin.collections.shuffle_9jeydg$;
   var copyToArray = Kotlin.kotlin.collections.copyToArray;
-  var toString = Kotlin.toString;
   var throwCCE = Kotlin.throwCCE;
   var trim = Kotlin.kotlin.text.trim_gw00vp$;
   var abs = Kotlin.kotlin.math.abs_za3lpa$;
@@ -58,7 +59,6 @@
   var kotlin_js_internal_DoubleCompanionObject = Kotlin.kotlin.js.internal.DoubleCompanionObject;
   var numberToDouble = Kotlin.numberToDouble;
   var Comparable = Kotlin.kotlin.Comparable;
-  var Unit = Kotlin.kotlin.Unit;
   var contains = Kotlin.kotlin.text.contains_li3zpu$;
   var toLong = Kotlin.kotlin.text.toLong_pdl1vz$;
   var L10 = Kotlin.Long.fromInt(10);
@@ -70,6 +70,10 @@
   ObjectType.prototype.constructor = ObjectType;
   PlayerShip.prototype = Object.create(GameObject.prototype);
   PlayerShip.prototype.constructor = PlayerShip;
+  Rock.prototype = Object.create(GameObject.prototype);
+  Rock.prototype.constructor = Rock;
+  Missile.prototype = Object.create(GameObject.prototype);
+  Missile.prototype.constructor = Missile;
   GriddleState.prototype = Object.create(Enum.prototype);
   GriddleState.prototype.constructor = GriddleState;
   Dir.prototype = Object.create(Enum.prototype);
@@ -575,27 +579,58 @@
     this.h = h;
     this.gobs = gobs;
     this.ticks = ticks;
-    this.rockSize = 0.05;
+    this.rockSizes = [0.06, 0.035, 0.02];
+    this.rockScores = [10, 20, 50];
     this.velocityFactor = 1.0;
-    this.n = 5;
+    this.bm = new BoxMuller();
+    this.nRocks = 5;
     this.rand = Random.Default;
     this.gobMap = HashMap_init();
+    this.avatarAlive = true;
+    this.rockCount = this.nRocks;
     if (this.gobs.isEmpty())
       this.randomInitialState();
+    this.nSpawns = 2;
     this.actionMap = hashMapOf([to(0, MoveAction$Neutral_getInstance()), to(1, MoveAction$Left_getInstance()), to(2, MoveAction$Right_getInstance()), to(3, MoveAction$Fire_getInstance()), to(4, MoveAction$Thrust_getInstance())]);
     this.intScore = 0;
   }
-  AsteroidsGame.prototype.createRocks_lu1900$ = function (w, h) {
+  AsteroidsGame.prototype.createRocks_za3lpa$ = function (sizeIndex) {
+    if (sizeIndex === void 0)
+      sizeIndex = 0;
     var tmp$;
-    var bm = new BoxMuller();
-    var size = Math_0.min(w, h);
-    tmp$ = this.n;
+    tmp$ = this.nRocks;
     for (var i = 0; i < tmp$; i++) {
-      var poly = (new Asteroid(8, size * this.rockSize)).getPoly();
-      var s = new Vec2d(this.rand.nextDouble_14dthe$(w), this.rand.nextDouble_14dthe$(h));
-      var v = (new Vec2d(bm.nextGaussian(), bm.nextGaussian())).times_14dthe$(this.velocityFactor);
-      this.gobs.add_11rb$(new GameObject(poly, ObjectType$AlienObject_getInstance(), s, v));
+      this.gobs.add_11rb$(this.randRock_1ph2q2$(sizeIndex));
     }
+  };
+  AsteroidsGame.prototype.avatarStatus = function () {
+    return this.gobMap.get_11rb$(ObjectType$Avatar_getInstance()) != null;
+  };
+  AsteroidsGame.prototype.countRocks = function () {
+    var tmp$;
+    return (tmp$ = this.gobMap.get_11rb$(ObjectType$AlienObject_getInstance())) != null ? tmp$.size : null;
+  };
+  AsteroidsGame.prototype.handleRockDeath_4u4hyu$ = function (rock) {
+    var tmp$;
+    this.intScore = this.intScore + this.rockScores[rock.sizeIndex] | 0;
+    var nextIndex = rock.sizeIndex + 1 | 0;
+    if (nextIndex < this.rockSizes.length) {
+      tmp$ = this.nSpawns;
+      for (var i = 0; i < tmp$; i++)
+        this.addObject_bqu2si$(this.randRock_1ph2q2$(nextIndex, rock.s));
+    }};
+  AsteroidsGame.prototype.randRock_1ph2q2$ = function (sizeIndex, s) {
+    if (s === void 0)
+      s = this.randPosition();
+    var a = this.w;
+    var b = this.h;
+    var size = Math_0.min(a, b);
+    var poly = (new Asteroid(8, size * this.rockSizes[sizeIndex])).getPoly();
+    var v = (new Vec2d(this.bm.nextGaussian(), this.bm.nextGaussian())).times_14dthe$(this.velocityFactor);
+    return new Rock(poly, s, v, sizeIndex);
+  };
+  AsteroidsGame.prototype.randPosition = function () {
+    return new Vec2d(this.rand.nextDouble_14dthe$(this.w), this.rand.nextDouble_14dthe$(this.h));
   };
   AsteroidsGame.prototype.gameObjects = function () {
     return this.gobs;
@@ -603,7 +638,9 @@
   function AsteroidsGame$Companion() {
     AsteroidsGame$Companion_instance = this;
     this.totalTicks_8be2vx$ = L0;
-    this.collisionMap = hashMapOf([to(ObjectType$Avatar_getInstance(), arrayListOf([ObjectType$AlienObject_getInstance()]))]);
+    this.lifeLossPenalty = 0;
+    this.collisionMap = hashMapOf([to(ObjectType$Avatar_getInstance(), arrayListOf([ObjectType$AlienObject_getInstance()])), to(ObjectType$P1Missile_getInstance(), arrayListOf([ObjectType$AlienObject_getInstance()]))]);
+    this.useActionAdapter = true;
     this.actionAdapter = new ActionAdapter();
     this.neutralAction = new ShipAction();
   }
@@ -615,7 +652,7 @@
     }return AsteroidsGame$Companion_instance;
   }
   AsteroidsGame.prototype.testCollisions_mybawp$ = function (gobs) {
-    var tmp$, tmp$_0;
+    var tmp$, tmp$_0, tmp$_1, tmp$_2;
     this.gobMap.clear();
     tmp$ = gobs.iterator();
     while (tmp$.hasNext()) {
@@ -627,6 +664,8 @@
         $receiver.put_xwzc9p$(key, value);
       }(tmp$_0 = this.gobMap.get_11rb$(g.type)) != null ? tmp$_0.add_11rb$(g) : null;
     }
+    this.avatarAlive = this.gobMap.get_11rb$(ObjectType$Avatar_getInstance()) != null;
+    this.rockCount = (tmp$_2 = (tmp$_1 = this.gobMap.get_11rb$(ObjectType$AlienObject_getInstance())) != null ? tmp$_1.size : null) != null ? tmp$_2 : 0;
     this.testCollisions_dqfcs2$(this.gobMap);
   };
   AsteroidsGame.prototype.testCollisions_dqfcs2$ = function (obMap) {
@@ -653,9 +692,8 @@
       tmp$_0 = bl.iterator();
       while (tmp$_0.hasNext()) {
         var b = tmp$_0.next();
-        if (a.testCollision_bqu2si$(b)) {
-          this.intScore = this.intScore + 10 | 0;
-        }}
+        a.testCollision_bqu2si$(b);
+      }
     }
   };
   AsteroidsGame.prototype.totalTicks = function () {
@@ -665,7 +703,7 @@
     AsteroidsGame$Companion_getInstance().totalTicks_8be2vx$ = L0;
   };
   AsteroidsGame.prototype.randomInitialState = function () {
-    this.createRocks_lu1900$(this.w, this.h);
+    this.createRocks_za3lpa$();
     this.addShip_0();
     return this;
   };
@@ -687,14 +725,22 @@
   };
   AsteroidsGame.prototype.next_g5da3n$ = function (action) {
     var tmp$;
-    if (action == null)
-      return this;
+    var safeCopy = ArrayList_init();
+    safeCopy.addAll_brywnq$(this.gobs);
     this.testCollisions_mybawp$(this.gobs);
+    this.gobs.clear();
     var tmp$_0;
-    tmp$_0 = this.gobs.iterator();
+    tmp$_0 = safeCopy.iterator();
     while (tmp$_0.hasNext()) {
       var element = tmp$_0.next();
-      element.update_ys2idj$(this.w, this.h, action);
+      if (element.alive)
+        this.gobs.add_11rb$(element);
+    }
+    var tmp$_1;
+    tmp$_1 = safeCopy.iterator();
+    while (tmp$_1.hasNext()) {
+      var element_0 = tmp$_1.next();
+      element_0.update_3v7g8x$(this.w, this.h, action, this);
     }
     tmp$ = AsteroidsGame$Companion_getInstance().totalTicks_8be2vx$;
     AsteroidsGame$Companion_getInstance().totalTicks_8be2vx$ = tmp$.inc();
@@ -702,19 +748,28 @@
     return this;
   };
   AsteroidsGame.prototype.nActions = function () {
-    return this.actionMap.size;
+    return AsteroidsGame$Companion_getInstance().useActionAdapter ? AsteroidsGame$Companion_getInstance().actionAdapter.actions.size : this.actionMap.size;
+  };
+  AsteroidsGame.prototype.nObjects = function () {
+    return this.gobs.size;
   };
   AsteroidsGame.prototype.score = function () {
     return this.intScore;
   };
   AsteroidsGame.prototype.isTerminal = function () {
-    throw new NotImplementedError_init('An operation is not implemented: ' + 'Not yet implemented');
+    return !this.avatarAlive && this.rockCount > 0;
   };
   AsteroidsGame.prototype.nTicks = function () {
     return this.ticks;
   };
+  AsteroidsGame.prototype.addObject_bqu2si$ = function (gob) {
+    this.gobs.add_11rb$(gob);
+  };
+  AsteroidsGame.prototype.shipDeath = function () {
+    this.intScore = this.intScore - AsteroidsGame$Companion_getInstance().lifeLossPenalty | 0;
+  };
   AsteroidsGame.$metadata$ = {kind: Kind_CLASS, simpleName: 'AsteroidsGame', interfaces: [ExtendedAbstractGameState]};
-  function GameObject(poly, type, s, v, rot, rotRate, alive, age) {
+  function GameObject(geometry, type, s, v, rot, rotRate, alive, colliding, age) {
     if (type === void 0)
       type = ObjectType$AlienObject_getInstance();
     if (s === void 0)
@@ -727,40 +782,58 @@
       rotRate = math.PI / 180;
     if (alive === void 0)
       alive = true;
+    if (colliding === void 0)
+      colliding = false;
     if (age === void 0)
       age = 0;
-    this.poly = poly;
+    this.geometry = geometry;
     this.type = type;
     this.s = s;
     this.v = v;
     this.rot = rot;
     this.rotRate = rotRate;
     this.alive = alive;
+    this.colliding = colliding;
     this.age = age;
   }
   GameObject.prototype.copy = function () {
-    return new GameObject(this.poly, this.type, this.s, this.v, this.rot, this.rotRate, this.alive, this.age);
+    return new GameObject(this.geometry, this.type, this.s, this.v, this.rot, this.rotRate, this.alive, this.colliding, this.age);
+  };
+  GameObject.prototype.collides_r9bfjc$ = function (a, b) {
+    return a.alive && b.alive && a.s.distanceTo_5lk9kw$(b.s) <= a.geometry.radius() + b.geometry.radius();
+  };
+  GameObject.prototype.collidesContainer_r9bfjc$ = function (a, b) {
+    return this.geometry.contains_vi8533$(b.s) || b.geometry.contains_vi8533$(this.s);
   };
   GameObject.prototype.testCollision_bqu2si$ = function (b) {
-    if (this.poly.contains_vi8533$(b.poly.centre)) {
+    if (this.collides_r9bfjc$(this, b)) {
+      this.applyCollision_bqu2si$(b);
       return true;
     } else
       return false;
   };
   GameObject.prototype.applyCollision_bqu2si$ = function (b) {
-  };
-  GameObject.prototype.update_ys2idj$$default = function (w, h, action) {
+    if (b.geometry.contains_vi8533$(this.s)) {
+      this.alive = false;
+      this.colliding = true;
+      b.colliding = true;
+      b.alive = false;
+    }};
+  GameObject.prototype.update_3v7g8x$$default = function (w, h, action, game) {
     this.s = this.s.plus_5lk9kw$(this.v);
     this.s = this.wrap_r9gazo$(this.s, w, h);
     this.rot += this.rotRate;
-    this.poly.centre = this.s;
-    this.poly.rotation = this.rot;
+    this.geometry.centre = this.s;
+    this.geometry.rotation = this.rot;
     this.age = this.age + 1 | 0;
+    this.geometry.dStyle.fill = this.colliding;
   };
-  GameObject.prototype.update_ys2idj$ = function (w, h, action, callback$default) {
+  GameObject.prototype.update_3v7g8x$ = function (w, h, action, game, callback$default) {
     if (action === void 0)
       action = AsteroidsGame$Companion_getInstance().neutralAction;
-    callback$default ? callback$default(w, h, action) : this.update_ys2idj$$default(w, h, action);
+    if (game === void 0)
+      game = null;
+    callback$default ? callback$default(w, h, action, game) : this.update_3v7g8x$$default(w, h, action, game);
   };
   GameObject.prototype.wrap_r9gazo$ = function (v, w, h) {
     return new Vec2d((v.x + w) % w, (v.y + h) % h);
@@ -768,44 +841,102 @@
   GameObject.$metadata$ = {kind: Kind_CLASS, simpleName: 'GameObject', interfaces: []};
   function PlayerShip(s) {
     GameObject.call(this, (new Ship()).getPoly(), ObjectType$Avatar_getInstance(), s, void 0, void 0, 0.0);
+    this.geometry.dStyle.lc = XColor$Companion_getInstance().magenta;
     this.d = new Vec2d(0.0, -1.0);
     this.turn = 10 * math.PI / 180.0;
     this.thrustFac = 0.5;
-    this.lossFac = 0.99;
+    this.lossFac = 0.95;
+    this.cooldown = 5;
+    this.wait = 0;
+    this.missileSpeed = 10.0;
   }
-  PlayerShip.prototype.update_ys2idj$$default = function (w, h, action) {
-    if (action.fire)
-      this.fireMissile_0();
+  PlayerShip.prototype.update_3v7g8x$$default = function (w, h, action, game) {
+    this.update_3v7g8x$(w, h, action, game, GameObject.prototype.update_3v7g8x$$default.bind(this));
+    if (this.wait > 0) {
+      this.wait = this.wait - 1 | 0;
+    }if (action.fire)
+      this.fireMissile_0(game);
     if (action.thrust)
       this.v = this.v.plus_5lk9kw$(this.d.rotatedBy_14dthe$(this.rot).times_14dthe$(this.thrustFac));
     this.v = this.v.times_14dthe$(this.lossFac);
     this.rot = this.rot + action.turn * this.turn;
-    this.update_ys2idj$(w, h, action, GameObject.prototype.update_ys2idj$$default.bind(this));
+    this.geometry.dStyle.stroke = this.colliding;
+    this.geometry.dStyle.fill = true;
+    if (this.colliding)
+      game != null ? (game.shipDeath(), Unit) : null;
   };
-  PlayerShip.prototype.fireMissile_0 = function () {
-  };
+  PlayerShip.prototype.fireMissile_0 = function (game) {
+    if (game == null)
+      return;
+    if (this.wait <= 0) {
+      this.wait = this.cooldown;
+      var missile = new Missile(this.s, this.d.rotatedBy_14dthe$(this.rot).times_14dthe$(this.missileSpeed));
+      game.addObject_bqu2si$(missile);
+    }};
   PlayerShip.$metadata$ = {kind: Kind_CLASS, simpleName: 'PlayerShip', interfaces: [GameObject]};
+  function Rock(poly, s, v, sizeIndex) {
+    if (sizeIndex === void 0)
+      sizeIndex = 0;
+    GameObject.call(this, poly, ObjectType$AlienObject_getInstance(), s, v);
+    this.sizeIndex = sizeIndex;
+  }
+  Rock.prototype.update_3v7g8x$$default = function (w, h, action, game) {
+    if (this.colliding)
+      game != null ? (game.handleRockDeath_4u4hyu$(this), Unit) : null;
+    this.update_3v7g8x$(w, h, action, game, GameObject.prototype.update_3v7g8x$$default.bind(this));
+  };
+  Rock.$metadata$ = {kind: Kind_CLASS, simpleName: 'Rock', interfaces: [GameObject]};
+  function Missile(s, v) {
+    GameObject.call(this, new XEllipse(new Vec2d(), 10.0, 10.0), ObjectType$P1Missile_getInstance(), s, v);
+    this.lifeTime = 50;
+    this.toLive = this.lifeTime;
+  }
+  Missile.prototype.update_3v7g8x$$default = function (w, h, action, game) {
+    this.toLive = this.toLive - 1 | 0;
+    if (this.toLive < 0)
+      this.alive = false;
+    if (this.colliding)
+      this.alive = false;
+    this.update_3v7g8x$(w, h, action, game, GameObject.prototype.update_3v7g8x$$default.bind(this));
+  };
+  Missile.$metadata$ = {kind: Kind_CLASS, simpleName: 'Missile', interfaces: [GameObject]};
   function ArcadeTestApp() {
     this.mp = null;
     this.game = null;
     this.controller = new AsteroidsKeyController();
+    this.agent = new SimpleEvoAgent(void 0, 0.2, 100, 20, void 0, void 0, void 0, 0.98);
   }
   ArcadeTestApp.prototype.paint_vzjx8w$ = function (xg) {
+    var tmp$;
     if (this.game == null)
       this.game = new AsteroidsGame(xg.width(), xg.height());
     var safe = this.game;
     if (safe == null)
       return;
-    safe.next_g5da3n$(this.controller.getAction_84v5ee$(safe, 0));
+    var actionAI = this.agent != null && this.game != null ? (tmp$ = this.agent) != null ? tmp$.getAction_84v5ee$(ensureNotNull(this.game), 0) : null : null;
+    if (actionAI == null) {
+      safe.next_g5da3n$(this.controller.getAction_84v5ee$(safe, 0));
+    } else {
+      safe.next_q5rwfd$(new Int32Array([actionAI]));
+    }
     var gobs = safe.gameObjects();
     var bgstyle = new XStyle(XColor$Companion_getInstance().black);
     xg.draw_dvdmun$(new XRect(xg.centre(), xg.width(), xg.height(), bgstyle));
-    var tmp$;
-    tmp$ = gobs.iterator();
-    while (tmp$.hasNext()) {
-      var element = tmp$.next();
-      xg.draw_dvdmun$(element.poly);
+    var tmp$_0;
+    tmp$_0 = gobs.iterator();
+    while (tmp$_0.hasNext()) {
+      var element = tmp$_0.next();
+      xg.draw_dvdmun$(element.geometry);
     }
+    xg.draw_dvdmun$(this.statusText_0(xg));
+  };
+  ArcadeTestApp.prototype.statusText_0 = function (xg) {
+    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3;
+    var rocks = (tmp$_0 = (tmp$ = this.game) != null ? tmp$.countRocks() : null) != null ? tmp$_0 : 0;
+    var avatar = (tmp$_1 = this.game) != null ? tmp$_1.avatarStatus() : null;
+    var str = 'Score: ' + toString((tmp$_2 = this.game) != null ? tmp$_2.intScore : null) + ', [' + toString(avatar) + ', ' + rocks + ', ' + toString((tmp$_3 = this.game) != null ? tmp$_3.nTicks() : null) + ']';
+    var text = new XText(str, new Vec2d(xg.width() / 2, xg.height() / 20));
+    return text;
   };
   ArcadeTestApp.prototype.handleMouseEvent_x4hb96$ = function (e) {
     this.mp = e.s;
@@ -818,7 +949,6 @@
     this.action = new ShipAction();
   }
   AsteroidsKeyController.prototype.handleKeyEvent_wtf8cg$ = function (e) {
-    println(e);
     if (e.t === XKeyEventType$Pressed_getInstance() || e.t === XKeyEventType$Down_getInstance()) {
       this.keyPressed_za3lpa$(e.keyCode);
     } else if (e.t === XKeyEventType$Released_getInstance()) {
@@ -955,7 +1085,7 @@
   Asteroid.$metadata$ = {kind: Kind_CLASS, simpleName: 'Asteroid', interfaces: [Shape]};
   function Ship(l) {
     if (l === void 0)
-      l = 20.0;
+      l = 10.0;
     this.l = l;
   }
   Ship.prototype.getPoly = function () {
@@ -3108,12 +3238,17 @@
       dStyle = new XStyle();
     if (rotation === void 0)
       rotation = 0.0;
-    this.centre = centre;
+    this.centre_o9hsg6$_0 = centre;
     this.w = w;
     this.h = h;
     this.dStyle_i0iva0$_0 = dStyle;
     this.rotation_tbjryh$_0 = rotation;
   }
+  Object.defineProperty(XRect.prototype, 'centre', {get: function () {
+    return this.centre_o9hsg6$_0;
+  }, set: function (centre) {
+    this.centre_o9hsg6$_0 = centre;
+  }});
   Object.defineProperty(XRect.prototype, 'dStyle', {get: function () {
     return this.dStyle_i0iva0$_0;
   }, set: function (dStyle) {
@@ -3134,6 +3269,11 @@
       var x_0 = tp.y;
       tmp$ = Math_0.abs(x_0) <= this.h / 2;
     }return tmp$;
+  };
+  XRect.prototype.radius = function () {
+    var a = this.w / 2;
+    var b = this.h / 2;
+    return Math_0.max(a, b);
   };
   XRect.$metadata$ = {kind: Kind_CLASS, simpleName: 'XRect', interfaces: [GeomDrawable]};
   XRect.prototype.component1 = function () {
@@ -3174,7 +3314,7 @@
       dStyle = new XStyle();
     if (rotation === void 0)
       rotation = 0.0;
-    this.centre = centre;
+    this.centre_nfxci2$_0 = centre;
     this.w = w;
     this.h = h;
     this.dStyle_tow9o8$_0 = dStyle;
@@ -3182,6 +3322,11 @@
     this.a2 = this.w / 2 * (this.w / 2);
     this.b2 = this.h / 2 * (this.h / 2);
   }
+  Object.defineProperty(XEllipse.prototype, 'centre', {get: function () {
+    return this.centre_nfxci2$_0;
+  }, set: function (centre) {
+    this.centre_nfxci2$_0 = centre;
+  }});
   Object.defineProperty(XEllipse.prototype, 'dStyle', {get: function () {
     return this.dStyle_tow9o8$_0;
   }, set: function (dStyle) {
@@ -3197,6 +3342,11 @@
       return false;
     var tp = p.minus_5lk9kw$(this.centre).rotatedBy_14dthe$(-this.rotation);
     return tp.x * tp.x / this.a2 + tp.y * tp.y / this.b2 <= 1;
+  };
+  XEllipse.prototype.radius = function () {
+    var a = this.w / 2;
+    var b = this.h / 2;
+    return Math_0.max(a, b);
   };
   XEllipse.$metadata$ = {kind: Kind_CLASS, simpleName: 'XEllipse', interfaces: [GeomDrawable]};
   XEllipse.prototype.component1 = function () {
@@ -3348,7 +3498,7 @@
       rotation = 0.0;
     if (closed === void 0)
       closed = true;
-    this.centre = centre;
+    this.centre_77jmu6$_0 = centre;
     this.points = points;
     this.dStyle_ykpo0$_0 = dStyle;
     this.rotation_mlbdzz$_0 = rotation;
@@ -3363,6 +3513,11 @@
       this.rad = Math_0.max(a, b);
     }
   }
+  Object.defineProperty(XPoly.prototype, 'centre', {get: function () {
+    return this.centre_77jmu6$_0;
+  }, set: function (centre) {
+    this.centre_77jmu6$_0 = centre;
+  }});
   Object.defineProperty(XPoly.prototype, 'dStyle', {get: function () {
     return this.dStyle_ykpo0$_0;
   }, set: function (dStyle) {
@@ -3380,6 +3535,9 @@
     if (tp.mag > this.rad)
       return false;
     return (new Poly()).contains_i2bviv$(tp, this.points);
+  };
+  XPoly.prototype.radius = function () {
+    return this.rad;
   };
   XPoly.$metadata$ = {kind: Kind_CLASS, simpleName: 'XPoly', interfaces: [GeomDrawable]};
   XPoly.prototype.component1 = function () {
@@ -3745,7 +3903,6 @@
     this.context = Kotlin.isType(tmp$ = canvas.getContext('2d'), CanvasRenderingContext2D) ? tmp$ : throwCCE();
     this.height = canvas.height;
     this.width = canvas.width;
-    this.x = 0;
     this.xg = new XGraphicsJS(canvas);
     this.frameRate = 25;
     this.intervalTime = 1000 / this.frameRate | 0;
@@ -4238,6 +4395,8 @@
   package$arcade.AsteroidsGame = AsteroidsGame;
   package$arcade.GameObject = GameObject;
   package$arcade.PlayerShip = PlayerShip;
+  package$arcade.Rock = Rock;
+  package$arcade.Missile = Missile;
   package$arcade.ArcadeTestApp = ArcadeTestApp;
   package$arcade.AsteroidsKeyController = AsteroidsKeyController;
   package$arcade.ShipAction = ShipAction;
@@ -4365,8 +4524,8 @@
   package$sample.BasicTest = BasicTest;
   package$test.XGraphicsJS = XGraphicsJS;
   XGraphicsJS.prototype.centre = XGraphics.prototype.centre;
-  XGraphicsJS.prototype.releaseBounds = XGraphics.prototype.releaseBounds;
   XGraphicsJS.prototype.setBounds_z39lsx$ = XGraphics.prototype.setBounds_z39lsx$;
+  XGraphicsJS.prototype.releaseBounds = XGraphics.prototype.releaseBounds;
   canvas = initalizeCanvas();
   test = new Dispatcher();
   main([]);

@@ -46,7 +46,7 @@ class Asteroid (val n: Int, val rad: Double,
 //
 
 class Ship (
-    val l: Double = 20.0
+    val l: Double = 10.0
 ) : Shape {
     override fun getPoly(): XPoly {
         val points = arrayListOf<Vec2d>(

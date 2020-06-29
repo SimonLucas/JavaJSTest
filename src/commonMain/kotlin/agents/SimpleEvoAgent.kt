@@ -2,6 +2,7 @@ package agents
 
 import ggi.AbstractGameState
 import ggi.SimplePlayerInterface
+import util.StatSummary
 import kotlin.random.Random
 
 data class SimpleEvoAgent(
@@ -36,7 +37,6 @@ data class SimpleEvoAgent(
 
     var x: Int? = 1
 
-
     fun getActions(gameState: AbstractGameState, playerId: Int): IntArray {
         var solution = buffer ?: randomPoint(gameState.nActions())
         if (useShiftBuffer) {
@@ -60,11 +60,17 @@ data class SimpleEvoAgent(
             val mutScore = evalSeq(gameState.copy(), mut, playerId, scoreArrray2)
             if (mutScore >= curScore) {
                 solution = mut
+//                if (mutScore > curScore) {
+//                    println(scoreArrray1.asList())
+//                    println(scoreArrray2.asList())
+//                }
             }
             solutions.add(mut)
             scores.add(scoreArrray1)
             scores.add(scoreArrray2)
         }
+        // println(Arrays.)
+        // println(StatSummary("Raw Scores").add(scores[0].asList()))
         buffer = solution
         return solution
     }

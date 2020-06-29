@@ -1,5 +1,6 @@
 package test.arcade
 
+import games.arcade.ActionAdapter
 import games.arcade.AsteroidsGame
 import test.geometry.timeTest
 import util.StatSummary
@@ -14,7 +15,7 @@ class ArcadeSpeedTest {
 
         val ss = StatSummary("n Game Objects")
         val game = AsteroidsGame()
-        val n = 1000000
+        val n = 100000
         val t = System.currentTimeMillis()
 
         for (i in 0 until n) {
@@ -26,6 +27,9 @@ class ArcadeSpeedTest {
 
         println("Final score = ${game.score()}")
         println(ss)
+
+        println("nActions = ${game.nActions()}")
+        println("Action Adapter actions = ${ ActionAdapter().actions.size }")
 
     }
 }

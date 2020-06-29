@@ -23,3 +23,4 @@ class BoxMuller (val rand: Random = Random) {
         }
     }
 }
+

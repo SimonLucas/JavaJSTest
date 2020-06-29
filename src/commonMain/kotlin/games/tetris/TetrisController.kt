@@ -1,5 +1,8 @@
 package games.tetris
 
+import agents.PolicyEvoAgent
+import agents.SimpleEvoAgent
+import games.arcade.RolloutDataSource
 import ggi.AbstractGameState
 import ggi.SimplePlayerInterface
 import gui.*
@@ -9,7 +12,7 @@ import gui.XKeyMap.Companion.right
 import gui.XKeyMap.Companion.space
 import gui.XKeyMap.Companion.up
 
-class TetrisController : XApp {
+class TetrisController : XApp , RolloutDataSource{
 
     var tg: TetrisGame
 
@@ -29,9 +32,7 @@ class TetrisController : XApp {
     }
 
     override fun paint(xg: XGraphics) {
-
         // this does much more than just paint: it manages the whole next step
-
         if (tg.isTerminal()) {
             // start a new game if game over
             tg = TetrisGame()
@@ -57,7 +58,7 @@ class TetrisController : XApp {
     private fun setModelParams() {
         TetrisModel.defaultCols = nCols
         TetrisModel.defaultRows = nRows
-        TetrisModel.includeColumnDiffs = false
+        TetrisModel.includeColumnDiffs = true
         TetrisModel.gameOverPenalty = 0
         TetrisModel.cyclicBlockType = false
         TetrisModel.randomInitialRotation = true
@@ -66,8 +67,12 @@ class TetrisController : XApp {
         TetrisModel.dropSkip = 50
     }
 
+    override fun getData() : List<DoubleArray>? {
+        val safe = agent
+        if (safe is RolloutDataSource) return safe?.getData()
+        else return null
+    }
 }
-
 
 class TetrisKeyController : SimplePlayerInterface {
 
@@ -88,7 +93,6 @@ class TetrisKeyController : SimplePlayerInterface {
     }
 
     val keyMap: HashMap<Int, Int> =
-
         hashMapOf(
             // this needs some tidying up
             left to Actions.Left.ordinal,
@@ -114,5 +118,4 @@ class TetrisKeyController : SimplePlayerInterface {
     override fun reset(): SimplePlayerInterface {
         return this
     }
-
 }
