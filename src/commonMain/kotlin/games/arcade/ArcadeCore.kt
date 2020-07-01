@@ -1,11 +1,13 @@
 package games.arcade
 
+import agents.PolicyEvoAgent
 import agents.SimpleEvoAgent
 import games.arcade.AsteroidsGame.Companion.neutralAction
 import games.arcade.vehicles.Asteroid
 import games.arcade.vehicles.Ship
 import ggi.AbstractGameState
 import ggi.ExtendedAbstractGameState
+import ggi.SimplePlayerInterface
 import gui.*
 import math.Vec2d
 import util.BoxMuller
@@ -30,8 +32,8 @@ class AsteroidsGame(
 
 ) : ExtendedAbstractGameState {
 
-    val rockSizes = arrayOf(0.06, 0.035, 0.02)
-    val rockScores = arrayOf(10, 20, 50)
+    val rockSizes = arrayOf(0.06, 0.04, 0.02)
+    val rockScores = arrayOf(50, 100, 200)
     val velocityFactor = 1.0
     val bm = BoxMuller()
 
@@ -56,9 +58,8 @@ class AsteroidsGame(
     }
 
 
-
-
     fun createRocks(sizeIndex: Int = 0) {
+
         for (i in 0 until nRocks) {
             gobs.add(randRock(sizeIndex))
         }
@@ -237,11 +238,13 @@ open class GameObject(
 
 ) {
 
-    fun copy() = GameObject(geometry, type, s, v, rot, rotRate, alive, colliding, age)
+    open fun radius() = geometry.radius()
+
+    open fun copy() = GameObject(geometry, type, s, v, rot, rotRate, alive, colliding, age)
 
     fun collides(a: GameObject, b: GameObject) =
         a.alive && b.alive &&
-        a.s.distanceTo(b.s) <= a.geometry.radius() + b.geometry.radius()
+                a.s.distanceTo(b.s) <= a.radius() + b.radius()
 
     fun collidesContainer(a: GameObject, b: GameObject) =
         geometry.contains(b.s) || b.geometry.contains(s)
@@ -287,23 +290,30 @@ open class GameObject(
         Vec2d((v.x + w) % w, (v.y + h) % h)
 }
 
-class PlayerShip(s: Vec2d) : GameObject(
-    Ship().getPoly(), ObjectType.Avatar, s, rotRate = 0.0
-) {
-    // this is the direction heading vector, which is tied to the ship's rotation
+class PlayerShip(
+    s: Vec2d, v: Vec2d = Vec2d(), rot: Double = 0.0,
+    var wait: Int = 0
+) :
+    GameObject(
+        Ship().getPoly(), ObjectType.Avatar, s, v, rotRate = 0.0, rot = rot
+    ) {
+
+    override fun copy() = PlayerShip(s, v, rot, wait)
+
     init {
         geometry.dStyle.lc = XColor.magenta
     }
 
-    var d = Vec2d(0.0, -1.0)
+    // var d = Vec2d(0.0, -1.0)
 
+    val d: Vec2d = Vec2d(0.0, -1.0)
     val turn = 10 * PI / 180.0
-    val thrustFac = 0.5
+    val thrustFac = 0.0
     val lossFac = 0.95
 
     // time to wait between missile firings
     val cooldown = 10
-    var wait = 0
+    // var wait = 0
 
     override fun update(w: Double, h: Double, action: ShipAction, game: AsteroidsGame?) {
         super.update(w, h, action, game)
@@ -318,6 +328,7 @@ class PlayerShip(s: Vec2d) : GameObject(
     }
 
     val missileSpeed = 7.0
+    val missileLifetime = 50
 
     private fun fireMissile(game: AsteroidsGame?) {
         // println("Firing in $game")
@@ -325,29 +336,22 @@ class PlayerShip(s: Vec2d) : GameObject(
         if (wait <= 0) {
             wait = cooldown
             // now fire the missile
-            val missile = Missile(s, d.rotatedBy(rot) * missileSpeed)
+            val missile = Missile(s, d.rotatedBy(rot) * missileSpeed, missileLifetime, true)
             game.addObject(missile)
         }
     }
 }
 
-class Rock(poly: GeomDrawable, s: Vec2d, v: Vec2d, var sizeIndex: Int = 0) : GameObject(
-    poly, ObjectType.AlienObject, s, v
-) {
-    override fun update(w: Double, h: Double, action: ShipAction, game: AsteroidsGame?) {
-        if (colliding)
-            game?.handleRockDeath(this)
-        super.update(w, h, action, game)
-    }
-}
-
-class Missile(s: Vec2d, v: Vec2d) : GameObject(
+class Missile(s: Vec2d, v: Vec2d, var toLive: Int = 5, alive: Boolean = true) : GameObject(
     XEllipse(Vec2d(), 10.0, 10.0),
-    ObjectType.P1Missile, s, v
+    ObjectType.P1Missile, s, v, alive = alive
 ) {
 
-    val lifeTime = 50
-    var toLive = lifeTime
+    override fun copy() = Missile(s, v, toLive, alive)
+
+    override fun radius(): Double {
+        return 2 * super.radius()
+    }
 
     override fun update(w: Double, h: Double, action: ShipAction, game: AsteroidsGame?) {
         toLive--
@@ -358,8 +362,22 @@ class Missile(s: Vec2d, v: Vec2d) : GameObject(
 }
 
 
+class Rock(poly: GeomDrawable, s: Vec2d, v: Vec2d, var sizeIndex: Int = 0) : GameObject(
+    poly, ObjectType.AlienObject, s, v
+) {
+    override fun update(w: Double, h: Double, action: ShipAction, game: AsteroidsGame?) {
+        if (colliding)
+            game?.handleRockDeath(this)
+        super.update(w, h, action, game)
+    }
+
+    override fun copy() = Rock(geometry, s, v, sizeIndex)
+
+}
+
+
 interface RolloutDataSource {
-    fun getData() : List<DoubleArray>?
+    fun getData(): List<DoubleArray>?
 
 }
 
@@ -368,20 +386,24 @@ class ArcadeTestApp : XApp, RolloutDataSource {
     var game: AsteroidsGame? = null
     var controller = AsteroidsKeyController()
 
-    var agent: SimpleEvoAgent? = SimpleEvoAgent(nEvals = 20,
-        sequenceLength = 100, probMutation = 0.2, discountFactor = 0.98)
+    var agent: SimplePlayerInterface? = SimpleEvoAgent(
+        nEvals = 20,
+        sequenceLength = 100, probMutation = 0.2, discountFactor = 0.98
+    )
 
     init {
-        // agent = null
+        agent = null
+        // agent = PolicyEvoAgent()
     }
 
-    override fun getData() : List<DoubleArray>? {
-        return agent?.scores
-    }
+    override fun getData(): List<DoubleArray>? =
+        if (agent is RolloutDataSource)
+            (agent as RolloutDataSource?)?.getData()
+        else null
 
     override fun paint(xg: XGraphics) {
         if (game == null) game = AsteroidsGame(xg.width(), xg.height())
-        val safe = game  // ?.copy() as AsteroidsGame
+        val safe = game?.copy() as AsteroidsGame
         if (safe == null) return
 
         val actionAI =
@@ -402,6 +424,7 @@ class ArcadeTestApp : XApp, RolloutDataSource {
         xg.draw(XRect(xg.centre(), xg.width(), xg.height(), bgstyle))
         gobs.forEach { xg.draw(it.geometry) }
         xg.draw(statusText(xg))
+        game = safe
 
     }
 

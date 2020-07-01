@@ -60,8 +60,8 @@ class TetrisController : XApp , RolloutDataSource{
         TetrisModel.defaultRows = nRows
         TetrisModel.includeColumnDiffs = true
         TetrisModel.gameOverPenalty = 0
-        TetrisModel.cyclicBlockType = false
-        TetrisModel.randomInitialRotation = true
+        TetrisModel.cyclicBlockType = true
+        TetrisModel.randomInitialRotation = false
         TetrisModel.randomShapeColours = false
         TetrisModel.gameOverPenalty = 0
         TetrisModel.dropSkip = 50

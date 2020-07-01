@@ -1,5 +1,7 @@
 package test.arcade
 
+import agents.RandomAgent
+import agents.SimpleEvoAgent
 import games.arcade.ArcadeTestApp
 import games.arcade.AsteroidsGame
 import gui.geometry.ContainsTestApp
@@ -16,6 +18,8 @@ fun main() {
     ec.xg = xg
     AsteroidsGame.useActionAdapter = true
     val app = ArcadeTestApp()
+    app.agent = SimpleEvoAgent(probMutation = 0.05, useMutationTransducer = false)
+    app.agent = RandomAgent()
     ec.xApp = app
     frame.addKeyListener( XKeyAdapter(app))
     ec.addMouseListener( XMouseAdapter(app))

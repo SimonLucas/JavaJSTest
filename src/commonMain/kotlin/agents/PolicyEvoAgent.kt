@@ -2,9 +2,11 @@ package agents
 
 import agents.analyse.StickToPlanRate
 import games.arcade.RolloutDataSource
+import games.tetris.TetrisModel
 import ggi.AbstractGameState
 import ggi.AbstractValueFunction
 import ggi.SimplePlayerInterface
+import kotlin.math.max
 import kotlin.random.Random
 
 
@@ -80,6 +82,7 @@ data class PolicyEvoAgent(
         solutions.clear()
         solutions.add(solution)
         scores.clear()
+        var bestScore = -1000.0
         for (i in 0 until nEvals) {
             // evaluate the current one
             val scoreArrray1 = DoubleArray(solution.size)
@@ -87,6 +90,8 @@ data class PolicyEvoAgent(
             val mut = mutate(solution, probMutation, gameState, playerId)
             val curScore = evalSeq(gameState.copy(), solution, playerId, scoreArrray1)
             val mutScore = evalSeq(gameState.copy(), mut, playerId, scoreArrray2)
+            bestScore = max(bestScore, curScore)
+            bestScore = max(bestScore, mutScore)
             if (mutScore >= curScore) {
                 solution = mut
             }
@@ -97,6 +102,8 @@ data class PolicyEvoAgent(
         buffer = solution
         // only works if planAnalyser is not null
         planAnalyser?.addSequence(solution)
+        println("Selecting: ${solution[0]},\t score = $bestScore, " +
+                "${TetrisModel.cyclicBlockType && !TetrisModel.randomInitialRotation}")
         return solution
     }
 

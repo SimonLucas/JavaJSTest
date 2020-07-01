@@ -29,7 +29,7 @@ class TestArcadeAI() {
         var agent : SimplePlayerInterface = SimpleEvoAgent(sequenceLength = 100,
             nEvals = 20, useMutationTransducer = false,
             discountFactor = 0.99,
-            probMutation = 0.2
+            probMutation = 0.05
         )
         // agent = RandomAgent()
         var step = 0

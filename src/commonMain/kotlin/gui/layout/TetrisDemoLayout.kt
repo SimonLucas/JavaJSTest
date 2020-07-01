@@ -12,7 +12,7 @@ class TetrisDemoLayout : XApp {
     // just pop a sample layout here for now
     val plotApp: EasyGraphPlot = EasyGraphPlot()
     val arcade = TetrisController()
-    val xp = XPalette(seed = 1)
+    val xp = XPalette(seed = 2)
 
     init {
         arcade.agent =  PolicyEvoAgent(
@@ -45,7 +45,7 @@ class TetrisDemoLayout : XApp {
         var cIndex = 0
         val bgRect = XRect(
             xg.centre(), xg.width(), xg.height(),
-            XStyle(fg = xp.colors[cIndex++])
+            XStyle(fg = xp.getColor(cIndex++ ))
         )
         xg.draw(bgRect)
 

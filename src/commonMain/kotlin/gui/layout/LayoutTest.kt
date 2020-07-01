@@ -1,5 +1,8 @@
 package gui.layout
 
+import agents.PolicyEvoAgent
+import agents.RandomAgent
+import agents.SimpleEvoAgent
 import games.arcade.ArcadeTestApp
 import gui.*
 
@@ -9,6 +12,12 @@ class LayoutTest : XApp {
     val plotApp: EasyGraphPlot = EasyGraphPlot()
     val arcade = ArcadeTestApp()
     val xp = XPalette(seed = 1)
+
+    init {
+        arcade.agent = PolicyEvoAgent(probMutation = 0.20, useMutationTransducer = true, discountFactor = 0.98)
+        // arcade.agent = RandomAgent()
+
+    }
 
     override fun paint(xg: XGraphics) {
 
