@@ -1,6 +1,6 @@
 package games.arcade
 
-import games.arcade.Sprite.Companion.d
+import games.arcade.SpriteData.Companion.d
 import games.arcade.vehicles.Asteroid
 import games.arcade.vehicles.Ship
 import ggi.AbstractGameState
@@ -15,7 +15,11 @@ import kotlin.math.PI
 import kotlin.math.min
 import kotlin.random.Random
 
-data class Sprite(
+interface ISprite {
+    
+}
+
+data class SpriteData(
     val geom: GeomDrawable,
     val type: ObjectType,
     var s: Vec2d = Vec2d(),
@@ -34,19 +38,19 @@ class Update(var w: Double, var h: Double) {
 
     // fun spawn
 
-    fun spawnHeading(source: Sprite, geom: GeomDrawable, type: ObjectType, speed: Double): Sprite {
+    fun spawnHeading(source: SpriteData, geom: GeomDrawable, type: ObjectType, speed: Double): SpriteData {
         with(source) {
-            return Sprite(geom, type, s, d.rotatedBy(rot) * speed)
+            return SpriteData(geom, type, s, d.rotatedBy(rot) * speed)
         }
     }
 
-    fun standard(sprite: Sprite) =
+    fun standard(sprite: SpriteData) =
         sprite.copy(
             s = wrap(sprite.s + sprite.v),
             rot = sprite.rot + sprite.rotRate
         )
 
-    fun inplace(sprite: Sprite, action: ShipAction? = null) {
+    fun inplace(sprite: SpriteData, action: ShipAction? = null) {
         sprite.s = wrap(sprite.s + sprite.v)
         sprite.rot = sprite.rot + sprite.rotRate
         sprite.geom.centre = sprite.s
@@ -59,7 +63,7 @@ class Update(var w: Double, var h: Double) {
 
 class SampleSpriteGame(val w: Double = 640.0, val h: Double = 480.0) {
     val bm = BoxMuller()
-    val sprites = ArrayList<Sprite>()
+    val sprites = ArrayList<SpriteData>()
     val rockSizes = arrayOf(0.06, 0.04, 0.02)
     val velocityFactor = 1.0
     val rand = Random
@@ -72,13 +76,13 @@ class SampleSpriteGame(val w: Double = 640.0, val h: Double = 480.0) {
     }
 
     private fun addShip() {
-        sprites.add(Sprite(Ship().getPoly(), ObjectType.Avatar,
+        sprites.add(SpriteData(Ship().getPoly(), ObjectType.Avatar,
             Vec2d(w/2, h/2), Vec2d()))
 
     }
 
     fun createRocks(sizeIndex: Int = 0) {
-        val rocks = ArrayList<Sprite>()
+        val rocks = ArrayList<SpriteData>()
         val nRocks = 10
         while (rocks.size < nRocks) {
             val rock = randRock(sizeIndex)
@@ -87,11 +91,11 @@ class SampleSpriteGame(val w: Double = 640.0, val h: Double = 480.0) {
         sprites.addAll(rocks)
     }
 
-    fun acceptRock(sprite: Sprite): Boolean {
+    fun acceptRock(sprite: SpriteData): Boolean {
         return (Vec2d(w / 2, h / 2).distanceTo(sprite.s) > min(w / 4, h / 4))
     }
 
-    fun randRock(sizeIndex: Int, s: Vec2d = randPosition()): Sprite {
+    fun randRock(sizeIndex: Int, s: Vec2d = randPosition()): SpriteData {
         val size = min(w, h)
         val rad = size * rockSizes[sizeIndex]
         val poly = Asteroid(16, rad, radRange = rad * 0.3).getPoly()
@@ -102,7 +106,7 @@ class SampleSpriteGame(val w: Double = 640.0, val h: Double = 480.0) {
         poly.dStyle = style
         // return Sprite(ellipse, ObjectType.AlienObject, s, v)
         val rotRate = 2 * bm.nextGaussian() * PI / 180
-        return Sprite(poly, ObjectType.AlienObject, s, v, rotRate = rotRate)
+        return SpriteData(poly, ObjectType.AlienObject, s, v, rotRate = rotRate)
     }
 
     fun randPosition() = Vec2d(rand.nextDouble(w), rand.nextDouble(h))
@@ -111,7 +115,7 @@ class SampleSpriteGame(val w: Double = 640.0, val h: Double = 480.0) {
 
 class SpriteGame(
     val update: Update = Update(640.0, 480.0),
-    var sprites: ArrayList<Sprite> = ArrayList(),
+    var sprites: ArrayList<SpriteData> = ArrayList(),
     var score: Double = 0.0,
     var nTicks: Int = 0
 ) : ExtendedAbstractGameState {
@@ -121,7 +125,7 @@ class SpriteGame(
     }
 
     override fun copy(): AbstractGameState {
-        val listCopy = ArrayList<Sprite>()
+        val listCopy = ArrayList<SpriteData>()
         listCopy.addAll(sprites)
         return SpriteGame(update, listCopy, score, nTicks)
     }
@@ -152,8 +156,8 @@ class SpriteGame(
         return this
     }
 
-    fun spriteMap(sprites: List<Sprite>): HashMap<ObjectType, ArrayList<Sprite>> {
-        val map = HashMap<ObjectType, ArrayList<Sprite>>()
+    fun spriteMap(sprites: List<SpriteData>): HashMap<ObjectType, ArrayList<SpriteData>> {
+        val map = HashMap<ObjectType, ArrayList<SpriteData>>()
         for (s in sprites) {
             if (map[s.type] == null) map[s.type] = ArrayList()
             map[s.type]?.add(s)
