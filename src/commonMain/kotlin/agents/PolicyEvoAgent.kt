@@ -102,8 +102,8 @@ data class PolicyEvoAgent(
         buffer = solution
         // only works if planAnalyser is not null
         planAnalyser?.addSequence(solution)
-        println("Selecting: ${solution[0]},\t score = $bestScore, " +
-                "${TetrisModel.cyclicBlockType && !TetrisModel.randomInitialRotation}")
+//        println("Selecting: ${solution[0]},\t score = $bestScore, " +
+//                "${TetrisModel.cyclicBlockType && !TetrisModel.randomInitialRotation}")
         return solution
     }
 

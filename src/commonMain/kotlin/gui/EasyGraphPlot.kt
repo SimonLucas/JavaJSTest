@@ -26,9 +26,7 @@ class EasyGraphPlot (var seed:Int = 1): XApp {
 
         for (a in data) ss.add(a.asList())
         ss.add(0)
-        ss.add(500)
-
-
+        ss.add(5250)
 
         val ssy = StatSummary("Y")
         val ssx = StatSummary("X")

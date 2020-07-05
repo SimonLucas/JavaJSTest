@@ -1,5 +1,6 @@
 package gui.layout
 
+import agents.MctsAgent
 import agents.PolicyEvoAgent
 import agents.RandomAgent
 import agents.SimpleEvoAgent
@@ -14,8 +15,10 @@ class LayoutTest : XApp {
     val xp = XPalette(seed = 1)
 
     init {
-        arcade.agent = PolicyEvoAgent(probMutation = 0.20, useMutationTransducer = true, discountFactor = 0.98)
+        arcade.agent = PolicyEvoAgent(nEvals = 50, sequenceLength = 50, probMutation = 0.20,
+            useMutationTransducer = true, discountFactor = 1.0)
         // arcade.agent = RandomAgent()
+        // arcade.agent = MctsAgent(rolloutLength = 50, nPlayouts = 20)
 
     }
 

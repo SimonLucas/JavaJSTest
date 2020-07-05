@@ -14,12 +14,6 @@ import util.BoxMuller
 import kotlin.math.PI
 import kotlin.math.min
 import kotlin.random.Random
-
-enum class MoveAction { Neutral, Left, Right, Up, Down, Fire, Jump, Thrust }
-
-// not sure where
-enum class ObjectType { Avatar, P1Missile, AlienMissile, AlienObject }
-
 data class AsteroidsParams(
     val nLives: Int = 3
 )
@@ -59,17 +53,23 @@ class AsteroidsGame(
 
 
     fun createRocks(sizeIndex: Int = 0) {
-
-        for (i in 0 until nRocks) {
-            gobs.add(randRock(sizeIndex))
+        val rocks = ArrayList<Rock>()
+        while (rocks.size < nRocks) {
+            val rock = randRock(sizeIndex)
+            if (acceptRock(rock)) rocks.add(rock)
         }
+        gobs.addAll(rocks)
+    }
+
+    fun acceptRock(rock: Rock) : Boolean {
+        return (Vec2d(w/2,h/2).distanceTo(rock.s) > min(w/4, h/4))
     }
 
     // todo fix the error here - the score depends on these things/..
     fun avatarStatus() = gobMap[ObjectType.Avatar] != null
     fun countRocks() = gobMap[ObjectType.AlienObject]?.size
 
-    val nSpawns = 2
+    val nSpawns = 3
 
     fun handleRockDeath(rock: Rock) {
         intScore += rockScores[rock.sizeIndex]
@@ -83,9 +83,12 @@ class AsteroidsGame(
 
     fun randRock(sizeIndex: Int, s: Vec2d = randPosition()): Rock {
         val size = min(w, h)
-        val poly = Asteroid(8, size * rockSizes[sizeIndex]).getPoly()
+        val rad = size * rockSizes[sizeIndex]
+        val poly = Asteroid(8, rad).getPoly()
         val v = Vec2d(bm.nextGaussian(), bm.nextGaussian()) * velocityFactor
-        return Rock(poly, s, v, sizeIndex)
+        val ellipse = XEllipse(s, rad*2, rad*2)
+        // return Rock(poly, s, v, sizeIndex)
+        return Rock(ellipse, s, v, sizeIndex)
     }
 
     fun randPosition() = Vec2d(rand.nextDouble(w), rand.nextDouble(h))
@@ -235,7 +238,6 @@ open class GameObject(
     var alive: Boolean = true,
     var colliding: Boolean = false,
     var age: Int = 0
-
 ) {
 
     open fun radius() = geometry.radius()
@@ -308,8 +310,8 @@ class PlayerShip(
 
     val d: Vec2d = Vec2d(0.0, -1.0)
     val turn = 10 * PI / 180.0
-    val thrustFac = 0.0
-    val lossFac = 0.95
+    val thrustFac = 0.5
+    val lossFac = 0.97
 
     // time to wait between missile firings
     val cooldown = 10
@@ -375,134 +377,3 @@ class Rock(poly: GeomDrawable, s: Vec2d, v: Vec2d, var sizeIndex: Int = 0) : Gam
 
 }
 
-
-interface RolloutDataSource {
-    fun getData(): List<DoubleArray>?
-
-}
-
-class ArcadeTestApp : XApp, RolloutDataSource {
-    var mp: Vec2d? = null
-    var game: AsteroidsGame? = null
-    var controller = AsteroidsKeyController()
-
-    var agent: SimplePlayerInterface? = SimpleEvoAgent(
-        nEvals = 20,
-        sequenceLength = 100, probMutation = 0.2, discountFactor = 0.98
-    )
-
-    init {
-        agent = null
-        // agent = PolicyEvoAgent()
-    }
-
-    override fun getData(): List<DoubleArray>? =
-        if (agent is RolloutDataSource)
-            (agent as RolloutDataSource?)?.getData()
-        else null
-
-    override fun paint(xg: XGraphics) {
-        if (game == null) game = AsteroidsGame(xg.width(), xg.height())
-        val safe = game?.copy() as AsteroidsGame
-        if (safe == null) return
-
-        val actionAI =
-            if (agent != null && game != null)
-                agent?.getAction(game!!, 0)
-            else null
-
-
-        if (actionAI == null) {
-            safe.next(controller.getAction(safe, 0))
-        } else {
-            safe.next(intArrayOf(actionAI))
-        }
-
-        // now for drawing, make a copy of the state first
-        val gobs = safe.gameObjects()
-        val bgstyle = XStyle(fg = XColor.black)
-        xg.draw(XRect(xg.centre(), xg.width(), xg.height(), bgstyle))
-        gobs.forEach { xg.draw(it.geometry) }
-        xg.draw(statusText(xg))
-        game = safe
-
-    }
-
-    private fun statusText(xg: XGraphics): Drawable {
-        val rocks = game?.countRocks() ?: 0
-        val avatar = game?.avatarStatus()
-        val str = "Score: ${game?.intScore}, [$avatar, $rocks, ${game?.nTicks()}]"
-        val text = XText(
-            str, Vec2d(xg.width() / 2, xg.height() / 20)
-        )
-        return text
-    }
-
-    override fun handleMouseEvent(e: XMouseEvent) {
-        // println(e)
-        mp = e.s
-    }
-
-    override fun handleKeyEvent(e: XKeyEvent) {
-        // need a standard keymap approach here
-        controller.handleKeyEvent(e)
-    }
-
-}
-
-class AsteroidsKeyController {
-
-    val action = ShipAction()
-
-    fun handleKeyEvent(e: XKeyEvent) {
-        // println(e)
-        if (e.t == XKeyEventType.Pressed || e.t == XKeyEventType.Down) {
-            keyPressed(e.keyCode)
-            // println("Set current key to $currentKey")
-        } else if (e.t == XKeyEventType.Released) {
-            keyReleased(e.keyCode)
-        }
-    }
-
-    fun keyPressed(keyCode: Int) {
-        when (keyCode) {
-            XKeyMap.left -> action.turn = -1.0
-            XKeyMap.right -> action.turn = 1.0
-            XKeyMap.space -> action.fire = true
-            XKeyMap.up -> action.thrust = true
-        }
-    }
-
-    fun keyReleased(keyCode: Int) {
-        when (keyCode) {
-            XKeyMap.left -> action.turn = 0.0
-            XKeyMap.right -> action.turn = 0.0
-            XKeyMap.space -> action.fire = false
-            XKeyMap.up -> action.thrust = false
-        }
-    }
-
-    fun getAction(gameState: AbstractGameState, playerId: Int) = action
-
-    fun getAgentType(): String {
-        return "Asteroids Key Controller"
-    }
-}
-
-data class ShipAction(var turn: Double = 0.0, var thrust: Boolean = false, var fire: Boolean = false)
-
-class ActionAdapter {
-    var actions = ArrayList<ShipAction>()
-
-    init {
-        for (turn in sequenceOf(-1.0, 0.0, 1.0))
-            for (thrust in sequenceOf(false, true))
-                for (fire in sequenceOf(false, true)) {
-                    actions.add(ShipAction(turn, thrust, fire))
-                }
-    }
-
-    fun getAction(i: Int): ShipAction {
-        return actions[i]
-    }
-}

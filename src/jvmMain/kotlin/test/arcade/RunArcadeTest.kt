@@ -4,6 +4,7 @@ import agents.RandomAgent
 import agents.SimpleEvoAgent
 import games.arcade.ArcadeTestApp
 import games.arcade.AsteroidsGame
+import games.arcade.SpriteEngineApp
 import gui.geometry.ContainsTestApp
 import test.EasyComponent
 import test.XGraphicsJVM
@@ -17,9 +18,10 @@ fun main() {
     val xg = XGraphicsJVM(ec)
     ec.xg = xg
     AsteroidsGame.useActionAdapter = true
-    val app = ArcadeTestApp()
-    app.agent = SimpleEvoAgent(probMutation = 0.05, useMutationTransducer = false)
-    app.agent = RandomAgent()
+    // val app = ArcadeTestApp()
+    val app = SpriteEngineApp()
+    // app.agent = SimpleEvoAgent(probMutation = 0.05, useMutationTransducer = false)
+    // app.agent = RandomAgent()
     ec.xApp = app
     frame.addKeyListener( XKeyAdapter(app))
     ec.addMouseListener( XMouseAdapter(app))

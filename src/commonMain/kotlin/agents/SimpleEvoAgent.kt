@@ -9,13 +9,16 @@ data class SimpleEvoAgent(
     var flipAtLeastOneValue: Boolean = true,
     // var expectedMutations: Double = 10.0,
     var probMutation: Double = 0.2,
+    var totallyRandomMutations: Boolean = false,
     var sequenceLength: Int = 200,
     var nEvals: Int = 20,
     var useShiftBuffer: Boolean = true,
     var useMutationTransducer: Boolean = true,
     var repeatProb: Double = 0.5,  // only used with mutation transducer
     var discountFactor: Double? = null,
-    var opponentModel: SimplePlayerInterface = DoNothingAgent()
+    var opponentModel: SimplePlayerInterface = DoNothingAgent(),
+    var epsilon: Double = 1e-6
+
 ) : SimplePlayerInterface {
     override fun getAgentType(): String {
         return "SimpleEvoAgent"
@@ -56,8 +59,8 @@ data class SimpleEvoAgent(
             val scoreArrray1 = DoubleArray(solution.size)
             val scoreArrray2 = DoubleArray(solution.size)
             val mut = mutate(solution, probMutation, gameState.nActions())
-            val curScore = evalSeq(gameState.copy(), solution, playerId, scoreArrray1)
-            val mutScore = evalSeq(gameState.copy(), mut, playerId, scoreArrray2)
+            val curScore = epsilon * random.nextDouble() + evalSeq(gameState.copy(), solution, playerId, scoreArrray1)
+            val mutScore = epsilon * random.nextDouble() + evalSeq(gameState.copy(), mut, playerId, scoreArrray2)
             if (mutScore >= curScore) {
                 solution = mut
 //                if (mutScore > curScore) {
@@ -76,6 +79,10 @@ data class SimpleEvoAgent(
     }
 
     private fun mutate(v: IntArray, mutProb: Double, nActions: Int): IntArray {
+
+        if (totallyRandomMutations) {
+            return randomPoint(nActions)
+        }
 
         if (useMutationTransducer) {
             // build it dynamically in case any of the params have changed
