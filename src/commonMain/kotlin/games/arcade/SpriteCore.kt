@@ -145,6 +145,8 @@ class SampleSpriteGame(val w: Double = 640.0, val h: Double = 480.0) {
     val velocityFactor = 1.0
     val rand = Random
 
+
+
     fun asteroids(): SpriteGame {
         val update = Update(w, h)
         createRocks()
@@ -197,7 +199,15 @@ class SpriteGame(
 
     companion object {
         internal var totalTicks = 0L
+
+        // this should be defined elsewhere and then
+        // just passed as an argument
+        val collisionMap = hashMapOf<ObjectType, List<ObjectType>>(
+            ObjectType.Avatar to arrayListOf(ObjectType.AlienObject),
+            ObjectType.P1Missile to arrayListOf(ObjectType.AlienObject)
+        )
     }
+
 
     // val pending =
 
