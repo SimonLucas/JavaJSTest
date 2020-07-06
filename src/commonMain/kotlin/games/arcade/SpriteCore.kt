@@ -16,7 +16,9 @@ import kotlin.math.min
 import kotlin.random.Random
 
 interface ISprite {
-    
+    fun update(action: ShipAction, updater: Update)
+    fun data(): SpriteData
+    fun copy(): ISprite
 }
 
 data class SpriteData(
@@ -25,7 +27,9 @@ data class SpriteData(
     var s: Vec2d = Vec2d(),
     var v: Vec2d = Vec2d(),
     var rot: Double = 0.0,
-    var rotRate: Double = 0.0
+    var rotRate: Double = 0.0,
+    var ttl: Int = -1,
+    var alive: Boolean = true
 ) {
     companion object {
         val d = Vec2d(0.0, -1.0)
@@ -33,8 +37,63 @@ data class SpriteData(
     }
 }
 
+class BasicSprite(var spriteData: SpriteData) : ISprite {
+    override fun update(action: ShipAction, updater: Update) {
+        // println("Updating Basic Sprite")
+        updater.inplace(spriteData, action)
+    }
+
+    override fun data() = spriteData
+    override fun copy() = BasicSprite(spriteData.copy())
+}
+
+class SpriteShip(val sd: SpriteData, var wait: Int = 0) : ISprite {
+
+    constructor(s: Vec2d) : this (makeData(s))
+
+    override fun data() = sd
+    override fun copy(): ISprite = SpriteShip(sd, wait)
+
+    companion object {
+        val lossFac = 0.97
+        val thrustFac = 0.5
+        val turn = 20 * PI / 180
+        val muzzleVelocity = 5.0
+        val coolDown = 10
+        fun makeData(s: Vec2d) = SpriteData(
+            Ship().getPoly(), ObjectType.Avatar,
+            s, Vec2d()
+        )
+    }
+
+    override fun update(action: ShipAction, updater: Update) {
+        // println("Updating")
+        updater.inplace(sd, action)
+
+        // put the code here for now, but the aim is to move it later
+        // into a general library of update code that can be applied
+        // to various object types
+
+        if (wait > 0) wait--
+        if (action.fire && wait <= 0) {
+            updater.fireMissile(sd, muzzleVelocity)
+            wait = coolDown
+        }
+        with(sd) {
+            if (action.thrust) v = v + (d.rotatedBy(rot) * thrustFac)
+            v *= lossFac
+            rot += action.turn * turn
+//        geometry.dStyle.stroke = colliding
+//        geometry.dStyle.fill = true
+//        if (colliding) game?.shipDeath()
+        }
+
+    }
+
+}
+
 // some updates wrap, so need to know the dimensions of the arena
-class Update(var w: Double, var h: Double) {
+class Update(var w: Double, var h: Double, var game: SpriteGame? = null) {
 
     // fun spawn
 
@@ -44,6 +103,18 @@ class Update(var w: Double, var h: Double) {
         }
     }
 
+    fun fireMissile(source: SpriteData, speed: Double) {
+        val safe = game
+        if (safe == null) {
+            println("Null game in updater; not firing missile")
+            return
+        }
+        val geom = XEllipse(Vec2d(), 10.0, 10.0)
+        val missile = spawnHeading(source, geom, ObjectType.P1Missile, speed)
+        missile.ttl = 50
+        safe.addObject(BasicSprite(missile))
+    }
+
     fun standard(sprite: SpriteData) =
         sprite.copy(
             s = wrap(sprite.s + sprite.v),
@@ -51,19 +122,25 @@ class Update(var w: Double, var h: Double) {
         )
 
     fun inplace(sprite: SpriteData, action: ShipAction? = null) {
+        // move this default updater to the SpriteData class
         sprite.s = wrap(sprite.s + sprite.v)
         sprite.rot = sprite.rot + sprite.rotRate
         sprite.geom.centre = sprite.s
         sprite.geom.rotation = sprite.rot
+        if (sprite.ttl > 0) {
+            sprite.ttl--
+            if (sprite.ttl <= 0) sprite.alive = false
+        }
     }
 // fun actionUpdate(sprite: Sprite) = Sprite(sprite.geom)
 
     fun wrap(s: Vec2d) = Vec2d((s.x + w) % w, (s.y + h) % h)
+
 }
 
 class SampleSpriteGame(val w: Double = 640.0, val h: Double = 480.0) {
     val bm = BoxMuller()
-    val sprites = ArrayList<SpriteData>()
+    val sprites = ArrayList<ISprite>()
     val rockSizes = arrayOf(0.06, 0.04, 0.02)
     val velocityFactor = 1.0
     val rand = Random
@@ -76,17 +153,15 @@ class SampleSpriteGame(val w: Double = 640.0, val h: Double = 480.0) {
     }
 
     private fun addShip() {
-        sprites.add(SpriteData(Ship().getPoly(), ObjectType.Avatar,
-            Vec2d(w/2, h/2), Vec2d()))
-
+        sprites.add(SpriteShip(Vec2d(w / 2, h / 2)))
     }
 
     fun createRocks(sizeIndex: Int = 0) {
-        val rocks = ArrayList<SpriteData>()
+        val rocks = ArrayList<ISprite>()
         val nRocks = 10
         while (rocks.size < nRocks) {
             val rock = randRock(sizeIndex)
-            if (acceptRock(rock)) rocks.add(rock)
+            if (acceptRock(rock.spriteData)) rocks.add(rock)
         }
         sprites.addAll(rocks)
     }
@@ -95,7 +170,7 @@ class SampleSpriteGame(val w: Double = 640.0, val h: Double = 480.0) {
         return (Vec2d(w / 2, h / 2).distanceTo(sprite.s) > min(w / 4, h / 4))
     }
 
-    fun randRock(sizeIndex: Int, s: Vec2d = randPosition()): SpriteData {
+    fun randRock(sizeIndex: Int, s: Vec2d = randPosition()): BasicSprite {
         val size = min(w, h)
         val rad = size * rockSizes[sizeIndex]
         val poly = Asteroid(16, rad, radRange = rad * 0.3).getPoly()
@@ -106,7 +181,7 @@ class SampleSpriteGame(val w: Double = 640.0, val h: Double = 480.0) {
         poly.dStyle = style
         // return Sprite(ellipse, ObjectType.AlienObject, s, v)
         val rotRate = 2 * bm.nextGaussian() * PI / 180
-        return SpriteData(poly, ObjectType.AlienObject, s, v, rotRate = rotRate)
+        return BasicSprite(SpriteData(poly, ObjectType.AlienObject, s, v, rotRate = rotRate))
     }
 
     fun randPosition() = Vec2d(rand.nextDouble(w), rand.nextDouble(h))
@@ -115,7 +190,7 @@ class SampleSpriteGame(val w: Double = 640.0, val h: Double = 480.0) {
 
 class SpriteGame(
     val update: Update = Update(640.0, 480.0),
-    var sprites: ArrayList<SpriteData> = ArrayList(),
+    var sprites: ArrayList<ISprite> = ArrayList(),
     var score: Double = 0.0,
     var nTicks: Int = 0
 ) : ExtendedAbstractGameState {
@@ -124,9 +199,11 @@ class SpriteGame(
         internal var totalTicks = 0L
     }
 
+    // val pending =
+
     override fun copy(): AbstractGameState {
-        val listCopy = ArrayList<SpriteData>()
-        listCopy.addAll(sprites)
+        val listCopy = ArrayList<ISprite>()
+        for (s in sprites) listCopy.add(s.copy())
         return SpriteGame(update, listCopy, score, nTicks)
     }
 
@@ -147,20 +224,28 @@ class SpriteGame(
         // if (action == null) return this
         // make a sprite map
         val map = spriteMap(sprites)
-        for (sprite in sprites) {
-            update.inplace(sprite)
+        val safeList = ArrayList<ISprite>()
+        safeList.addAll(sprites)
+        sprites.clear()
+        update.game = this
+        for (sprite in safeList) {
+            // update.inplace(sprite.data(), action)
+            sprite.update(action, update)
         }
+        // println(sprites.size.toString() + " : " + action)
         AsteroidsGame.totalTicks++
         nTicks++
         // println(sprites[0].s)
+        for (s in safeList) if (s.data().alive) sprites.add(s)
+        // sprites = safeList
         return this
     }
 
-    fun spriteMap(sprites: List<SpriteData>): HashMap<ObjectType, ArrayList<SpriteData>> {
-        val map = HashMap<ObjectType, ArrayList<SpriteData>>()
+    fun spriteMap(sprites: List<ISprite>): HashMap<ObjectType, ArrayList<ISprite>> {
+        val map = HashMap<ObjectType, ArrayList<ISprite>>()
         for (s in sprites) {
-            if (map[s.type] == null) map[s.type] = ArrayList()
-            map[s.type]?.add(s)
+            if (map[s.data().type] == null) map[s.data().type] = ArrayList()
+            map[s.data().type]?.add(s)
         }
         return map
     }
@@ -191,6 +276,11 @@ class SpriteGame(
 
     override fun nTicks(): Int {
         return nTicks
+    }
+
+    fun addObject(sprite: ISprite) {
+        println("Added " + sprite.data())
+        sprites.add(sprite)
     }
 }
 

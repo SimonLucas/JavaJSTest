@@ -48,7 +48,7 @@ class SpriteEngineApp : XApp, RolloutDataSource {
         // now for drawing, make a copy of the state first
         val bgstyle = XStyle(fg = XColor.black)
         xg.draw(XRect(xg.centre(), xg.width(), xg.height(), bgstyle))
-        safe.sprites.forEach { xg.draw(it.geom) }
+        safe.sprites.forEach { xg.draw(it.data().geom) }
         // println()
         xg.draw(statusText(xg))
         game = safe
