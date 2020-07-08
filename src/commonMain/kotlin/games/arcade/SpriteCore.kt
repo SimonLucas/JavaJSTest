@@ -202,7 +202,7 @@ class SpriteGame(
 
         // this should be defined elsewhere and then
         // just passed as an argument
-        val collisionMap = hashMapOf<ObjectType, List<ObjectType>>(
+        val typeMap = hashMapOf<ObjectType, List<ObjectType>>(
             ObjectType.Avatar to arrayListOf(ObjectType.AlienObject),
             ObjectType.P1Missile to arrayListOf(ObjectType.AlienObject)
         )
@@ -233,14 +233,18 @@ class SpriteGame(
     fun next(action: ShipAction): AbstractGameState {
         // if (action == null) return this
         // make a sprite map
-        val map = spriteMap(sprites)
+        val spriteMap = spriteMap(sprites)
         val safeList = ArrayList<ISprite>()
         safeList.addAll(sprites)
         sprites.clear()
         update.game = this
         for (sprite in safeList) {
             // update.inplace(sprite.data(), action)
-            sprite.update(action, update)
+            if (sprite.data().alive) {
+                sprite.update(action, update)
+                // now at this point do some collision detection!
+                checkCollisions(sprite, typeMap, spriteMap)
+            }
         }
         // println(sprites.size.toString() + " : " + action)
         AsteroidsGame.totalTicks++
@@ -250,6 +254,30 @@ class SpriteGame(
         // sprites = safeList
         return this
     }
+
+    private fun checkCollisions(
+        sprite: ISprite,
+        typeMap: HashMap<ObjectType, List<ObjectType>>,
+        spriteMap: HashMap<ObjectType, ArrayList<ISprite>>
+    ) {
+        val colliderTypes = typeMap[sprite.data().type]
+        if (colliderTypes == null) return
+        for (collider in colliderTypes) {
+            spriteMap[collider]?.forEach {
+                // test by just killing them both if they collide
+                if (collides(sprite, it)) {
+                    // only allow one collision per object, so return after triggering the events
+                    sprite.data().alive = false
+                    it.data().alive = false
+                    return
+                }
+            }
+        }
+    }
+    
+    private fun collides (a: ISprite, b: ISprite) =
+        a.data().s.distanceTo(b.data().s) <=
+                a.data().geom.radius() + b.data().geom.radius()
 
     fun spriteMap(sprites: List<ISprite>): HashMap<ObjectType, ArrayList<ISprite>> {
         val map = HashMap<ObjectType, ArrayList<ISprite>>()
