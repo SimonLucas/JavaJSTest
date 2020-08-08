@@ -47,18 +47,31 @@ class BasicSprite(var spriteData: SpriteData) : ISprite {
     override fun copy() = BasicSprite(spriteData.copy())
 }
 
+class RockSprite(var sd: SpriteData, val sizeIndex: Int = 0) : ISprite {
+    // constructor(s: Vec2d) : this (makeData(s))
+
+    override fun data() = sd
+    override fun copy(): ISprite = RockSprite(sd.copy(), sizeIndex)
+
+    override fun update(action: ShipAction, updater: Update) {
+        // println("Updating Basic Sprite")
+        updater.inplace(sd, action)
+    }
+
+}
+
 class SpriteShip(val sd: SpriteData, var wait: Int = 0) : ISprite {
 
     constructor(s: Vec2d) : this (makeData(s))
 
     override fun data() = sd
-    override fun copy(): ISprite = SpriteShip(sd, wait)
+    override fun copy(): ISprite = SpriteShip(sd.copy(), wait)
 
     companion object {
         val lossFac = 0.97
         val thrustFac = 0.5
-        val turn = 20 * PI / 180
-        val muzzleVelocity = 5.0
+        val turn = 10 * PI / 180
+        val muzzleVelocity = 10.0
         val coolDown = 10
         fun makeData(s: Vec2d) = SpriteData(
             Ship().getPoly(), ObjectType.Avatar,
@@ -89,7 +102,24 @@ class SpriteShip(val sd: SpriteData, var wait: Int = 0) : ISprite {
         }
 
     }
+}
 
+interface CollisionAction {
+    fun act(a: ISprite, b: ISprite, game: SpriteGame?)
+}
+
+typealias Collider = (ISprite, ISprite, SpriteGame?) -> Unit
+
+val rockHit: Collider = {a, b, g ->
+    // if (a.data())
+    // println("Colliding: " + a + " : "  + g)
+    if (g != null && a is RockSprite) {
+        // println("Rock was hit at ${a.sd.s}")
+        val child = g.update.spawnHeading(a.sd, XEllipse(Vec2d(), 10.0, 20.0),
+            ObjectType.AlienObject, a.sd.v.mag*2)
+        g.addObject(RockSprite(a.sd.copy(alive = true, rot = a.sd.rot + PI / 2), sizeIndex = 1))
+        g.score += 100
+    }
 }
 
 // some updates wrap, so need to know the dimensions of the arena
@@ -145,8 +175,6 @@ class SampleSpriteGame(val w: Double = 640.0, val h: Double = 480.0) {
     val velocityFactor = 1.0
     val rand = Random
 
-
-
     fun asteroids(): SpriteGame {
         val update = Update(w, h)
         createRocks()
@@ -163,7 +191,7 @@ class SampleSpriteGame(val w: Double = 640.0, val h: Double = 480.0) {
         val nRocks = 10
         while (rocks.size < nRocks) {
             val rock = randRock(sizeIndex)
-            if (acceptRock(rock.spriteData)) rocks.add(rock)
+            if (acceptRock(rock.data())) rocks.add(rock)
         }
         sprites.addAll(rocks)
     }
@@ -172,7 +200,7 @@ class SampleSpriteGame(val w: Double = 640.0, val h: Double = 480.0) {
         return (Vec2d(w / 2, h / 2).distanceTo(sprite.s) > min(w / 4, h / 4))
     }
 
-    fun randRock(sizeIndex: Int, s: Vec2d = randPosition()): BasicSprite {
+    fun randRock(sizeIndex: Int, s: Vec2d = randPosition()): RockSprite {
         val size = min(w, h)
         val rad = size * rockSizes[sizeIndex]
         val poly = Asteroid(16, rad, radRange = rad * 0.3).getPoly()
@@ -183,7 +211,7 @@ class SampleSpriteGame(val w: Double = 640.0, val h: Double = 480.0) {
         poly.dStyle = style
         // return Sprite(ellipse, ObjectType.AlienObject, s, v)
         val rotRate = 2 * bm.nextGaussian() * PI / 180
-        return BasicSprite(SpriteData(poly, ObjectType.AlienObject, s, v, rotRate = rotRate))
+        return RockSprite(SpriteData(poly, ObjectType.AlienObject, s, v, rotRate = rotRate))
     }
 
     fun randPosition() = Vec2d(rand.nextDouble(w), rand.nextDouble(h))
@@ -206,8 +234,11 @@ class SpriteGame(
             ObjectType.Avatar to arrayListOf(ObjectType.AlienObject),
             ObjectType.P1Missile to arrayListOf(ObjectType.AlienObject)
         )
-    }
 
+        val colliders = hashMapOf<ObjectType,Collider>(
+            ObjectType.AlienObject to rockHit
+        )
+    }
 
     // val pending =
 
@@ -269,13 +300,16 @@ class SpriteGame(
                     // only allow one collision per object, so return after triggering the events
                     sprite.data().alive = false
                     it.data().alive = false
+                    colliders[sprite.data().type]?.invoke(sprite, it, update.game)
+                    colliders[it.data().type]?.invoke(it, sprite, update.game)
                     return
                 }
             }
         }
     }
-    
+
     private fun collides (a: ISprite, b: ISprite) =
+        a.data().alive && b.data().alive &&
         a.data().s.distanceTo(b.data().s) <=
                 a.data().geom.radius() + b.data().geom.radius()
 
@@ -317,7 +351,7 @@ class SpriteGame(
     }
 
     fun addObject(sprite: ISprite) {
-        println("Added " + sprite.data())
+        // println("Added " + sprite.data())
         sprites.add(sprite)
     }
 }

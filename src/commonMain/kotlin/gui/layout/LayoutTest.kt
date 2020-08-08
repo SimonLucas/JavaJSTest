@@ -5,20 +5,22 @@ import agents.PolicyEvoAgent
 import agents.RandomAgent
 import agents.SimpleEvoAgent
 import games.arcade.ArcadeTestApp
+import games.arcade.SpriteEngineApp
 import gui.*
 
 class LayoutTest : XApp {
 
     // just pop a sample layout here for now
     val plotApp: EasyGraphPlot = EasyGraphPlot()
-    val arcade = ArcadeTestApp()
+    // val arcade = ArcadeTestApp()
+    val arcade = SpriteEngineApp()
     val xp = XPalette(seed = 1)
 
     init {
         arcade.agent = PolicyEvoAgent(nEvals = 50, sequenceLength = 50, probMutation = 0.20,
-            useMutationTransducer = true, discountFactor = 1.0)
+            useMutationTransducer = true, discountFactor = 0.99, useShiftBuffer = true)
         // arcade.agent = RandomAgent()
-        // arcade.agent = MctsAgent(rolloutLength = 50, nPlayouts = 20)
+        // arcade.agent = MctsAgent(rolloutLength = 50, nPlayouts = 50)
 
     }
 

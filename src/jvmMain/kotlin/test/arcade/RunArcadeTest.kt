@@ -1,5 +1,6 @@
 package test.arcade
 
+import agents.MctsAgent
 import agents.RandomAgent
 import agents.SimpleEvoAgent
 import games.arcade.ArcadeTestApp
@@ -20,8 +21,9 @@ fun main() {
     AsteroidsGame.useActionAdapter = true
     // val app = ArcadeTestApp()
     val app = SpriteEngineApp()
-    // app.agent = SimpleEvoAgent(probMutation = 0.05, useMutationTransducer = false)
+    app.agent = SimpleEvoAgent(probMutation = 0.05, useMutationTransducer = false)
     // app.agent = RandomAgent()
+    app.agent = MctsAgent(rolloutLength = 50, nPlayouts = 50)
     ec.xApp = app
     frame.addKeyListener( XKeyAdapter(app))
     ec.addMouseListener( XMouseAdapter(app))
