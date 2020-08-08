@@ -1,16 +1,16 @@
 package test.subgoal
 
 import games.subgoal.Levels
-import games.tetris.TetrisConstants
 import ggi.AbstractGameState
+import ggi.ExtendedAbstractGameState
 import math.IntVec2d
 import math.iv
 import java.util.HashMap
 
 fun main() {
 
-    val gridWorld = SubGridWorld(Levels.subgoals)
-    val n = 10
+    val gridWorld = SubGridWorld(Levels.midroom)
+    val n = 20
 
     var dm = DiffusionModel()
     dm.seed(gridWorld.avatar)
@@ -63,12 +63,62 @@ class DiffusionModel (val map: HashMap<IntVec2d, Double> = HashMap()){
     }
 }
 
-data class SubGridState (var s: IntVec2d, val grid: SubGridWorld) {
+data class SubGridSnap (var s: IntVec2d, var score: Double, var subgoalReached: Boolean)
+
+class SubGridState (var s: IntVec2d, val grid: SubGridWorld, var nTicks:Int=0,
+                    var subgoalReached: Boolean = false) : ExtendedAbstractGameState {
+
+    override fun toString(): String {
+        return SubGridSnap(s, score(), subgoalReached ).toString()
+    }
+
+    override fun next(actions: IntArray): AbstractGameState {
+        next(actions[0])
+        return this
+    }
+
     fun next(action: Int) {
         val temp = s + grid.actions[action]
-        if (grid.navigable(temp))
+        if (grid.navigable(temp)) {
             s = temp
+            if (grid.atSubgoal(s)) subgoalReached = true
+        }
+        // only increment if the subgoal has not yet been reached
+        if (!subgoalReached) nTicks++
     }
+
+    companion object {
+        var totalTicks:Long = 0
+        val subGoalScore = 100.0
+        val goalScore = 1000.0
+    }
+
+    override fun totalTicks() = totalTicks
+
+    override fun resetTotalTicks() {
+        totalTicks = 0
+    }
+
+    override fun randomInitialState(): AbstractGameState {
+        TODO("Not yet implemented")
+    }
+
+    override fun copy(): AbstractGameState {
+        return SubGridState(s.copy(), grid, nTicks, subgoalReached)
+    }
+
+    override fun nActions() = grid.nActions()
+
+    override fun score(): Double {
+        var x: Double = if (subgoalReached) subGoalScore else 0.0
+        return x - nTicks
+    }
+
+    override fun isTerminal(): Boolean {
+        return grid.atGoal(s)
+    }
+
+    override fun nTicks() = nTicks
 }
 
 class SubGridWorld(val str: String) {
@@ -145,4 +195,3 @@ fun copyTest() {
     // println(s1.copy())
 
 }
-

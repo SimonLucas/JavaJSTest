@@ -63,10 +63,11 @@ data class SimpleEvoAgent(
             val mutScore = epsilon * random.nextDouble() + evalSeq(gameState.copy(), mut, playerId, scoreArrray2)
             if (mutScore >= curScore) {
                 solution = mut
-//                if (mutScore > curScore) {
+                if (mutScore > curScore) {
 //                    println(scoreArrray1.asList())
 //                    println(scoreArrray2.asList())
-//                }
+                    println("$i:\t $mutScore > $curScore")
+                }
             }
             solutions.add(mut)
             scores.add(scoreArrray1)
