@@ -10,7 +10,7 @@ import java.util.HashMap
 fun main() {
 
     val gridWorld = SubGridWorld(Levels.subgoals)
-    val n = 10000
+    val n = 10
 
     var dm = DiffusionModel()
     dm.seed(gridWorld.avatar)
@@ -89,6 +89,7 @@ class SubGridWorld(val str: String) {
 
     val actions = arrayListOf(iv(1,0), iv(0, 1), iv(-1, 0), iv(0, -1))
 
+    var navigables = 0
     init {
         val lines = str.lines()
         nCols = lines[0].length
@@ -98,6 +99,7 @@ class SubGridWorld(val str: String) {
             for (j in 0 until nRows) {
                 a[i][j] = lines[j][i]
 
+                if (navigable(iv(i,j))) navigables++
                 when(a[i][j]) {
                     goalChar -> goal = iv(i,j)
                     subGoalChar -> subgoals.add(iv(i,j))
@@ -108,6 +110,8 @@ class SubGridWorld(val str: String) {
         if (allowDoNothing) actions.add(iv(0,0))
         subgoals.add(goal)
         println("Goal position: " + goal)
+        println("Navigable locations = $navigables" )
+        println(1.0 / navigables)
     }
 
     fun navigable(iv: IntVec2d) = a[iv.x][iv.y] != wallChar
