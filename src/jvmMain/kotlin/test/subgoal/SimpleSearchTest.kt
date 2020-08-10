@@ -38,7 +38,7 @@ fun simpleEvoTest(nTrials: Int) : StatSummary {
 
 
 fun simpleSeqTest() {
-    val agent = SimpleEvoAgent(sequenceLength = 50, nEvals = 2000, totallyRandomMutations = true)
+    val agent = SimpleEvoAgent(sequenceLength = 50, nEvals = 2000, totallyRandomMutations = false)
     val grid = SubGridWorld(Levels.doorway)
     val game = SubGridState(grid.startPosition(), grid)
 
