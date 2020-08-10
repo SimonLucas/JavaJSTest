@@ -135,7 +135,7 @@ class SubGridWorld(val str: String) {
     val subGoalChar = 's'
     val avatarChar = 'A'
 
-    val allowDoNothing = false
+    val allowDoNothing = true
 
     val actions = arrayListOf(iv(1,0), iv(0, 1), iv(-1, 0), iv(0, -1))
 

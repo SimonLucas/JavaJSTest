@@ -3,26 +3,39 @@ package test.subgoal
 import agents.SimpleEvoAgent
 import agents.random
 import games.subgoal.Levels
+// import util.ElapsedTimer
+import util.StatSummary
+import utilities.ElapsedTimer
 import kotlin.random.Random
 
 fun main() {
-    simpleEvoTest()
-}
 
-fun simpleEvoTest() {
-    val agent = SimpleEvoAgent(sequenceLength = 30, nEvals = 100, totallyRandomMutations = false)
-    val grid = SubGridWorld(Levels.midroom)
-    println("Subgoals: ${grid.subgoals}")
-
-    val game = SubGridState(grid.startPosition(), grid)
-
-    // now see how well it does
-
-    val action = agent.getAction(game, 0)
-    println("Action selected = $action")
-
+    val t = ElapsedTimer()
+    val ss = simpleEvoTest(100)
+    println(ss)
+    println(t)
 
 }
+
+
+
+fun simpleEvoTest(nTrials: Int) : StatSummary {
+    val ss = StatSummary()
+    for (i in 1 .. nTrials) {
+        val agent = SimpleEvoAgent(sequenceLength = 40, nEvals = 500,
+            totallyRandomMutations = false, probMutation = 0.3)
+        val grid = SubGridWorld(Levels.midroom)
+        println("Subgoals: ${grid.subgoals}")
+
+        val game = SubGridState(grid.startPosition(), grid)
+        val action = agent.getAction(game, 0)
+        // println("Action selected = $action")
+        val best = agent.bestScore
+        if (best != null) ss.add(best)
+    }
+    return ss
+}
+
 
 fun simpleSeqTest() {
     val agent = SimpleEvoAgent(sequenceLength = 50, nEvals = 2000, totallyRandomMutations = true)

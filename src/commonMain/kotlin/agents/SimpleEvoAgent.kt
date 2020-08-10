@@ -3,6 +3,7 @@ package agents
 import ggi.AbstractGameState
 import ggi.SimplePlayerInterface
 import util.StatSummary
+import kotlin.math.max
 import kotlin.random.Random
 
 data class SimpleEvoAgent(
@@ -38,6 +39,8 @@ data class SimpleEvoAgent(
     val solutions = ArrayList<IntArray>()
     val scores = ArrayList<DoubleArray>()
 
+    var bestScore: Double? = null
+
     var x: Int? = 1
 
     fun getActions(gameState: AbstractGameState, playerId: Int): IntArray {
@@ -61,12 +64,14 @@ data class SimpleEvoAgent(
             val mut = mutate(solution, probMutation, gameState.nActions())
             val curScore = epsilon * random.nextDouble() + evalSeq(gameState.copy(), solution, playerId, scoreArrray1)
             val mutScore = epsilon * random.nextDouble() + evalSeq(gameState.copy(), mut, playerId, scoreArrray2)
+            bestScore = if (curScore > mutScore) curScore else mutScore
             if (mutScore >= curScore) {
                 solution = mut
                 if (mutScore > curScore) {
 //                    println(scoreArrray1.asList())
 //                    println(scoreArrray2.asList())
                     println("$i:\t $mutScore > $curScore")
+
                 }
             }
             solutions.add(mut)
