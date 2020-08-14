@@ -1,8 +1,9 @@
 package test.subgoal
 
 import agents.SimpleEvoAgent
-import agents.random
 import games.subgoal.Levels
+import games.subgoal.SubGridState
+import games.subgoal.SubGridWorld
 // import util.ElapsedTimer
 import util.StatSummary
 import utilities.ElapsedTimer

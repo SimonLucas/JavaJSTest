@@ -4,7 +4,7 @@ import ggi.AbstractGameState
 import ggi.SimplePlayerInterface
 import kotlin.random.Random
 
-class RandomAgent (val seed: Long = -1): SimplePlayerInterface {
+class RandomAgent(val seed: Long = -1) : SimplePlayerInterface {
 
     override fun getAgentType(): String {
         return "RandomAgent"
@@ -12,13 +12,18 @@ class RandomAgent (val seed: Long = -1): SimplePlayerInterface {
 
     val random = Random
 
-    init{
+    init {
         // if (seed != -1L)
-            // random.s
+        // random.s
     }
 
     override fun getAction(gameState: AbstractGameState, playerId: Int): Int {
-        return random.nextInt(gameState.nActions())
+        if (gameState.nActions() < 1)
+            // should really return null if there are zero actions available
+            // but that's not allowed in the interface
+            return 0
+        else
+            return random.nextInt(gameState.nActions())
     }
 
     override fun reset(): SimplePlayerInterface {

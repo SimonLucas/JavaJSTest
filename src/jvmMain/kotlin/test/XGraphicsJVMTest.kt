@@ -9,12 +9,10 @@ fun main() {
     val xg = XGraphicsJVM(ec)
     ec.xg = xg
     // ec.listenForEvents()
-
     // how to connect the app with the ec component?
-
     // the app takes all this in an easy way
-
     // change this to games.tetris when ready
+
     val app = HelloXGraphics()
     ec.xApp = app
     frame.addKeyListener( XKeyAdapter(app))
@@ -27,3 +25,4 @@ fun main() {
     // app.paint(xg)
 
 }
+
