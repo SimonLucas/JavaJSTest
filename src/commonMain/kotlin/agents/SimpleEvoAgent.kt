@@ -70,7 +70,7 @@ data class SimpleEvoAgent(
                 if (mutScore > curScore) {
 //                    println(scoreArrray1.asList())
 //                    println(scoreArrray2.asList())
-                    println("$i:\t $mutScore > $curScore")
+                    // println("$i:\t $mutScore > $curScore")
 
                 }
             }

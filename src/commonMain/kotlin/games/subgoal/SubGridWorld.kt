@@ -4,6 +4,7 @@ import ggi.AbstractGameState
 import ggi.ExtendedAbstractGameState
 import math.IntVec2d
 import math.iv
+import kotlin.random.Random
 
 data class SubGridSnap (var s: IntVec2d, var score: Double, var subgoalReached: Boolean)
 
@@ -122,6 +123,23 @@ class SubGridWorld(val str: String) {
 
     fun nActions() = actions.size
 
+
+
+    fun addRandomSubgoals(n: Int) {
+
+        // try to add this number
+        // but don't keep trying forever
+        val totalAttempts = 10 * n
+        var nAdditions = 0
+        for (i in 0 until totalAttempts) {
+            val p = IntVec2d(Random.nextInt(nCols), Random.nextInt(nRows))
+            if (navigable(p) && !subgoals.contains(p)) {
+                subgoals.add(p)
+                nAdditions++
+                if (nAdditions >= n) return
+            }
+        }
+    }
 
 
 }

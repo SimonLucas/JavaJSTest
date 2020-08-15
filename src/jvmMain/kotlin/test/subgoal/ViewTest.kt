@@ -11,12 +11,17 @@ import test.XKeyAdapter
 import utilities.JEasyFrame
 
 fun main() {
-    val gridWorld = SubGridWorld(Levels.midroom)
+//    val gridWorld = SubGridWorld(Levels.midroom)
+
+    val n = 5
+
+    val gridWorld = SubGridWorld(Levels.noSubgoals)
+    gridWorld.addRandomSubgoals(n)
 
 
 
     val ec = EasyComponent()
-    val frame = JEasyFrame(ec, "X Tetris JVM Test")
+    val frame = JEasyFrame(ec, "$n random subgoals")
     val xg = XGraphicsJVM(ec)
     ec.xg = xg
 

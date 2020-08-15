@@ -1,6 +1,9 @@
 package test.subgoal
 
+import agents.MctsAgent
+import agents.PolicyEvoAgent
 import agents.RandomAgent
+import agents.SimpleEvoAgent
 import games.subgoal.Levels
 import games.subgoal.SubGridState
 import games.subgoal.SubGridWorld
@@ -14,27 +17,31 @@ import kotlin.random.Random
 
 fun main() {
 
-    val grid = SubGridWorld(Levels.subgoals)
-
+    val grid = SubGridWorld(Levels.noSubgoals)
+    grid.addRandomSubgoals(50)
 
 
     val macroWorld = MacroWorld(node = grid.startPosition(), sub = grid)
     macroWorld.makeMacros(100)
     // println(macroWorld.graph.g)
-    println("Start postiion: ${grid.startPosition()}")
+    println("Start postion: ${grid.startPosition()}")
     macroWorld.graph.print()
 
     println("Running tests")
-    val tester = TestMacroAgent(RandomAgent())
+    // val tester = TestMacroAgent(RandomAgent())
+    // val tester = TestMacroAgent(MctsAgent())
+    // val tester = TestMacroAgent(PolicyEvoAgent())
+    val simpleEvo = TestMacroAgent(SimpleEvoAgent(totallyRandomMutations = false, nEvals = 50, sequenceLength = 20))
 
+    val tester = simpleEvo
 
     val t = utilities.ElapsedTimer()
-    val nRuns = 100
+    val nRuns = 10
     val itsPerRun = 100
     val ss = StatSummary()
     for (i in 0 until nRuns) {
         val model = macroWorld.copy() as MacroWorld
-        model.makeMacros(1000)
+        model.makeMacros(5000)
         val trialStats = StatSummary()
         for (j in 0 until itsPerRun) {
 //            val model = macroWorld.copy() as MacroWorld
@@ -44,6 +51,8 @@ fun main() {
         }
         ss.add(trialStats.max())
     }
+
+    println("Total subgoals = ${grid.subgoals.size}" )
     println(ss)
     println(t)
 
@@ -51,7 +60,7 @@ fun main() {
 
 class TestMacroAgent(val agent: SimplePlayerInterface) {
     fun runTest(world: MacroWorld, maxSteps: Int = 100): Double {
-        println("Executing test: looking for goal at: ${world.sub.goal}")
+        // println("Executing test: looking for goal at: ${world.sub.goal}")
         for (i in 0 until maxSteps) {
             // println(world.nActions())
             val action = agent.getAction(world.copy(), 0)
@@ -63,7 +72,7 @@ class TestMacroAgent(val agent: SimplePlayerInterface) {
             }
         }
         println("Failed to reach goal")
-        return world.score()
+        return -1000.0
     }
 }
 
@@ -97,7 +106,7 @@ class MacroWorld(
         starts.addAll(sub.subgoals)
         starts.add(sub.startPosition())
         // println("Start positions: ${starts}")
-        starts.forEach { println(it) }
+        // starts.forEach { println(it) }
         var ix = 0
         // set up the index map
         // in general not necessary, could simply use a better key for the graph
