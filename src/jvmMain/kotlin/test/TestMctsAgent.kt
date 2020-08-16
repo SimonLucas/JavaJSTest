@@ -23,7 +23,7 @@ fun main(args: Array<String>) {
     }
     println(game)
     println(game.copy())
-    println("Final score = " + game.score)
+    println("Final score = " + game.scoreX)
     println("Total ticks = ${game.totalTicks()}")
 
     println("Root id: " + agent.root)

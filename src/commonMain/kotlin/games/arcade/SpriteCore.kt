@@ -118,7 +118,7 @@ val rockHit: Collider = {a, b, g ->
         val child = g.update.spawnHeading(a.sd, XEllipse(Vec2d(), 10.0, 20.0),
             ObjectType.AlienObject, a.sd.v.mag*2)
         g.addObject(RockSprite(a.sd.copy(alive = true, rot = a.sd.rot + PI / 2), sizeIndex = 1))
-        g.score += 100
+        g.scoreX += 100
     }
 }
 
@@ -221,8 +221,8 @@ class SampleSpriteGame(val w: Double = 640.0, val h: Double = 480.0) {
 class SpriteGame(
     val update: Update = Update(640.0, 480.0),
     var sprites: ArrayList<ISprite> = ArrayList(),
-    var score: Double = 0.0,
-    var nTicks: Int = 0
+    var scoreX: Double = 0.0,
+    var nTicksX: Int = 0
 ) : ExtendedAbstractGameState {
 
     companion object {
@@ -245,7 +245,7 @@ class SpriteGame(
     override fun copy(): AbstractGameState {
         val listCopy = ArrayList<ISprite>()
         for (s in sprites) listCopy.add(s.copy())
-        return SpriteGame(update, listCopy, score, nTicks)
+        return SpriteGame(update, listCopy, scoreX, nTicksX)
     }
 
     override fun totalTicks() = totalTicks
@@ -279,7 +279,7 @@ class SpriteGame(
         }
         // println(sprites.size.toString() + " : " + action)
         AsteroidsGame.totalTicks++
-        nTicks++
+        nTicksX++
         // println(sprites[0].s)
         for (s in safeList) if (s.data().alive) sprites.add(s)
         // sprites = safeList
@@ -339,15 +339,15 @@ class SpriteGame(
 
 
     override fun score(): Double {
-        return score
+        return scoreX
     }
 
     override fun isTerminal(): Boolean {
-        return nTicks > 0 && sprites.isEmpty()
+        return nTicksX > 0 && sprites.isEmpty()
     }
 
     override fun nTicks(): Int {
-        return nTicks
+        return nTicksX
     }
 
     fun addObject(sprite: ISprite) {

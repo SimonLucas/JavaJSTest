@@ -8,7 +8,7 @@ import kotlin.random.Random
 
 data class SubGridSnap (var s: IntVec2d, var score: Double, var subgoalReached: Boolean)
 
-class SubGridState (var s: IntVec2d, val grid: SubGridWorld, var nTicks:Int=0,
+class SubGridState (var s: IntVec2d, val grid: SubGridWorld, var nTicksX:Int=0,
                     var subgoalReached: Boolean = false) : ExtendedAbstractGameState {
 
     override fun toString(): String {
@@ -27,7 +27,7 @@ class SubGridState (var s: IntVec2d, val grid: SubGridWorld, var nTicks:Int=0,
             if (grid.atSubgoal(s)) subgoalReached = true
         }
         // only increment if the subgoal has not yet been reached
-        if (!subgoalReached) nTicks++
+        if (!subgoalReached) nTicksX++
     }
 
     companion object {
@@ -47,21 +47,21 @@ class SubGridState (var s: IntVec2d, val grid: SubGridWorld, var nTicks:Int=0,
     }
 
     override fun copy(): AbstractGameState {
-        return SubGridState(s.copy(), grid, nTicks, subgoalReached)
+        return SubGridState(s.copy(), grid, nTicksX, subgoalReached)
     }
 
     override fun nActions() = grid.nActions()
 
     override fun score(): Double {
         var x: Double = if (subgoalReached) subGoalScore else 0.0
-        return x - nTicks
+        return x - nTicksX
     }
 
     override fun isTerminal(): Boolean {
         return grid.atGoal(s)
     }
 
-    override fun nTicks() = nTicks
+    override fun nTicks() = nTicksX
 }
 
 

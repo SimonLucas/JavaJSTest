@@ -18,8 +18,17 @@ class TetrisView(val nCols: Int, val nRows: Int) : XApp {
         draw(xg, a)
         drawGhostShape(xg, ghostShape)
         drawShape(xg, shape)
-
+        statusText(xg)
         // println(cellSize)
+    }
+
+    private fun statusText(xg: XGraphics) {
+        val str = "Score: ${score}"
+        val ts = TStyle(size = cellSize)
+        val text = XText(
+            str, Vec2d(cellSize * nCols / 2, cellSize), tStyle = ts
+        )
+        xg.draw(text)
     }
 
     fun calcCellSize(xg: XGraphics) {
@@ -29,7 +38,7 @@ class TetrisView(val nCols: Int, val nRows: Int) : XApp {
         // work out the cell size as the minimum of the
         // row and col size fits
         val colSize = xg.width() / nCols
-        val rowSize = xg.height() / nRows
+        val rowSize = xg.height() / (nRows - topVisibleRow)
         cellSize = min(colSize, rowSize)
     }
 
@@ -47,17 +56,20 @@ class TetrisView(val nCols: Int, val nRows: Int) : XApp {
     var h: Double = 1.0
     var cellSize = 20.0
     var centre = Vec2d()
+    var score = 0
 
-    fun setData(a: Array<IntArray>?, shape: TetronSprite?, ghostShape: TetronSprite?) {
+    fun setData(a: Array<IntArray>?, shape: TetronSprite?, ghostShape: TetronSprite?, score: Int = 0) {
         this.a = a
         this.shape = shape
         this.ghostShape = ghostShape
+        this.score = score
     }
 
     fun drawBackground(xg: XGraphics) {
         val style = XStyle()
         val rect = XRect(centre, xg.width(), xg.height(), style)
         style.fg = black
+        // style
         xg.draw(rect)
     }
 
@@ -73,6 +85,7 @@ class TetrisView(val nCols: Int, val nRows: Int) : XApp {
                 style.fg = colors[a[i][j]]
                 style.stroke = true
                 style.lc = gray
+                style.lineWidth = 1.0
                 rect.centre = Vec2d((i + 0.5) * cellSize, (j + 0.5) * cellSize)
                 xg.draw(rect)
                 if (a[i][j] == BG) {
@@ -90,9 +103,10 @@ class TetrisView(val nCols: Int, val nRows: Int) : XApp {
         val style = XStyle()
         val rect = XRect(centre, cellSize, cellSize, style)
         style.fg = colors[ts.color]
-        style.lc = black.copy(a=0.5f)
+        // style.fg.a = 0.1f
+        style.lc = black.copy(a=0.8f)
         style.stroke = true
-        style.lineWidth = 2.0
+        style.lineWidth = 1.0
         for (cell in ts.getCells()) {
             rect.centre = Vec2d((cell.x + 0.5) * cellSize, (cell.y + 0.5) * cellSize)
             xg.draw(rect)
@@ -105,6 +119,8 @@ class TetrisView(val nCols: Int, val nRows: Int) : XApp {
         val rect = XRect(centre, cellSize, cellSize, style)
         style.fg = XColor.gray
         style.lc = XColor.white
+        style.fg.a = 0.8f
+        style.lineWidth = 1.0
         style.stroke = true
         for (cell in ts.getCells()) {
             rect.centre = Vec2d((cell.x + 0.5) * cellSize, (cell.y + 0.5) * cellSize)

@@ -58,7 +58,7 @@ class SpriteEngineApp : XApp, RolloutDataSource {
         val rocks = game?.sprites?.size ?: 0
         // val avatar = game?.avatarStatus()
         val avatar = "N/A"
-        val str = "Score: ${game?.score?.toInt()}, [$avatar, $rocks, ${game?.nTicks()}]"
+        val str = "Score: ${game?.scoreX?.toInt()}, [$avatar, $rocks, ${game?.nTicks()}]"
         val text = XText(
             str, Vec2d(xg.width() / 2, xg.height() / 20)
         )

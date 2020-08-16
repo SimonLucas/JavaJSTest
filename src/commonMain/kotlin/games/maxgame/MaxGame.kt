@@ -9,25 +9,25 @@ data class MaxGame(val n: Int=10, val m: Int=2) : ExtendedAbstractGameState {
         var totalTicks: Long = 0
     }
 
-    var score: Int = 0
+    var scoreX: Int = 0
     var position = 0
-    var nTicks =0
+    var nTicksX =0
 
     override fun copy(): AbstractGameState {
         val maxGame = MaxGame(n=this.n, m = this.m)
-        maxGame.score = score
+        maxGame.scoreX = scoreX
         maxGame.position = position
-        maxGame.nTicks = nTicks
+        maxGame.nTicksX = nTicksX
         return maxGame
     }
 
     override fun next(actions: IntArray): AbstractGameState {
         if (isTerminal()) return this
         // otherwise advance
-        score += actions[0]
+        scoreX += actions[0]
         position++
         totalTicks++
-        nTicks++
+        nTicksX++
         return this
     }
 
@@ -36,7 +36,7 @@ data class MaxGame(val n: Int=10, val m: Int=2) : ExtendedAbstractGameState {
     }
 
     override fun score(): Double {
-        return score.toDouble()
+        return scoreX.toDouble()
     }
 
     override fun isTerminal(): Boolean {
@@ -44,7 +44,7 @@ data class MaxGame(val n: Int=10, val m: Int=2) : ExtendedAbstractGameState {
     }
 
     override fun nTicks(): Int {
-        return nTicks
+        return nTicksX
     }
 
     override fun totalTicks(): Long {

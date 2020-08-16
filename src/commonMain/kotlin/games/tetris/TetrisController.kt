@@ -20,7 +20,7 @@ class TetrisController : XApp , RolloutDataSource{
     val keyController = TetrisKeyController()
     var agent: SimplePlayerInterface = keyController
     val nCols = 10
-    val nRows = 20
+    val nRows = 22
 
     val tv = TetrisView(nCols, nRows)
 
@@ -43,7 +43,7 @@ class TetrisController : XApp , RolloutDataSource{
             val message = "${tg.nTicks()}\t $score\t $action\t ${tg.totalTicks()}\t ${tg.subGoal()}"
             // println(message)
         }
-        tv.setData(tg.tm.a, tg.tm.tetronSprite, tg.tm.getGhost())
+        tv.setData(tg.tm.a, tg.tm.tetronSprite, tg.tm.getGhost(), tg.score().toInt())
         tv.paint(xg)
     }
 
@@ -58,10 +58,10 @@ class TetrisController : XApp , RolloutDataSource{
     private fun setModelParams() {
         TetrisModel.defaultCols = nCols
         TetrisModel.defaultRows = nRows
-        TetrisModel.includeColumnDiffs = true
+        TetrisModel.includeColumnDiffs = false
         TetrisModel.gameOverPenalty = 0
-        TetrisModel.cyclicBlockType = true
-        TetrisModel.randomInitialRotation = false
+        TetrisModel.cyclicBlockType = false
+        TetrisModel.randomInitialRotation = true
         TetrisModel.randomShapeColours = false
         TetrisModel.gameOverPenalty = 0
         TetrisModel.dropSkip = 50

@@ -144,7 +144,7 @@ class TetrisModel(var nCols: Int = defaultCols, var nRows: Int = defaultRows) {
 
     companion object {
         // var BG = 0
-        val rand = kotlin.random.Random
+        val rand = kotlin.random.Random(10)
         var baseReward = 100
         var heightFactor = 100
         var defaultRows = 24

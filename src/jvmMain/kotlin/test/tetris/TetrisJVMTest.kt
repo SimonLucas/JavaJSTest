@@ -14,10 +14,11 @@ fun main() {
     val xg = XGraphicsJVM(ec)
     ec.xg = xg
     TetrisModel.includeColumnDiffs = true
-    val game = TetrisDemoLayout() // TetrisController()
+    // val game = TetrisDemoLayout() // TetrisController()
+    val game = TetrisController()
     ec.xApp = game
     frame.addKeyListener(XKeyAdapter(game))
-    val frameRate = 10
+    val frameRate = 25
     val delay = 1000 / frameRate
     while (true) {
         ec.repaint()

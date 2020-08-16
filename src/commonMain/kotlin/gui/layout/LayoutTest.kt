@@ -12,8 +12,8 @@ class LayoutTest : XApp {
 
     // just pop a sample layout here for now
     val plotApp: EasyGraphPlot = EasyGraphPlot()
-    // val arcade = ArcadeTestApp()
-    val arcade = SpriteEngineApp()
+    val arcade = ArcadeTestApp()
+    // val arcade = SpriteEngineApp()
     val xp = XPalette(seed = 1)
 
     init {
