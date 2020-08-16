@@ -133,7 +133,7 @@ class SubGridWorld(val str: String) {
         var nAdditions = 0
         for (i in 0 until totalAttempts) {
             val p = IntVec2d(Random.nextInt(nCols), Random.nextInt(nRows))
-            if (navigable(p) && !subgoals.contains(p)) {
+            if (navigable(p) && !subgoals.contains(p) && !(goal == p)) {
                 subgoals.add(p)
                 nAdditions++
                 if (nAdditions >= n) return

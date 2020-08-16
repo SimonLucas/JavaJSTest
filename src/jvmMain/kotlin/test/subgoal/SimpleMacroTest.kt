@@ -18,7 +18,7 @@ import kotlin.random.Random
 fun main() {
 
     val grid = SubGridWorld(Levels.noSubgoals)
-    grid.addRandomSubgoals(50)
+    grid.addRandomSubgoals(5)
 
 
     val macroWorld = MacroWorld(node = grid.startPosition(), sub = grid)
