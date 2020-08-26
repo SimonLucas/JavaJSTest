@@ -6,20 +6,44 @@ import gui.XColor.Companion.gray
 import gui.XColor.Companion.green
 import math.IntVec2d
 import math.Vec2d
+import math.iv
 import kotlin.math.min
 
+//
 
-class GridWorldView(var gridWorld: SubGridWorld) : XApp {
+
+class GridWorldView(var gridWorld: SubGridWorld, var updater: Updater? = null) : XApp {
 
     var count = 0
     override fun paint(xg: XGraphics) {
-
+        updater?.invoke()
         // work out the cell size
         calcCellSize(xg)
         drawBackground(xg)
         draw(xg, gridWorld.a)
-
+        drawPaths(xg, paths)
     }
+
+    var paths = ArrayList<Path>()
+
+    fun drawPaths(xg: XGraphics, paths: ArrayList<Path>) {
+        val xs = XStyle(fill = false)
+        val colors = XPalette(seed = 2L, nColors = paths.size, min = 0.0, max = 0.5)
+        var ix = 0
+        for (path in paths) {
+            xs.lc = colors.getColor(ix++)
+            xs.lc.a = 0.7f
+
+            val points = ArrayList<Vec2d>()
+            path.forEach { points.add(getVec(it)) }
+            val xp = XPoly(centre = Vec2d(), points = points, dStyle = xs, closed = false)
+            xg.draw(xp)
+        }
+    }
+
+    fun getVec(iv: IntVec2d) = Vec2d((iv.x + 0.5) * cellSize, (iv.y + 0.5) * cellSize)
+
+    fun getVec(x: Double, y: Double) = Vec2d((x + 0.5) * cellSize, (y + 0.5) * cellSize)
 
     fun calcCellSize(xg: XGraphics) {
         // val
@@ -34,6 +58,7 @@ class GridWorldView(var gridWorld: SubGridWorld) : XApp {
 
     override fun handleMouseEvent(e: XMouseEvent) {
     }
+
 
     override fun handleKeyEvent(e: XKeyEvent) {
     }
@@ -62,7 +87,7 @@ class GridWorldView(var gridWorld: SubGridWorld) : XApp {
             for (j in 0 until gridWorld.nRows) {
                 // println(a[i][j])
                 // need to just set the rectangle to draw
-                val iv = IntVec2d(i,j)
+                val iv = IntVec2d(i, j)
                 style.fg = getColor(iv)
                 style.stroke = true
                 style.lineWidth = 1.0
@@ -81,7 +106,7 @@ class GridWorldView(var gridWorld: SubGridWorld) : XApp {
         }
     }
 
-    fun getColor(iv: IntVec2d) : XColor {
+    fun getColor(iv: IntVec2d): XColor {
         if (gridWorld.navigable(iv))
             return XColor.yellow
         else
@@ -94,7 +119,7 @@ class GridWorldView(var gridWorld: SubGridWorld) : XApp {
 //            XColor.yellow, XColor.magenta, XColor.pink, XColor.cyan, XColor.black, XColor.gray
 //        )
 
-        val colors = hashMapOf<Char,XColor>(
+        val colors = hashMapOf<Char, XColor>(
 
         )
 

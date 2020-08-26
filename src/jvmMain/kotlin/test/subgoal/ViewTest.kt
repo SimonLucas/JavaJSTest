@@ -1,8 +1,6 @@
 package test.subgoal
 
-import games.subgoal.GridWorldView
-import games.subgoal.Levels
-import games.subgoal.SubGridWorld
+import games.subgoal.*
 import games.tetris.TetrisModel
 import gui.layout.TetrisDemoLayout
 import test.EasyComponent
@@ -18,6 +16,11 @@ fun main() {
     val gridWorld = SubGridWorld(Levels.noSubgoals)
     gridWorld.addRandomSubgoals(n)
 
+    val paths = ArrayList<Path>()
+    val nPaths = 20
+
+    val macro = MacroWorld(sub = gridWorld)
+    (1..nPaths).forEach{ paths.add( macro.randomPath(gridWorld.startPosition()) ) }
 
 
     val ec = EasyComponent()
@@ -25,7 +28,9 @@ fun main() {
     val xg = XGraphicsJVM(ec)
     ec.xg = xg
 
-    val viewApp = GridWorldView(gridWorld)
+    val viewApp = GridWorldView(gridWorld, SampleUpdater())
+
+    viewApp.paths = paths
 
     ec.xApp = viewApp
     // frame.addKeyListener(XKeyAdapter(game))
@@ -38,3 +43,14 @@ fun main() {
 
 }
 
+class SampleUpdater : Updater {
+    companion object {
+        var count = 0
+    }
+    override fun invoke() {
+
+        println("Invoking: ${count++}" )
+
+    }
+
+}
