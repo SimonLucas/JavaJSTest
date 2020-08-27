@@ -28,7 +28,7 @@ class TestMacroAgent(val agent: SimplePlayerInterface) {
 class MacroWorld(
     var node: Any = IntVec2d(),
     var value: Double = 0.0,
-    var nTicks: Int = 0,
+    var nTicksX: Int = 0,
     var graph: Graph = Graph(),
     val starts: HashSet<IntVec2d> = HashSet<IntVec2d>(),
     val sub: SubGridWorld,
@@ -37,7 +37,7 @@ class MacroWorld(
     ExtendedAbstractGameState {
 
     override fun copy(): AbstractGameState {
-        return MacroWorld(node, value, nTicks, graph, starts, sub, foundGoal)
+        return MacroWorld(node, value, nTicksX, graph, starts, sub, foundGoal)
     }
 
     // remember this is the Kotlin Singleton Pattern
@@ -131,7 +131,7 @@ class MacroWorld(
         if (isTerminal()) return this
 
 
-        nTicks++
+        nTicksX++
         val action = actions[0]
         // the algorithm is set to choose the i-th action rather than a named one
 
@@ -168,7 +168,7 @@ class MacroWorld(
     override fun isTerminal() = foundGoal
 
     override fun nTicks(): Int {
-        return nTicks
+        return nTicksX
     }
 
 }

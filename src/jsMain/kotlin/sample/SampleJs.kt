@@ -83,6 +83,7 @@ class Dispatcher() {
             title.contains("Griddle") -> GriddleTest().run()
             title.contains("Poly") -> PolyTest().run()
             title.contains("Asteroids") -> AsteroidsTest().run()
+            title.contains("Subgoal") -> SubgoalDemoTest().run()
             title.contains("XMLHTTP") -> HTTPTest().run()
         }
     }

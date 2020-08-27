@@ -128,7 +128,7 @@ class XGraphicsJS(var canvas: HTMLCanvasElement) : XGraphics {
             path.moveTo(points[0].x, points[0].y)
             for (v in points) path.lineTo(v.x, v.y)
 
-            path.closePath()
+            if (poly.closed) path.closePath()
         }
         val g = canvas
         if (g != null) {

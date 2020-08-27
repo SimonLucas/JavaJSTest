@@ -10,4 +10,6 @@ typealias G = HashMap<Any, WeightedArcs>
 
 typealias Path = ArrayList<IntVec2d>
 
-typealias Updater = () -> Unit
+interface Updater {
+    fun invoke()
+}
