@@ -5,6 +5,7 @@ import games.subgoal.SubgoalDemoControl
 import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLInputElement
+import org.w3c.dom.url.URLSearchParams
 import test.XGraphicsJS
 import kotlin.browser.document
 import kotlin.browser.window
@@ -22,6 +23,9 @@ class SubgoalDemoTest : SubgoalDemoControl {
 
     var nSubgoalsField: HTMLInputElement? = null
 
+    var nSubgoalsX = 10
+
+
     init {
         println("Init")
         try {
@@ -35,13 +39,20 @@ class SubgoalDemoTest : SubgoalDemoControl {
             println(e)
         }
 
+        try {
+            println(document.URL)
+            println(window.location.href)
+            println("Search params = [ ${URLSearchParams(window.location.href)} ]")
+            println("nSubgoals = [ ${URLSearchParams(window.location.href).get("nSubgoals")} ]")
+            // document.URL = document.URL +
+        } catch (e: Exception) { println(e)}
+
         nSubgoalsField =
             document.getElementById("nSubgoals") as HTMLInputElement
         println("Shuffle seed input element: $nSubgoalsField")
 
     }
 
-    var nSubgoalsX = 10
 
 
 

@@ -5140,6 +5140,7 @@
     this.intervalTime = 1000 / this.frameRate | 0;
     this.app = new SubgoalDemo(this);
     this.nSubgoalsField = null;
+    this.nSubgoalsX = 10;
     println('Init');
     try {
       var button = Kotlin.isType(tmp$_0 = document.getElementById('restartButton'), HTMLButtonElement) ? tmp$_0 : throwCCE();
@@ -5151,9 +5152,19 @@
       } else
         throw e;
     }
+    try {
+      println(document.URL);
+      println(window.location.href);
+      println('Search params = [ ' + new URLSearchParams(window.location.href) + ' ]');
+      println('nSubgoals = [ ' + toString((new URLSearchParams(window.location.href)).get('nSubgoals')) + ' ]');
+    } catch (e) {
+      if (Kotlin.isType(e, Exception)) {
+        println(e);
+      } else
+        throw e;
+    }
     this.nSubgoalsField = Kotlin.isType(tmp$_1 = document.getElementById('nSubgoals'), HTMLInputElement) ? tmp$_1 : throwCCE();
     println('Shuffle seed input element: ' + toString(this.nSubgoalsField));
-    this.nSubgoalsX = 10;
   }
   SubgoalDemoTest.prototype.nSubgoals = function () {
     var input = this.nSubgoalsField;
