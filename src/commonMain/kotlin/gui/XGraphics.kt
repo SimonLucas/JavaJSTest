@@ -55,8 +55,8 @@ interface XGraphics {
     fun centre() = Vec2d(width() / 2, height() / 2)
 
     // do nothing by default to not break anything
-    fun setBounds(rect: LRect) {}
-    fun releaseBounds() {}
+    fun setBounds(rect: LRect)
+    fun releaseBounds()
 
     // var pane: LRect
 }

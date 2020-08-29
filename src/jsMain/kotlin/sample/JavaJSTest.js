@@ -3647,10 +3647,6 @@
   XGraphics.prototype.centre = function () {
     return new Vec2d(this.width() / 2, this.height() / 2);
   };
-  XGraphics.prototype.setBounds_z39lsx$ = function (rect) {
-  };
-  XGraphics.prototype.releaseBounds = function () {
-  };
   XGraphics.$metadata$ = {kind: Kind_INTERFACE, simpleName: 'XGraphics', interfaces: []};
   function XStyle(fg, bg, lc, stroke, fill, lineWidth) {
     if (fg === void 0)
@@ -5194,16 +5190,34 @@
   function XGraphicsJS(canvas) {
     this.canvas = canvas;
     this.drawList = ArrayList_init();
+    this.rect = null;
     this.intStyle = new XStyle();
   }
+  XGraphicsJS.prototype.setBounds_z39lsx$ = function (rect) {
+    this.rect = rect;
+  };
+  XGraphicsJS.prototype.releaseBounds = function () {
+    this.rect = null;
+  };
   XGraphicsJS.prototype.width = function () {
-    return this.canvas.width;
+    var bounds = this.rect;
+    return bounds != null ? bounds.width : this.canvas.width;
   };
   XGraphicsJS.prototype.height = function () {
-    return this.canvas.height;
+    var bounds = this.rect;
+    return bounds != null ? bounds.height : this.canvas.height;
   };
   XGraphicsJS.prototype.draw_dvdmun$ = function (toDraw) {
-    if (Kotlin.isType(toDraw, XRect))
+    var tmp$;
+    var context = Kotlin.isType(tmp$ = this.canvas.getContext('2d'), CanvasRenderingContext2D) ? tmp$ : throwCCE();
+    context.save();
+    var r = this.rect;
+    if (r != null) {
+      context.translate(r.xLeft, r.yTop);
+      var path2D = new Path2D();
+      path2D.rect(0.0, 0.0, r.width, r.height);
+      context.clip(path2D);
+    }if (Kotlin.isType(toDraw, XRect))
       this.drawRect_ax8lih$(toDraw);
     if (Kotlin.isType(toDraw, XEllipse))
       this.drawEllipse_lu1dfr$(toDraw);
@@ -5213,6 +5227,7 @@
       this.drawLine_ax4ut5$(toDraw);
     if (Kotlin.isType(toDraw, XText))
       this.drawText_ax9vzm$(toDraw);
+    context.restore();
   };
   XGraphicsJS.prototype.drawRect_ax8lih$ = function (rect) {
     var g = this.canvas;
@@ -5511,8 +5526,6 @@
   package$test.XGraphicsJS = XGraphicsJS;
   DefaultDemoControl.prototype.nSubgoals = SubgoalDemoControl.prototype.nSubgoals;
   XGraphicsJS.prototype.centre = XGraphics.prototype.centre;
-  XGraphicsJS.prototype.releaseBounds = XGraphics.prototype.releaseBounds;
-  XGraphicsJS.prototype.setBounds_z39lsx$ = XGraphics.prototype.setBounds_z39lsx$;
   random = Random.Default;
   nodeCount = 0;
   canvas = initalizeCanvas();

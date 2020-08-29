@@ -1,6 +1,7 @@
 package test
 
 import gui.*
+import gui.layout.LRect
 import org.w3c.dom.*
 import kotlin.math.PI
 
@@ -9,15 +10,51 @@ class XGraphicsJS(var canvas: HTMLCanvasElement) : XGraphics {
     val drawList = ArrayList<Drawable>()
     // val c = canvas
 
-    override fun width() = canvas.width.toDouble()
-    override fun height() = canvas.height.toDouble()
+//    override fun width() = canvas.width.toDouble()
+//    override fun height() = canvas.height.toDouble()
+
+    var rect: LRect? = null
+    override fun setBounds(rect: LRect) {
+        this.rect = rect
+
+    }
+
+    override fun releaseBounds() {
+        rect = null
+    }
+
+    override fun width(): Double {
+        val bounds = rect
+        return if (bounds != null) bounds.width else canvas.width.toDouble()
+    }
+
+    override fun height(): Double {
+        val bounds = rect
+        return if (bounds != null) bounds.height else canvas.height.toDouble()
+    }
+
 
     override fun draw(toDraw: Drawable) {
+
+        val context = canvas.getContext("2d") as CanvasRenderingContext2D
+        context.save()
+
+        // apply clipping bounds if necessary
+        val r = rect
+        r?.let {
+            context.translate(r.xLeft, r.yTop)
+            val path2D = Path2D()
+            path2D.rect(0.0, 0.0, r.width, r.height)
+            context.clip(path2D)
+        }
+
         if (toDraw is XRect) drawRect(toDraw)
         if (toDraw is XEllipse) drawEllipse(toDraw)
         if (toDraw is XPoly) drawPoly(toDraw)
         if (toDraw is XLine) drawLine(toDraw)
         if (toDraw is XText) drawText(toDraw)
+
+        context.restore()
     }
 
     fun drawRect(rect: XRect) {
