@@ -2,11 +2,15 @@ package games.subgoal
 
 import gui.*
 import gui.XColor.Companion.black
+import gui.XColor.Companion.blue
 import gui.XColor.Companion.gray
 import gui.XColor.Companion.green
+import gui.XColor.Companion.red
+import gui.geometry.Poly
 import math.IntVec2d
 import math.Vec2d
 import math.iv
+import kotlin.math.PI
 import kotlin.math.min
 
 //
@@ -25,14 +29,15 @@ class GridWorldView(var gridWorld: SubGridWorld, var updater: Updater? = null) :
     }
 
     var paths = ArrayList<Path>()
+    var boldPaths = ArrayList<Path>()
 
-    fun drawPaths(xg: XGraphics, paths: ArrayList<Path>) {
+    fun drawPaths(xg: XGraphics, paths: ArrayList<Path>, bold: Boolean = false) {
         val xs = XStyle(fill = false)
         val colors = XPalette(seed = 2L, nColors = paths.size, min = 0.0, max = 0.5)
         var ix = 0
         for (path in paths) {
             xs.lc = colors.getColor(ix++)
-            xs.lc.a = 0.7f
+            xs.lc.a = if (bold) 1.0f else 0.5f
 
             val points = ArrayList<Vec2d>()
             path.forEach { points.add(getVec(it)) }
@@ -100,6 +105,18 @@ class GridWorldView(var gridWorld: SubGridWorld, var updater: Updater? = null) :
                     val ds = XStyle(fg = green)
                     val disc = XEllipse(rect.centre, cellSize, cellSize, ds)
                     xg.draw(disc)
+                }
+
+                if (gridWorld.atGoal(iv)) {
+                    val ds = XStyle(fg = blue)
+                    val points = PolyUtil().makePolygon(3, cellSize/2)
+                    xg.draw(XPoly(rect.centre, points, ds))
+                }
+
+                if (gridWorld.startPosition() == iv) {
+                    val ds = XStyle(fg = red)
+                    val points = PolyUtil().makePolygon(4, cellSize/2)
+                    xg.draw(XPoly(rect.centre, points, ds, rotation = 0.0))
                 }
 
             }

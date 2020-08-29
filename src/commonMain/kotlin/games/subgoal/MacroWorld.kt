@@ -44,8 +44,43 @@ class MacroWorld(
     companion object {
         val maxLen = 100
         val goalScore = 100.0
-        val stopAtSubgoal = true
+        var stopAtSubgoal = true
         var totalTicks: Long = 0
+    }
+
+    val paths = ArrayList<Path>()
+
+    fun reset() {
+        starts.clear()
+        starts.add(sub.startPosition())
+        paths.clear()
+        // println("Starts after reset: $starts")
+    }
+
+    fun allPaths() = paths
+
+    fun bestPaths() : ArrayList<Path> {
+        val bp = ArrayList<Path>()
+        // now iterate over graph entries
+        for ((k,v) in graph.g) {
+            for ((key, sp) in v) {
+                sp.path?.let{ bp.add(it) }
+            }
+        }
+        return bp
+    }
+
+    // this is like makeMacros, but runs incrementally
+    // and also build up the set of paths
+    fun explorePaths(n: Int) {
+        // println("Exploring from $starts, ${sub.startPosition()}")
+        for (i in 0 until n) {
+            val temp = ArrayList<IntVec2d>()
+            temp.addAll(starts)
+            for (start in temp) {
+                paths.add(randomPath(start))
+            }
+        }
     }
 
     // make n iterations per subgoal
@@ -56,7 +91,7 @@ class MacroWorld(
         starts.add(sub.startPosition())
         // println("Start positions: ${starts}")
         // starts.forEach { println(it) }
-        var ix = 0
+        // var ix = 0
         // set up the index map
         // in general not necessary, could simply use a better key for the graph
         // e.g. of type Any instead of type Int
@@ -79,7 +114,6 @@ class MacroWorld(
 //                println("Found subgoal at ${state.s} from $start after $i steps")
                 // graph.updateCost(index(start), index(state.s), i.toDouble())
                 graph.updateCost(start, state.s, i.toDouble())
-
                 if (stopAtSubgoal) return
             }
         }
@@ -99,7 +133,10 @@ class MacroWorld(
 //                println("Found subgoal at ${state.s} from $start after $i steps")
                 // graph.updateCost(index(start), index(state.s), i.toDouble())
                 graph.updateCost(start, state.s, i.toDouble())
+                // also add to set of starts
+                starts.add(state.s)
 
+                // println("Added start $starts")
                 if (stopAtSubgoal) return path
             }
         }
@@ -122,14 +159,12 @@ class MacroWorld(
         TODO("Not yet implemented")
     }
 
-
     val verbose = false
 
     override fun next(actions: IntArray): AbstractGameState {
         // if the next node is valid then go there, updating the cost in the process
         // but we'll keep the tick counter rolling even if the action is invalid
         if (isTerminal()) return this
-
 
         nTicksX++
         val action = actions[0]
@@ -145,7 +180,7 @@ class MacroWorld(
 
         if (next != null) {
             // make the transition
-            value -= next.value
+            value -= next.value.score
             node = next.key
             if (node is IntVec2d) {
                 if (sub.atGoal(node as IntVec2d)) {
@@ -172,64 +207,3 @@ class MacroWorld(
     }
 
 }
-
-class Graph(
-    val nodes: ScoredNodes = HashMap<Any, Double>(),
-    val g: G = HashMap<Any, WeightedArcs>()
-) {
-
-    companion object {
-        // provide a sample graph for testing
-        fun sample1(): Graph {
-            val g = hashMapOf<Any, WeightedArcs>(
-                0 to hashMapOf<Any, Double>(1 to 10.0, 2 to 5.0)
-            )
-            val nodes: ScoredNodes = hashMapOf<Any, Double>(
-                5 to 100.0
-            )
-
-            return Graph(nodes, g)
-        }
-
-        val emptySet = HashMap<Any, Double>()
-        val maxCost = Double.MAX_VALUE
-    }
-
-    fun nodeScore(v: Any): Double = nodes[v] ?: 0.0
-
-    fun outArcs(ix: Any): WeightedArcs {
-        return g[ix] ?: emptySet
-    }
-
-    fun cost(from: Any, to: Any) = g[from]?.get(to)
-
-    fun ithEntry(from: Any, toIndex: Int): Map.Entry<Any, Double>? {
-        val weightedArcs = g[from]
-        if (weightedArcs == null) return null
-        val al =
-            weightedArcs.asSequence().toCollection(ArrayList<Map.Entry<Any, Double>>())
-        if (toIndex < al.size)
-            return al[toIndex]
-        else
-            return null
-    }
-
-
-    fun updateCost(from: Any, to: Any, cost: Double) {
-        val oldCost = g[from]?.get(to) ?: maxCost
-        if (cost < oldCost) {
-            if (g[from] == null)
-                g[from] = HashMap<Any, Double>()
-            g[from]?.put(to, cost)
-        }
-    }
-
-    fun print() {
-        for ((k, v) in g.entries) {
-            println("Node: $k")
-            println("\t Arcs: $v")
-            println()
-        }
-    }
-}
-

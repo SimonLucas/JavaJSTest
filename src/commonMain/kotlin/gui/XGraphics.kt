@@ -193,18 +193,19 @@ data class XPoly(
 //}
 //
 // data class XPolyRegular (val centre: Vec2d, val vRad: Double, val startAngle: Double) : Drawable
+class PolyUtil {
+    fun makePolygon(n: Int = 6, rad: Double = 10.0, startAngle: Double = 0.0): ArrayList<Vec2d> {
+        val verts = ArrayList<Vec2d>()
 
-fun makePolygon(n: Int = 6, rad: Double = 10.0, startAngle: Double = 0.0): ArrayList<Vec2d> {
-    val verts = ArrayList<Vec2d>()
-
-    val step = (2 * PI) / n
-    for (i in 0 until n) {
-        val angle = startAngle + i * step
-        val x = rad * sin(angle)
-        val y = rad * cos(angle)
-        verts.add(Vec2d(x, y))
+        val step = (2 * PI) / n
+        for (i in 0 until n) {
+            val angle = startAngle + i * step
+            val x = rad * sin(angle)
+            val y = rad * cos(angle)
+            verts.add(Vec2d(x, y))
+        }
+        return verts
     }
-    return verts
 }
 
 

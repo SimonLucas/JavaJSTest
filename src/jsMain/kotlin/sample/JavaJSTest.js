@@ -51,12 +51,12 @@
   var shuffle_0 = Kotlin.kotlin.collections.shuffle_9jeydg$;
   var copyToArray = Kotlin.kotlin.collections.copyToArray;
   var trim = Kotlin.kotlin.text.trim_gw00vp$;
-  var L2 = Kotlin.Long.fromInt(2);
-  var trimIndent = Kotlin.kotlin.text.trimIndent_pdl1vz$;
-  var HashSet_init = Kotlin.kotlin.collections.HashSet_init_287e2$;
   var kotlin_js_internal_DoubleCompanionObject = Kotlin.kotlin.js.internal.DoubleCompanionObject;
   var asSequence = Kotlin.kotlin.collections.asSequence_abgq59$;
   var toCollection = Kotlin.kotlin.sequences.toCollection_gtszxp$;
+  var L2 = Kotlin.Long.fromInt(2);
+  var trimIndent = Kotlin.kotlin.text.trimIndent_pdl1vz$;
+  var HashSet_init = Kotlin.kotlin.collections.HashSet_init_287e2$;
   var lines = Kotlin.kotlin.text.lines_gw00vp$;
   var IntRange = Kotlin.kotlin.ranges.IntRange;
   var Random_1 = Kotlin.kotlin.random.Random_za3lpa$;
@@ -2137,6 +2137,68 @@
   }
   TrieNode.$metadata$ = {kind: Kind_CLASS, simpleName: 'TrieNode', interfaces: []};
   var MaxGame$Companion_instance = null;
+  function Graph(g) {
+    Graph$Companion_getInstance();
+    if (g === void 0)
+      g = HashMap_init();
+    this.g = g;
+  }
+  function Graph$Companion() {
+    Graph$Companion_instance = this;
+    this.emptySet = HashMap_init();
+    this.maxCost = kotlin_js_internal_DoubleCompanionObject.MAX_VALUE;
+    this.maxPath = new ScoredPath(this.maxCost);
+  }
+  Graph$Companion.$metadata$ = {kind: Kind_OBJECT, simpleName: 'Companion', interfaces: []};
+  var Graph$Companion_instance = null;
+  function Graph$Companion_getInstance() {
+    if (Graph$Companion_instance === null) {
+      new Graph$Companion();
+    }return Graph$Companion_instance;
+  }
+  Graph.prototype.outArcs_za3rmp$ = function (ix) {
+    var tmp$;
+    return (tmp$ = this.g.get_11rb$(ix)) != null ? tmp$ : Graph$Companion_getInstance().emptySet;
+  };
+  Graph.prototype.cost_wn2jw4$ = function (from, to) {
+    var tmp$;
+    return (tmp$ = this.g.get_11rb$(from)) != null ? tmp$.get_11rb$(to) : null;
+  };
+  Graph.prototype.ithEntry_wn2dyp$ = function (from, toIndex) {
+    var scoredPathArcs = this.g.get_11rb$(from);
+    if (scoredPathArcs == null)
+      return null;
+    var al = toCollection(asSequence(scoredPathArcs), ArrayList_init());
+    if (toIndex < al.size)
+      return al.get_za3lpa$(toIndex);
+    else
+      return null;
+  };
+  Graph.prototype.updateCost_m7l82n$ = function (from, to, cost, path) {
+    if (path === void 0)
+      path = null;
+    var tmp$, tmp$_0, tmp$_1;
+    var oldCost = (tmp$_0 = (tmp$ = this.g.get_11rb$(from)) != null ? tmp$.get_11rb$(to) : null) != null ? tmp$_0 : Graph$Companion_getInstance().maxPath;
+    if (cost < oldCost.score) {
+      if (this.g.get_11rb$(from) == null) {
+        var $receiver = this.g;
+        var value = HashMap_init();
+        $receiver.put_xwzc9p$(from, value);
+      }(tmp$_1 = this.g.get_11rb$(from)) != null ? tmp$_1.put_xwzc9p$(to, new ScoredPath(cost, path)) : null;
+    }};
+  Graph.prototype.print = function () {
+    var tmp$;
+    tmp$ = this.g.entries.iterator();
+    while (tmp$.hasNext()) {
+      var tmp$_0 = tmp$.next();
+      var k = tmp$_0.key;
+      var v = tmp$_0.value;
+      println('Node: ' + k.toString());
+      println('\t' + ' Arcs: ' + v);
+      println_0();
+    }
+  };
+  Graph.$metadata$ = {kind: Kind_CLASS, simpleName: 'Graph', interfaces: []};
   function GridWorldView(gridWorld, updater) {
     GridWorldView$Companion_getInstance();
     if (updater === void 0)
@@ -2145,6 +2207,7 @@
     this.updater = updater;
     this.count = 0;
     this.paths = ArrayList_init();
+    this.boldPaths = ArrayList_init();
     this.a = null;
     this.w = 1.0;
     this.h = 1.0;
@@ -2157,9 +2220,11 @@
     this.calcCellSize_vzjx8w$(xg);
     this.drawBackground_vzjx8w$(xg);
     this.draw_w2bsgl$(xg, this.gridWorld.a);
-    this.drawPaths_i1ns0x$(xg, this.paths);
+    this.drawPaths_g16lc6$(xg, this.paths);
   };
-  GridWorldView.prototype.drawPaths_i1ns0x$ = function (xg, paths) {
+  GridWorldView.prototype.drawPaths_g16lc6$ = function (xg, paths, bold) {
+    if (bold === void 0)
+      bold = false;
     var tmp$, tmp$_0;
     var xs = new XStyle(void 0, void 0, void 0, void 0, false);
     var colors = new XPalette(paths.size, 0.0, 0.5, L2);
@@ -2168,7 +2233,7 @@
     while (tmp$.hasNext()) {
       var path = tmp$.next();
       xs.lc = colors.getColor_za3lpa$((tmp$_0 = ix, ix = tmp$_0 + 1 | 0, tmp$_0));
-      xs.lc.a = 0.7;
+      xs.lc.a = bold ? 1.0 : 0.5;
       var points = ArrayList_init();
       var tmp$_1;
       tmp$_1 = path.iterator();
@@ -2206,7 +2271,7 @@
     xg.draw_dvdmun$(rect);
   };
   GridWorldView.prototype.draw_w2bsgl$ = function (xg, a) {
-    var tmp$, tmp$_0;
+    var tmp$, tmp$_0, tmp$_1;
     var style = new XStyle();
     var rect = new XRect(this.centre, this.cellSize, this.cellSize, style);
     tmp$ = this.gridWorld.nCols;
@@ -2224,6 +2289,14 @@
           var ds = new XStyle(XColor$Companion_getInstance().green);
           var disc = new XEllipse(rect.centre, this.cellSize, this.cellSize, ds);
           xg.draw_dvdmun$(disc);
+        }if (this.gridWorld.atGoal_2j9h0j$(iv)) {
+          var ds_0 = new XStyle(XColor$Companion_getInstance().blue);
+          var points = (new PolyUtil()).makePolygon_w4xg1m$(3, this.cellSize / 2);
+          xg.draw_dvdmun$(new XPoly(rect.centre, points, ds_0));
+        }if ((tmp$_1 = this.gridWorld.startPosition()) != null ? tmp$_1.equals(iv) : null) {
+          var ds_1 = new XStyle(XColor$Companion_getInstance().red);
+          var points_0 = (new PolyUtil()).makePolygon_w4xg1m$(4, this.cellSize / 2);
+          xg.draw_dvdmun$(new XPoly(rect.centre, points_0, ds_1, 0.0));
         }}
     }
   };
@@ -2286,6 +2359,7 @@
     this.starts = starts;
     this.sub = sub;
     this.foundGoal = foundGoal;
+    this.paths = ArrayList_init();
     this.verbose = false;
   }
   MacroWorld.prototype.copy = function () {
@@ -2305,12 +2379,50 @@
       new MacroWorld$Companion();
     }return MacroWorld$Companion_instance;
   }
+  MacroWorld.prototype.reset = function () {
+    this.starts.clear();
+    this.starts.add_11rb$(this.sub.startPosition());
+    this.paths.clear();
+  };
+  MacroWorld.prototype.allPaths = function () {
+    return this.paths;
+  };
+  MacroWorld.prototype.bestPaths = function () {
+    var tmp$, tmp$_0, tmp$_1;
+    var bp = ArrayList_init();
+    tmp$ = this.graph.g.entries.iterator();
+    while (tmp$.hasNext()) {
+      var tmp$_2 = tmp$.next();
+      var k = tmp$_2.key;
+      var v = tmp$_2.value;
+      tmp$_0 = v.entries.iterator();
+      while (tmp$_0.hasNext()) {
+        var tmp$_3 = tmp$_0.next();
+        var key = tmp$_3.key;
+        var sp = tmp$_3.value;
+        if ((tmp$_1 = sp.path) != null) {
+          bp.add_11rb$(tmp$_1);
+        }}
+    }
+    return bp;
+  };
+  MacroWorld.prototype.explorePaths_za3lpa$ = function (n) {
+    var tmp$;
+    for (var i = 0; i < n; i++) {
+      var temp = ArrayList_init();
+      temp.addAll_brywnq$(this.starts);
+      tmp$ = temp.iterator();
+      while (tmp$.hasNext()) {
+        var start = tmp$.next();
+        this.paths.add_11rb$(this.randomPath_2j9h0j$(start));
+      }
+    }
+  };
   MacroWorld.prototype.makeMacros_za3lpa$ = function (n) {
     var tmp$;
     this.starts.clear();
     this.starts.addAll_brywnq$(this.sub.subgoals);
     this.starts.add_11rb$(this.sub.startPosition());
-    var ix = 0;
     for (var i = 0; i < n; i++) {
       tmp$ = this.starts.iterator();
       while (tmp$.hasNext()) {
@@ -2326,7 +2438,7 @@
     for (var i = 1; i <= tmp$; i++) {
       state.next_za3lpa$(Random.Default.nextInt_za3lpa$(state.nActions()));
       if (this.sub.atSubgoal_2j9h0j$(state.s) && !((tmp$_0 = state.s) != null ? tmp$_0.equals(start) : null)) {
-        this.graph.updateCost_g28pcy$(start, state.s, i);
+        this.graph.updateCost_m7l82n$(start, state.s, i);
         if (MacroWorld$Companion_getInstance().stopAtSubgoal)
           return;
       }}
@@ -2341,7 +2453,8 @@
       state.next_za3lpa$(Random.Default.nextInt_za3lpa$(state.nActions()));
       path.add_11rb$(state.s);
       if (this.sub.atSubgoal_2j9h0j$(state.s) && !((tmp$_0 = state.s) != null ? tmp$_0.equals(start) : null)) {
-        this.graph.updateCost_g28pcy$(start, state.s, i);
+        this.graph.updateCost_m7l82n$(start, state.s, i);
+        this.starts.add_11rb$(state.s);
         if (MacroWorld$Companion_getInstance().stopAtSubgoal)
           return path;
       }}
@@ -2370,7 +2483,7 @@
       println('nActions = ' + this.nActions() + ', map size = ' + toString((tmp$ = this.graph.g.get_11rb$(this.node)) != null ? tmp$.size : null));
     }var next = this.graph.ithEntry_wn2dyp$(this.node, action);
     if (next != null) {
-      this.value -= next.value;
+      this.value -= next.value.score;
       this.node = next.key;
       if (Kotlin.isType(this.node, IntVec2d)) {
         if (this.sub.atGoal_2j9h0j$(Kotlin.isType(tmp$_0 = this.node, IntVec2d) ? tmp$_0 : throwCCE())) {
@@ -2391,77 +2504,6 @@
     return this.nTicksX;
   };
   MacroWorld.$metadata$ = {kind: Kind_CLASS, simpleName: 'MacroWorld', interfaces: [ExtendedAbstractGameState]};
-  function Graph(nodes, g) {
-    Graph$Companion_getInstance();
-    if (nodes === void 0)
-      nodes = HashMap_init();
-    if (g === void 0)
-      g = HashMap_init();
-    this.nodes = nodes;
-    this.g = g;
-  }
-  function Graph$Companion() {
-    Graph$Companion_instance = this;
-    this.emptySet = HashMap_init();
-    this.maxCost = kotlin_js_internal_DoubleCompanionObject.MAX_VALUE;
-  }
-  Graph$Companion.prototype.sample1 = function () {
-    var g = hashMapOf([to(0, hashMapOf([to(1, 10.0), to(2, 5.0)]))]);
-    var nodes = hashMapOf([to(5, 100.0)]);
-    return new Graph(nodes, g);
-  };
-  Graph$Companion.$metadata$ = {kind: Kind_OBJECT, simpleName: 'Companion', interfaces: []};
-  var Graph$Companion_instance = null;
-  function Graph$Companion_getInstance() {
-    if (Graph$Companion_instance === null) {
-      new Graph$Companion();
-    }return Graph$Companion_instance;
-  }
-  Graph.prototype.nodeScore_za3rmp$ = function (v) {
-    var tmp$;
-    return (tmp$ = this.nodes.get_11rb$(v)) != null ? tmp$ : 0.0;
-  };
-  Graph.prototype.outArcs_za3rmp$ = function (ix) {
-    var tmp$;
-    return (tmp$ = this.g.get_11rb$(ix)) != null ? tmp$ : Graph$Companion_getInstance().emptySet;
-  };
-  Graph.prototype.cost_wn2jw4$ = function (from, to) {
-    var tmp$;
-    return (tmp$ = this.g.get_11rb$(from)) != null ? tmp$.get_11rb$(to) : null;
-  };
-  Graph.prototype.ithEntry_wn2dyp$ = function (from, toIndex) {
-    var weightedArcs = this.g.get_11rb$(from);
-    if (weightedArcs == null)
-      return null;
-    var al = toCollection(asSequence(weightedArcs), ArrayList_init());
-    if (toIndex < al.size)
-      return al.get_za3lpa$(toIndex);
-    else
-      return null;
-  };
-  Graph.prototype.updateCost_g28pcy$ = function (from, to, cost) {
-    var tmp$, tmp$_0, tmp$_1;
-    var oldCost = (tmp$_0 = (tmp$ = this.g.get_11rb$(from)) != null ? tmp$.get_11rb$(to) : null) != null ? tmp$_0 : Graph$Companion_getInstance().maxCost;
-    if (cost < oldCost) {
-      if (this.g.get_11rb$(from) == null) {
-        var $receiver = this.g;
-        var value = HashMap_init();
-        $receiver.put_xwzc9p$(from, value);
-      }(tmp$_1 = this.g.get_11rb$(from)) != null ? tmp$_1.put_xwzc9p$(to, cost) : null;
-    }};
-  Graph.prototype.print = function () {
-    var tmp$;
-    tmp$ = this.g.entries.iterator();
-    while (tmp$.hasNext()) {
-      var tmp$_0 = tmp$.next();
-      var k = tmp$_0.key;
-      var v = tmp$_0.value;
-      println('Node: ' + k.toString());
-      println('\t' + ' Arcs: ' + v);
-      println_0();
-    }
-  };
-  Graph.$metadata$ = {kind: Kind_CLASS, simpleName: 'Graph', interfaces: []};
   function SubGridSnap(s, score, subgoalReached) {
     this.s = s;
     this.score = score;
@@ -2698,11 +2740,12 @@
     this.view = view;
     this.macro = macro;
     this.gridWorld = gridWorld;
+    this.count = 0;
+    this.paths = ArrayList_init();
   }
   function DemoUpdater$Companion() {
     DemoUpdater$Companion_instance = this;
-    this.count = 0;
-    this.skip = 10;
+    this.skip = 50;
   }
   DemoUpdater$Companion.$metadata$ = {kind: Kind_OBJECT, simpleName: 'Companion', interfaces: []};
   var DemoUpdater$Companion_instance = null;
@@ -2712,21 +2755,57 @@
     }return DemoUpdater$Companion_instance;
   }
   DemoUpdater.prototype.invoke = function () {
+    this.count = this.count + 1 | 0;
+    if (this.count % DemoUpdater$Companion_getInstance().skip === 0) {
+      this.macro.reset();
+    } else {
+      this.macro.explorePaths_za3lpa$(1);
+    }
+    this.view.paths = this.macro.allPaths();
+    this.view.boldPaths = this.macro.bestPaths();
+  };
+  DemoUpdater.prototype.addRandomPaths = function () {
+    var nPaths = 1;
     var tmp$;
-    tmp$ = DemoUpdater$Companion_getInstance().count;
-    DemoUpdater$Companion_getInstance().count = tmp$ + 1 | 0;
-    if (DemoUpdater$Companion_getInstance().count % DemoUpdater$Companion_getInstance().skip === 0) {
-      var paths = ArrayList_init();
-      var nPaths = 20;
-      var tmp$_0;
-      tmp$_0 = (new IntRange(1, nPaths)).iterator();
-      while (tmp$_0.hasNext()) {
-        var element = tmp$_0.next();
-        paths.add_11rb$(this.macro.randomPath_2j9h0j$(this.gridWorld.startPosition()));
-      }
-      this.view.paths = paths;
-    }};
+    tmp$ = (new IntRange(1, nPaths)).iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      this.paths.add_11rb$(this.macro.randomPath_2j9h0j$(this.gridWorld.startPosition()));
+    }
+    this.view.paths = this.paths;
+  };
+  DemoUpdater.prototype.resetPaths = function () {
+    this.paths.clear();
+  };
   DemoUpdater.$metadata$ = {kind: Kind_CLASS, simpleName: 'DemoUpdater', interfaces: [Updater]};
+  function ScoredPath(score, path) {
+    if (path === void 0)
+      path = null;
+    this.score = score;
+    this.path = path;
+  }
+  ScoredPath.$metadata$ = {kind: Kind_CLASS, simpleName: 'ScoredPath', interfaces: []};
+  ScoredPath.prototype.component1 = function () {
+    return this.score;
+  };
+  ScoredPath.prototype.component2 = function () {
+    return this.path;
+  };
+  ScoredPath.prototype.copy_6f9tkv$ = function (score, path) {
+    return new ScoredPath(score === void 0 ? this.score : score, path === void 0 ? this.path : path);
+  };
+  ScoredPath.prototype.toString = function () {
+    return 'ScoredPath(score=' + Kotlin.toString(this.score) + (', path=' + Kotlin.toString(this.path)) + ')';
+  };
+  ScoredPath.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.score) | 0;
+    result = result * 31 + Kotlin.hashCode(this.path) | 0;
+    return result;
+  };
+  ScoredPath.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.score, other.score) && Kotlin.equals(this.path, other.path)))));
+  };
   function Updater() {
   }
   Updater.$metadata$ = {kind: Kind_INTERFACE, simpleName: 'Updater', interfaces: []};
@@ -4274,6 +4353,26 @@
   XPoly.prototype.equals = function (other) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.centre, other.centre) && Kotlin.equals(this.points, other.points) && Kotlin.equals(this.dStyle, other.dStyle) && Kotlin.equals(this.rotation, other.rotation) && Kotlin.equals(this.closed, other.closed)))));
   };
+  function PolyUtil() {
+  }
+  PolyUtil.prototype.makePolygon_w4xg1m$ = function (n, rad, startAngle) {
+    if (n === void 0)
+      n = 6;
+    if (rad === void 0)
+      rad = 10.0;
+    if (startAngle === void 0)
+      startAngle = 0.0;
+    var verts = ArrayList_init();
+    var step = 2 * math.PI / n;
+    for (var i = 0; i < n; i++) {
+      var angle = startAngle + i * step;
+      var x = rad * Math_0.sin(angle);
+      var y = rad * Math_0.cos(angle);
+      verts.add_11rb$(new Vec2d(x, y));
+    }
+    return verts;
+  };
+  PolyUtil.$metadata$ = {kind: Kind_CLASS, simpleName: 'PolyUtil', interfaces: []};
   function ContainsTestApp() {
     this.xp = new XPalette(void 0, 0.2, void 0, L76);
     this.inColor = this.xp.colors.get_za3lpa$(0);
@@ -5429,15 +5528,15 @@
   package$words.TrieDict = TrieDict;
   Object.defineProperty(TrieNode, 'Companion', {get: TrieNode$Companion_getInstance});
   package$words.TrieNode = TrieNode;
+  Object.defineProperty(Graph, 'Companion', {get: Graph$Companion_getInstance});
   var package$subgoal = package$games.subgoal || (package$games.subgoal = {});
+  package$subgoal.Graph = Graph;
   Object.defineProperty(GridWorldView, 'Companion', {get: GridWorldView$Companion_getInstance});
   package$subgoal.GridWorldView = GridWorldView;
   Object.defineProperty(Levels, 'list', {get: Levels$list_getInstance});
   package$subgoal.Levels = Levels;
   Object.defineProperty(MacroWorld, 'Companion', {get: MacroWorld$Companion_getInstance});
   package$subgoal.MacroWorld = MacroWorld;
-  Object.defineProperty(Graph, 'Companion', {get: Graph$Companion_getInstance});
-  package$subgoal.Graph = Graph;
   package$subgoal.SubGridSnap = SubGridSnap;
   Object.defineProperty(SubGridState, 'Companion', {get: SubGridState$Companion_getInstance});
   package$subgoal.SubGridState = SubGridState;
@@ -5447,6 +5546,7 @@
   package$subgoal.SubgoalDemo = SubgoalDemo;
   Object.defineProperty(DemoUpdater, 'Companion', {get: DemoUpdater$Companion_getInstance});
   package$subgoal.DemoUpdater = DemoUpdater;
+  package$subgoal.ScoredPath = ScoredPath;
   package$subgoal.Updater = Updater;
   var package$tetris = package$games.tetris || (package$games.tetris = {});
   package$tetris.TetrisController = TetrisController;
@@ -5507,6 +5607,7 @@
   package$gui.XLine = XLine;
   package$gui.XText = XText;
   package$gui.XPoly = XPoly;
+  package$gui.PolyUtil = PolyUtil;
   var package$geometry = package$gui.geometry || (package$gui.geometry = {});
   package$geometry.ContainsTestApp = ContainsTestApp;
   package$geometry.Poly = Poly;

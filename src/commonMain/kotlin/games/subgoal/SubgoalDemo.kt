@@ -7,9 +7,7 @@ interface SubgoalDemoControl {
     fun nSubgoals() : Int = 10
 }
 
-class DefaultDemoControl : SubgoalDemoControl {
-
-}
+class DefaultDemoControl : SubgoalDemoControl
 
 class SubgoalDemo (val control: SubgoalDemoControl = DefaultDemoControl()): XApp {
 
@@ -81,19 +79,43 @@ class SubgoalDemo (val control: SubgoalDemoControl = DefaultDemoControl()): XApp
 
 class DemoUpdater (val view: GridWorldView, val macro: MacroWorld, val gridWorld: SubGridWorld): Updater {
 
+    var count = 0
+    val paths = ArrayList<Path>()
+
+
     companion object {
-        var count = 0
-        var skip = 10
+        var skip = 50
     }
+
+
 
     override fun invoke() {
         count++
         if (count % skip == 0) {
-            val paths = ArrayList<Path>()
-            val nPaths = 20
-            (1..nPaths).forEach{ paths.add( macro.randomPath(gridWorld.startPosition()) ) }
-            view.paths = paths
+            // resetPaths()
+            macro.reset()
+        } else {
+            macro.explorePaths(1)
+            // addRandomPaths()
         }
+        view.paths = macro.allPaths()
+        view.boldPaths = macro.bestPaths()
     }
+
+
+    // todo: also need a way to build up the start points
+
+    fun addRandomPaths() {
+        val nPaths = 1
+        (1..nPaths).forEach{ paths.add( macro.randomPath(gridWorld.startPosition()) ) }
+        view.paths = paths
+    }
+
+    fun resetPaths() {
+        paths.clear()
+    }
+
+
+
 }
 

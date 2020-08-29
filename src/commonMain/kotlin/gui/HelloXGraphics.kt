@@ -29,7 +29,7 @@ class HelloXGraphics : XApp {
         xg.draw(XLine(Vec2d(0.0, xg.height()), Vec2d(xg.width(), 0.0), thickWhite))
 
         hexAngle += angleInc
-        val points = makePolygon(rad = xg.height() / 5, startAngle = hexAngle)
+        val points = PolyUtil().makePolygon(rad = xg.height() / 5, startAngle = hexAngle)
         val poly = XPoly(Vec2d(xg.width() / 2, xg.height() / 2), points)
         with(poly.dStyle) {
             fg = XColor(r=0.5f, g=1f)
