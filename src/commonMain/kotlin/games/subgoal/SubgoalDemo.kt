@@ -14,25 +14,24 @@ class DefaultDemoControl : SubgoalDemoControl {
 class SubgoalDemo (val control: SubgoalDemoControl = DefaultDemoControl()): XApp {
 
     val xp = XPalette()
-    val viewApp: GridWorldView
+    var viewApp: GridWorldView? = null
     // val message
 
     init {
-        val nSubgoals = 5
-
-        val gridWorld = SubGridWorld(Levels.noSubgoals)
-        gridWorld.addRandomSubgoals(nSubgoals)
-
-        val macro = MacroWorld(sub = gridWorld)
-        viewApp = GridWorldView(gridWorld)
-        val updater = DemoUpdater(viewApp, macro, gridWorld)
-
-        viewApp.updater = updater
-
+        reset()
     }
 
     fun reset() {
         println("Resetting with ${control.nSubgoals()} subgoals")
+        val gridWorld = SubGridWorld(Levels.noSubgoals)
+        gridWorld.addRandomSubgoals(control.nSubgoals())
+
+        val macro = MacroWorld(sub = gridWorld)
+        val app = GridWorldView(gridWorld)
+        val updater = DemoUpdater(app, macro, gridWorld)
+
+        app.updater = updater
+        viewApp = app
     }
 
     override fun paint(xg: XGraphics) {
