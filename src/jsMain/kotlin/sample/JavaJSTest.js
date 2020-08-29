@@ -2656,16 +2656,17 @@
     this.control = control;
     this.xp = new XPalette();
     this.viewApp = null;
-    var nSubgoals = 5;
-    var gridWorld = new SubGridWorld(Levels$list_getInstance().noSubgoals);
-    gridWorld.addRandomSubgoals_za3lpa$(nSubgoals);
-    var macro = new MacroWorld(void 0, void 0, void 0, void 0, void 0, gridWorld);
-    this.viewApp = new GridWorldView(gridWorld);
-    var updater = new DemoUpdater(this.viewApp, macro, gridWorld);
-    this.viewApp.updater = updater;
+    this.reset();
   }
   SubgoalDemo.prototype.reset = function () {
     println('Resetting with ' + this.control.nSubgoals() + ' subgoals');
+    var gridWorld = new SubGridWorld(Levels$list_getInstance().noSubgoals);
+    gridWorld.addRandomSubgoals_za3lpa$(this.control.nSubgoals());
+    var macro = new MacroWorld(void 0, void 0, void 0, void 0, void 0, gridWorld);
+    var app = new GridWorldView(gridWorld);
+    var updater = new DemoUpdater(app, macro, gridWorld);
+    app.updater = updater;
+    this.viewApp = app;
   };
   SubgoalDemo.prototype.paint_vzjx8w$ = function (xg) {
     var tmp$, tmp$_0, tmp$_1, tmp$_2;
