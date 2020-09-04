@@ -2199,6 +2199,9 @@
       println_0();
     }
   };
+  Graph.prototype.clear = function () {
+    this.g = HashMap_init();
+  };
   Graph.$metadata$ = {kind: Kind_CLASS, simpleName: 'Graph', interfaces: []};
   function GridWorldView(gridWorld, updater) {
     GridWorldView$Companion_getInstance();
@@ -2206,6 +2209,7 @@
       updater = null;
     this.gridWorld = gridWorld;
     this.updater = updater;
+    this.graph = null;
     this.count = 0;
     this.paths = ArrayList_init();
     this.boldPaths = ArrayList_init();
@@ -2216,13 +2220,15 @@
     this.centre = new Vec2d();
   }
   GridWorldView.prototype.paint_vzjx8w$ = function (xg) {
-    var tmp$;
+    var tmp$, tmp$_0;
     (tmp$ = this.updater) != null ? (tmp$.invoke(), Unit) : null;
     this.calcCellSize_vzjx8w$(xg);
     this.drawBackground_vzjx8w$(xg);
     this.draw_w2bsgl$(xg, this.gridWorld.a);
     this.drawPaths_g16lc6$(xg, this.paths);
-  };
+    if ((tmp$_0 = this.graph) != null) {
+      this.drawGraph_n56d6e$(xg, tmp$_0);
+    }};
   GridWorldView.prototype.drawPaths_g16lc6$ = function (xg, paths, bold) {
     if (bold === void 0)
       bold = false;
@@ -2244,6 +2250,25 @@
       }
       var xp = new XPoly(new Vec2d(), points, xs, void 0, false);
       xg.draw_dvdmun$(xp);
+    }
+  };
+  GridWorldView.prototype.drawGraph_n56d6e$ = function (xg, graph) {
+    var tmp$, tmp$_0, tmp$_1, tmp$_2;
+    var xs = new XStyle(void 0, void 0, void 0, void 0, false);
+    var ix = 0;
+    tmp$ = graph.g.keys.iterator();
+    while (tmp$.hasNext()) {
+      var node = tmp$.next();
+      tmp$_0 = graph.outArcs_za3rmp$(node).entries.iterator();
+      while (tmp$_0.hasNext()) {
+        var arc = tmp$_0.next();
+        var from = Kotlin.isType(tmp$_1 = node, IntVec2d) ? tmp$_1 : throwCCE();
+        var to = Kotlin.isType(tmp$_2 = arc.key, IntVec2d) ? tmp$_2 : throwCCE();
+        xs.lc = XColor$Companion_getInstance().magenta;
+        xs.lc.a = 1.0;
+        var line = new XLine(this.getVec_2j9h0j$(from), this.getVec_2j9h0j$(to), xs);
+        xg.draw_dvdmun$(line);
+      }
     }
   };
   GridWorldView.prototype.getVec_2j9h0j$ = function (iv) {
@@ -2384,6 +2409,7 @@
     this.starts.clear();
     this.starts.add_11rb$(this.sub.startPosition());
     this.paths.clear();
+    this.graph.clear();
   };
   MacroWorld.prototype.allPaths = function () {
     return this.paths;
@@ -2764,6 +2790,7 @@
     }
     this.view.paths = this.macro.allPaths();
     this.view.boldPaths = this.macro.bestPaths();
+    this.view.graph = this.macro.graph;
   };
   DemoUpdater.prototype.addRandomPaths = function () {
     var nPaths = 1;
@@ -4612,6 +4639,9 @@
   IntVec2d.prototype.isInRect_fuuqxa$ = function (topLeft, size) {
     return this.x >= topLeft.x && this.x <= (topLeft.x + size.x | 0) && this.y >= topLeft.y && this.y <= (topLeft.y + size.y | 0);
   };
+  IntVec2d.prototype.toVec = function () {
+    return new Vec2d(this.x, this.y);
+  };
   IntVec2d.$metadata$ = {kind: Kind_CLASS, simpleName: 'IntVec2d', interfaces: []};
   IntVec2d.prototype.component1 = function () {
     return this.x;
@@ -5289,12 +5319,10 @@
     try {
       if (this.count % this.period === 0) {
         var el = document.getElementById('kControls');
-        println('el = ' + toString(el));
         if (el != null) {
           var sib = createElement(document, 'h3', SubgoalDemoTest$update$lambda);
           sib.textContent = 'Hello h3';
           el.innerHTML = '<h2>Count = ' + this.count + '<\/h2>';
-          println(sib);
         }}} catch (e) {
       if (Kotlin.isType(e, Exception)) {
         println(e);
