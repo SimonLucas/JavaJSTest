@@ -74,6 +74,7 @@
   var appendText = Kotlin.kotlin.dom.appendText_46n0ku$;
   var TestTimeSource = Kotlin.kotlin.time.TestTimeSource;
   var toInt = Kotlin.kotlin.text.toInt_pdl1vz$;
+  var createElement = Kotlin.kotlin.dom.createElement_7cgwi1$;
   var Exception = Kotlin.kotlin.Exception;
   PlayerShip.prototype = Object.create(GameObject.prototype);
   PlayerShip.prototype.constructor = PlayerShip;
@@ -5264,6 +5265,8 @@
     }
     this.nSubgoalsField = Kotlin.isType(tmp$_1 = document.getElementById('nSubgoals'), HTMLInputElement) ? tmp$_1 : throwCCE();
     println('Shuffle seed input element: ' + toString(this.nSubgoalsField));
+    this.period = 10;
+    this.count = 0;
   }
   SubgoalDemoTest.prototype.nSubgoals = function () {
     var input = this.nSubgoalsField;
@@ -5277,8 +5280,27 @@
       return this.nSubgoalsX;
     }
   };
+  function SubgoalDemoTest$update$lambda($receiver) {
+    return Unit;
+  }
   SubgoalDemoTest.prototype.update = function () {
     this.app.paint_vzjx8w$(this.xg);
+    this.count = this.count + 1 | 0;
+    try {
+      if (this.count % this.period === 0) {
+        var el = document.getElementById('kControls');
+        println('el = ' + toString(el));
+        if (el != null) {
+          var sib = createElement(document, 'h3', SubgoalDemoTest$update$lambda);
+          sib.textContent = 'Hello h3';
+          el.innerHTML = '<h2>Count = ' + this.count + '<\/h2>';
+          println(sib);
+        }}} catch (e) {
+      if (Kotlin.isType(e, Exception)) {
+        println(e);
+      } else
+        throw e;
+    }
   };
   function SubgoalDemoTest$run$lambda(this$SubgoalDemoTest) {
     return function () {

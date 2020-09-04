@@ -100,6 +100,7 @@ class DemoUpdater (val view: GridWorldView, val macro: MacroWorld, val gridWorld
         }
         view.paths = macro.allPaths()
         view.boldPaths = macro.bestPaths()
+        view.graph = macro.graph
     }
 
 

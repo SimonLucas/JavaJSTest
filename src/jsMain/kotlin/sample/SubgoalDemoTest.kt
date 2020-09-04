@@ -9,6 +9,8 @@ import org.w3c.dom.url.URLSearchParams
 import test.XGraphicsJS
 import kotlin.browser.document
 import kotlin.browser.window
+import kotlin.dom.appendElement
+import kotlin.dom.createElement
 
 class SubgoalDemoTest : SubgoalDemoControl {
     val context = canvas.getContext("2d") as CanvasRenderingContext2D
@@ -68,8 +70,32 @@ class SubgoalDemoTest : SubgoalDemoControl {
         }
     }
 
+
+    val period = 10
+    var count = 0
+
     fun update() {
         app.paint(xg)
+
+        count++
+        try {
+            if (count % period == 0) {
+                val el = document.getElementById("kControls")
+                // println("el = $el")
+                if (el != null) {
+                    val sib = document.createElement("h3") {
+                        // return@createElement
+                        // return "Hello"
+                    }
+                    sib.textContent = "Hello h3"
+                    el.innerHTML = "<h2>Count = $count</h2>"
+                    // el.insertAdjacentElement("", sib)
+                    // println(sib)
+                }
+            }
+        } catch (e: Exception) {
+            println(e)}
+
     }
 
     fun run() {

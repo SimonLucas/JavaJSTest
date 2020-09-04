@@ -5,6 +5,7 @@ import gui.XColor.Companion.black
 import gui.XColor.Companion.blue
 import gui.XColor.Companion.gray
 import gui.XColor.Companion.green
+import gui.XColor.Companion.magenta
 import gui.XColor.Companion.red
 import gui.geometry.Poly
 import math.IntVec2d
@@ -18,6 +19,7 @@ import kotlin.math.min
 
 class GridWorldView(var gridWorld: SubGridWorld, var updater: Updater? = null) : XApp {
 
+    var graph: Graph? = null
     var count = 0
     override fun paint(xg: XGraphics) {
         updater?.invoke()
@@ -26,6 +28,7 @@ class GridWorldView(var gridWorld: SubGridWorld, var updater: Updater? = null) :
         drawBackground(xg)
         draw(xg, gridWorld.a)
         drawPaths(xg, paths)
+        graph?.let{ drawGraph(xg, it)}
     }
 
     var paths = ArrayList<Path>()
@@ -43,6 +46,22 @@ class GridWorldView(var gridWorld: SubGridWorld, var updater: Updater? = null) :
             path.forEach { points.add(getVec(it)) }
             val xp = XPoly(centre = Vec2d(), points = points, dStyle = xs, closed = false)
             xg.draw(xp)
+        }
+    }
+
+    fun drawGraph(xg: XGraphics, graph: Graph) {
+        val xs = XStyle(fill = false)
+        // val colors = XPalette(seed = 20L, nColors = paths.size, min = 0.2, max = 0.4)
+        var ix = 0
+        for (node in graph.g.keys) {
+            for (arc in graph.outArcs(node)) {
+                val from = node as IntVec2d
+                val to = arc.key as IntVec2d
+                xs.lc = magenta
+                xs.lc.a = 1.0f
+                val line = XLine(getVec(from), getVec(to), xs)
+                xg.draw(line)
+            }
         }
     }
 

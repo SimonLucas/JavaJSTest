@@ -54,6 +54,7 @@ class MacroWorld(
         starts.clear()
         starts.add(sub.startPosition())
         paths.clear()
+        graph.clear()
         // println("Starts after reset: $starts")
     }
 

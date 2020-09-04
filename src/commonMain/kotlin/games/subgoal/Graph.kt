@@ -4,7 +4,7 @@ package games.subgoal
 class Graph(
     // val nodes: ScoredNodes = HashMap<Any, Double>(),
     // val g: G = HashMap<Any, WeightedArcs>()
-    val g: GPath = GPath()
+    var g: GPath = GPath()
 ) {
 
     companion object {
@@ -48,6 +48,10 @@ class Graph(
             println("\t Arcs: $v")
             println()
         }
+    }
+
+    fun clear() {
+        g = GPath()
     }
 }
 
