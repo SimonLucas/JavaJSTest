@@ -2756,7 +2756,7 @@
   }
   SubgoalDemo.prototype.reset = function () {
     println('Resetting with ' + this.control.nSubgoals() + ' subgoals');
-    var gridWorld = new SubGridWorld(Levels$list_getInstance().subgoals);
+    var gridWorld = new SubGridWorld(Levels$list_getInstance().noSubgoals);
     gridWorld.addRandomSubgoals_za3lpa$(this.control.nSubgoals());
     var macro = new MacroWorld(void 0, void 0, void 0, void 0, void 0, gridWorld);
     var app = new GridWorldView(gridWorld);

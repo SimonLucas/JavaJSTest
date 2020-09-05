@@ -21,8 +21,8 @@ class SubgoalDemo (val control: SubgoalDemoControl = DefaultDemoControl()): XApp
 
     fun reset() {
         println("Resetting with ${control.nSubgoals()} subgoals")
-        // val gridWorld = SubGridWorld(Levels.noSubgoals)
-        val gridWorld = SubGridWorld(Levels.subgoals)
+        val gridWorld = SubGridWorld(Levels.noSubgoals)
+        // val gridWorld = SubGridWorld(Levels.subgoals)
         gridWorld.addRandomSubgoals(control.nSubgoals())
 
         val macro = MacroWorld(sub = gridWorld)
