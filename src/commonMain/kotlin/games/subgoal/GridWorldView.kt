@@ -49,10 +49,22 @@ class GridWorldView(var gridWorld: SubGridWorld, var updater: Updater? = null) :
         }
     }
 
-    fun drawGraph(xg: XGraphics, graph: Graph) {
+    fun drawMainPaths(xg: XGraphics, paths: ArrayList<Path>) {
+        val xs = XStyle(fill = false, lineWidth = 5.0, lc = blue)
+        var ix = 0
+        for (path in paths) {
+            val points = ArrayList<Vec2d>()
+            path.forEach { points.add(getVec(it)) }
+            val xp = XPoly(centre = Vec2d(), points = points, dStyle = xs, closed = false)
+            xg.draw(xp)
+        }
+    }
+
+    fun drawGraph(xg: XGraphics, graph: Graph, drawPaths: Boolean = true) {
         val xs = XStyle(fill = false)
         // val colors = XPalette(seed = 20L, nColors = paths.size, min = 0.2, max = 0.4)
         var ix = 0
+        val mainPaths = ArrayList<Path>()
         for (node in graph.g.keys) {
             for (arc in graph.outArcs(node)) {
                 val from = node as IntVec2d
@@ -61,8 +73,11 @@ class GridWorldView(var gridWorld: SubGridWorld, var updater: Updater? = null) :
                 xs.lc.a = 1.0f
                 val line = XLine(getVec(from), getVec(to), xs)
                 xg.draw(line)
+                arc.value.path?.let { mainPaths.add(it) }
             }
         }
+        // println(mainPaths)
+        drawMainPaths(xg, mainPaths)
     }
 
     fun getVec(iv: IntVec2d) = Vec2d((iv.x + 0.5) * cellSize, (iv.y + 0.5) * cellSize)

@@ -4,7 +4,7 @@ import gui.*
 import gui.layout.Layout
 
 interface SubgoalDemoControl {
-    fun nSubgoals() : Int = 10
+    fun nSubgoals() : Int = 0
 }
 
 class DefaultDemoControl : SubgoalDemoControl
@@ -21,7 +21,8 @@ class SubgoalDemo (val control: SubgoalDemoControl = DefaultDemoControl()): XApp
 
     fun reset() {
         println("Resetting with ${control.nSubgoals()} subgoals")
-        val gridWorld = SubGridWorld(Levels.noSubgoals)
+        // val gridWorld = SubGridWorld(Levels.noSubgoals)
+        val gridWorld = SubGridWorld(Levels.subgoals)
         gridWorld.addRandomSubgoals(control.nSubgoals())
 
         val macro = MacroWorld(sub = gridWorld)

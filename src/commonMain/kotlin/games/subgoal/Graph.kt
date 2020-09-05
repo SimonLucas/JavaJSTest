@@ -39,6 +39,7 @@ class Graph(
             if (g[from] == null)
                 g[from] = ScoredPathArcs()
             g[from]?.put(to, ScoredPath(cost, path))
+            // println("Updated cost with $path")
         }
     }
 

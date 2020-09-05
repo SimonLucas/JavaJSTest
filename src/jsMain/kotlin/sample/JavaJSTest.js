@@ -2227,7 +2227,7 @@
     this.draw_w2bsgl$(xg, this.gridWorld.a);
     this.drawPaths_g16lc6$(xg, this.paths);
     if ((tmp$_0 = this.graph) != null) {
-      this.drawGraph_n56d6e$(xg, tmp$_0);
+      this.drawGraph_c761mr$(xg, tmp$_0);
     }};
   GridWorldView.prototype.drawPaths_g16lc6$ = function (xg, paths, bold) {
     if (bold === void 0)
@@ -2252,10 +2252,31 @@
       xg.draw_dvdmun$(xp);
     }
   };
-  GridWorldView.prototype.drawGraph_n56d6e$ = function (xg, graph) {
-    var tmp$, tmp$_0, tmp$_1, tmp$_2;
+  GridWorldView.prototype.drawMainPaths_i1ns0x$ = function (xg, paths) {
+    var tmp$;
+    var xs = new XStyle(void 0, void 0, XColor$Companion_getInstance().blue, void 0, false, 5.0);
+    var ix = 0;
+    tmp$ = paths.iterator();
+    while (tmp$.hasNext()) {
+      var path = tmp$.next();
+      var points = ArrayList_init();
+      var tmp$_0;
+      tmp$_0 = path.iterator();
+      while (tmp$_0.hasNext()) {
+        var element = tmp$_0.next();
+        points.add_11rb$(this.getVec_2j9h0j$(element));
+      }
+      var xp = new XPoly(new Vec2d(), points, xs, void 0, false);
+      xg.draw_dvdmun$(xp);
+    }
+  };
+  GridWorldView.prototype.drawGraph_c761mr$ = function (xg, graph, drawPaths) {
+    if (drawPaths === void 0)
+      drawPaths = true;
+    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3;
     var xs = new XStyle(void 0, void 0, void 0, void 0, false);
     var ix = 0;
+    var mainPaths = ArrayList_init();
     tmp$ = graph.g.keys.iterator();
     while (tmp$.hasNext()) {
       var node = tmp$.next();
@@ -2268,8 +2289,11 @@
         xs.lc.a = 1.0;
         var line = new XLine(this.getVec_2j9h0j$(from), this.getVec_2j9h0j$(to), xs);
         xg.draw_dvdmun$(line);
-      }
+        if ((tmp$_3 = arc.value.path) != null) {
+          mainPaths.add_11rb$(tmp$_3);
+        }}
     }
+    this.drawMainPaths_i1ns0x$(xg, mainPaths);
   };
   GridWorldView.prototype.getVec_2j9h0j$ = function (iv) {
     return new Vec2d((iv.x + 0.5) * this.cellSize, (iv.y + 0.5) * this.cellSize);
@@ -2461,9 +2485,12 @@
   MacroWorld.prototype.randomWalk_2j9h0j$ = function (start) {
     var tmp$, tmp$_0;
     var state = new SubGridState(start, this.sub);
+    var path = ArrayList_init();
+    path.add_11rb$(start);
     tmp$ = MacroWorld$Companion_getInstance().maxLen;
     for (var i = 1; i <= tmp$; i++) {
       state.next_za3lpa$(Random.Default.nextInt_za3lpa$(state.nActions()));
+      path.add_11rb$(state.s);
       if (this.sub.atSubgoal_2j9h0j$(state.s) && !((tmp$_0 = state.s) != null ? tmp$_0.equals(start) : null)) {
         this.graph.updateCost_m7l82n$(start, state.s, i);
         if (MacroWorld$Companion_getInstance().stopAtSubgoal)
@@ -2480,7 +2507,7 @@
       state.next_za3lpa$(Random.Default.nextInt_za3lpa$(state.nActions()));
       path.add_11rb$(state.s);
       if (this.sub.atSubgoal_2j9h0j$(state.s) && !((tmp$_0 = state.s) != null ? tmp$_0.equals(start) : null)) {
-        this.graph.updateCost_m7l82n$(start, state.s, i);
+        this.graph.updateCost_m7l82n$(start, state.s, i, path);
         this.starts.add_11rb$(state.s);
         if (MacroWorld$Companion_getInstance().stopAtSubgoal)
           return path;
@@ -2713,7 +2740,7 @@
   function SubgoalDemoControl() {
   }
   SubgoalDemoControl.prototype.nSubgoals = function () {
-    return 10;
+    return 0;
   };
   SubgoalDemoControl.$metadata$ = {kind: Kind_INTERFACE, simpleName: 'SubgoalDemoControl', interfaces: []};
   function DefaultDemoControl() {
@@ -2729,7 +2756,7 @@
   }
   SubgoalDemo.prototype.reset = function () {
     println('Resetting with ' + this.control.nSubgoals() + ' subgoals');
-    var gridWorld = new SubGridWorld(Levels$list_getInstance().noSubgoals);
+    var gridWorld = new SubGridWorld(Levels$list_getInstance().subgoals);
     gridWorld.addRandomSubgoals_za3lpa$(this.control.nSubgoals());
     var macro = new MacroWorld(void 0, void 0, void 0, void 0, void 0, gridWorld);
     var app = new GridWorldView(gridWorld);

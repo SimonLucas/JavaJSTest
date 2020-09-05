@@ -107,13 +107,17 @@ class MacroWorld(
     fun randomWalk(start: IntVec2d) {
         // take random actionsm stopping when at a subgoal
         val state = SubGridState(start, sub)
+        val path = Path()
+        path.add(start)
         for (i in 1..maxLen) {
             state.next(Random.nextInt(state.nActions()))
+            path.add(state.s)
             if (sub.atSubgoal(state.s) && state.s != start) {
                 // found a subgoal different to where we started
                 // update the graph cost
 //                println("Found subgoal at ${state.s} from $start after $i steps")
                 // graph.updateCost(index(start), index(state.s), i.toDouble())
+                // println("Updating walk with $path")
                 graph.updateCost(start, state.s, i.toDouble())
                 if (stopAtSubgoal) return
             }
@@ -133,7 +137,7 @@ class MacroWorld(
                 // update the graph cost
 //                println("Found subgoal at ${state.s} from $start after $i steps")
                 // graph.updateCost(index(start), index(state.s), i.toDouble())
-                graph.updateCost(start, state.s, i.toDouble())
+                graph.updateCost(start, state.s, i.toDouble(), path)
                 // also add to set of starts
                 starts.add(state.s)
 
