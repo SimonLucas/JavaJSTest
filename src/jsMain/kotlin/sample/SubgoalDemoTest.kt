@@ -24,8 +24,11 @@ class SubgoalDemoTest : SubgoalDemoControl {
     val app = SubgoalDemo( control = this)
 
     var nSubgoalsField: HTMLInputElement? = null
+    var useDoorwaysField: HTMLInputElement? = null
 
     var nSubgoalsX = 10
+
+    var useDoorwaysX = false
 
 
     init {
@@ -49,8 +52,18 @@ class SubgoalDemoTest : SubgoalDemoControl {
             // document.URL = document.URL +
         } catch (e: Exception) { println(e)}
 
-        nSubgoalsField =
-            document.getElementById("nSubgoals") as HTMLInputElement
+        try {
+            nSubgoalsField =
+                document.getElementById("nSubgoals") as HTMLInputElement
+
+            useDoorwaysField =
+                document.getElementById("useDoorsX") as HTMLInputElement
+        } catch (e: Exception) {
+            println(e)
+        }
+
+
+
         println("Shuffle seed input element: $nSubgoalsField")
 
     }
@@ -60,14 +73,26 @@ class SubgoalDemoTest : SubgoalDemoControl {
 
 
     override fun nSubgoals(): Int {
-        val input = nSubgoalsField
-        if (input != null) {
-            println("Returning seed = ${input.value}")
-            return input.value.trim().toInt()
-        } else {
-            println("Failed null check: " + nSubgoalsField)
-            return nSubgoalsX
+        nSubgoalsField?.let {
+            return it.value.trim().toInt()
         }
+        return nSubgoalsX
+//        val input = nSubgoalsField
+//        if (input != null) {
+//            println("Returning seed = ${input.value}")
+//            return input.value.trim().toInt()
+//        } else {
+//            println("Failed null check: " + nSubgoalsField)
+//            return nSubgoalsX
+//        }
+    }
+
+    override fun useDoorways(): Boolean {
+        useDoorwaysField?.let {
+            // println("Checked: ${it.checked}")
+            return it.checked
+        }
+        return useDoorwaysX
     }
 
 

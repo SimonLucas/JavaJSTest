@@ -2742,6 +2742,9 @@
   SubgoalDemoControl.prototype.nSubgoals = function () {
     return 0;
   };
+  SubgoalDemoControl.prototype.useDoorways = function () {
+    return false;
+  };
   SubgoalDemoControl.$metadata$ = {kind: Kind_INTERFACE, simpleName: 'SubgoalDemoControl', interfaces: []};
   function DefaultDemoControl() {
   }
@@ -2756,7 +2759,9 @@
   }
   SubgoalDemo.prototype.reset = function () {
     println('Resetting with ' + this.control.nSubgoals() + ' subgoals');
-    var gridWorld = new SubGridWorld(Levels$list_getInstance().noSubgoals);
+    println('Resetting with ' + this.control.useDoorways() + ' subgoals');
+    var level = this.control.useDoorways() ? Levels$list_getInstance().subgoals : Levels$list_getInstance().noSubgoals;
+    var gridWorld = new SubGridWorld(level);
     gridWorld.addRandomSubgoals_za3lpa$(this.control.nSubgoals());
     var macro = new MacroWorld(void 0, void 0, void 0, void 0, void 0, gridWorld);
     var app = new GridWorldView(gridWorld);
@@ -5288,7 +5293,7 @@
   };
   BasicTest.$metadata$ = {kind: Kind_CLASS, simpleName: 'BasicTest', interfaces: []};
   function SubgoalDemoTest() {
-    var tmp$, tmp$_0, tmp$_1;
+    var tmp$, tmp$_0, tmp$_1, tmp$_2;
     this.context = Kotlin.isType(tmp$ = canvas.getContext('2d'), CanvasRenderingContext2D) ? tmp$ : throwCCE();
     this.height = canvas.height;
     this.width = canvas.width;
@@ -5297,7 +5302,9 @@
     this.intervalTime = 1000 / this.frameRate | 0;
     this.app = new SubgoalDemo(this);
     this.nSubgoalsField = null;
+    this.useDoorwaysField = null;
     this.nSubgoalsX = 10;
+    this.useDoorwaysX = false;
     println('Init');
     try {
       var button = Kotlin.isType(tmp$_0 = document.getElementById('restartButton'), HTMLButtonElement) ? tmp$_0 : throwCCE();
@@ -5320,22 +5327,32 @@
       } else
         throw e;
     }
-    this.nSubgoalsField = Kotlin.isType(tmp$_1 = document.getElementById('nSubgoals'), HTMLInputElement) ? tmp$_1 : throwCCE();
+    try {
+      this.nSubgoalsField = Kotlin.isType(tmp$_1 = document.getElementById('nSubgoals'), HTMLInputElement) ? tmp$_1 : throwCCE();
+      this.useDoorwaysField = Kotlin.isType(tmp$_2 = document.getElementById('useDoorsX'), HTMLInputElement) ? tmp$_2 : throwCCE();
+    } catch (e) {
+      if (Kotlin.isType(e, Exception)) {
+        println(e);
+      } else
+        throw e;
+    }
     println('Shuffle seed input element: ' + toString(this.nSubgoalsField));
     this.period = 10;
     this.count = 0;
   }
   SubgoalDemoTest.prototype.nSubgoals = function () {
-    var input = this.nSubgoalsField;
-    if (input != null) {
-      println('Returning seed = ' + input.value);
-      var $receiver = input.value;
-      var tmp$;
-      return toInt(trim(Kotlin.isCharSequence(tmp$ = $receiver) ? tmp$ : throwCCE()).toString());
-    } else {
-      println('Failed null check: ' + toString(this.nSubgoalsField));
-      return this.nSubgoalsX;
-    }
+    var tmp$;
+    if ((tmp$ = this.nSubgoalsField) != null) {
+      var $receiver = tmp$.value;
+      var tmp$_0;
+      return toInt(trim(Kotlin.isCharSequence(tmp$_0 = $receiver) ? tmp$_0 : throwCCE()).toString());
+    }return this.nSubgoalsX;
+  };
+  SubgoalDemoTest.prototype.useDoorways = function () {
+    var tmp$;
+    if ((tmp$ = this.useDoorwaysField) != null) {
+      return tmp$.checked;
+    }return this.useDoorwaysX;
   };
   function SubgoalDemoTest$update$lambda($receiver) {
     return Unit;
@@ -5714,6 +5731,7 @@
   package$sample.SubgoalDemoTest = SubgoalDemoTest;
   package$test.XGraphicsJS = XGraphicsJS;
   DefaultDemoControl.prototype.nSubgoals = SubgoalDemoControl.prototype.nSubgoals;
+  DefaultDemoControl.prototype.useDoorways = SubgoalDemoControl.prototype.useDoorways;
   XGraphicsJS.prototype.centre = XGraphics.prototype.centre;
   random = Random.Default;
   nodeCount = 0;

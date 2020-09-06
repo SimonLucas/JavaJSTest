@@ -5,6 +5,7 @@ import gui.layout.Layout
 
 interface SubgoalDemoControl {
     fun nSubgoals() : Int = 0
+    fun useDoorways() : Boolean = false
 }
 
 class DefaultDemoControl : SubgoalDemoControl
@@ -21,7 +22,9 @@ class SubgoalDemo (val control: SubgoalDemoControl = DefaultDemoControl()): XApp
 
     fun reset() {
         println("Resetting with ${control.nSubgoals()} subgoals")
-        val gridWorld = SubGridWorld(Levels.noSubgoals)
+        println("Resetting with ${control.useDoorways()} subgoals")
+        val level = if (control.useDoorways()) Levels.subgoals else Levels.noSubgoals
+        val gridWorld = SubGridWorld(level)
         // val gridWorld = SubGridWorld(Levels.subgoals)
         gridWorld.addRandomSubgoals(control.nSubgoals())
 
