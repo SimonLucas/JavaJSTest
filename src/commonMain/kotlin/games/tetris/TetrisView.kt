@@ -15,11 +15,22 @@ class TetrisView(val nCols: Int, val nRows: Int) : XApp {
         // work out the cell size
         calcCellSize(xg)
         drawBackground(xg)
+        binarise()
         draw(xg, a)
         drawGhostShape(xg, ghostShape)
         drawShape(xg, shape)
         statusText(xg)
         // println(cellSize)
+    }
+
+    fun binarise() {
+        val aa = a
+        if (aa == null) return
+        for (i in 0 until nCols) {
+            for (j in 0 until nRows) {
+                if (aa[i][j] != BG) aa[i][j] = WHITE
+            }
+        }
     }
 
     private fun statusText(xg: XGraphics) {
@@ -131,7 +142,7 @@ class TetrisView(val nCols: Int, val nRows: Int) : XApp {
     companion object {
         var colors = arrayOf(
             XColor.green, XColor.blue, XColor.red,
-            XColor.yellow, XColor.magenta, XColor.pink, XColor.cyan, XColor.black, XColor.gray
+            XColor.yellow, XColor.magenta, XColor.pink, XColor.cyan, XColor.black, XColor.gray, XColor.white
         )
 
         // size of each block in pixels
@@ -142,6 +153,7 @@ class TetrisView(val nCols: Int, val nRows: Int) : XApp {
 
         // code for the background colour
         val BG = 7
+        val WHITE = colors.size-1
 
     }
 }

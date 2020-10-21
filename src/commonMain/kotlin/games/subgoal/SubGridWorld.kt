@@ -65,6 +65,7 @@ class SubGridState (var s: IntVec2d, val grid: SubGridWorld, var nTicksX:Int=0,
 }
 
 
+// note: see SubGridState for the game state class
 class SubGridWorld(val str: String) {
     var nCols: Int
     var nRows: Int

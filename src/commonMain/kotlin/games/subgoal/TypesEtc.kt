@@ -5,6 +5,9 @@ import math.IntVec2d
 
 
 typealias ScoredNodes = HashMap<Any, Double>
+
+// Type any enables a range of state (obs) to be used
+// as nodes of the graph and hence keys for the hashmaps
 typealias WeightedArcs = HashMap<Any, Double>
 typealias G = HashMap<Any, WeightedArcs>
 

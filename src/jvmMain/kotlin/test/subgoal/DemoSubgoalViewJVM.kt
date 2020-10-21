@@ -11,7 +11,7 @@ fun main() {
     val frame = JEasyFrame(ec, "Subgoal demo")
     val xg = XGraphicsJVM(ec)
     ec.xg = xg
-    ec.xApp = SubgoalDemo()
+    ec.xApp = SubgoalDemo(DefaultDemoControl())
     // frame.addKeyListener(XKeyAdapter(game))
     val frameRate = 10
     val delay = 1000 / frameRate

@@ -8,7 +8,9 @@ interface SubgoalDemoControl {
     fun useDoorways() : Boolean = false
 }
 
-class DefaultDemoControl : SubgoalDemoControl
+class DefaultDemoControl (var n :Int = 10): SubgoalDemoControl {
+    override fun nSubgoals() = n
+}
 
 class SubgoalDemo (val control: SubgoalDemoControl = DefaultDemoControl()): XApp {
 
@@ -120,7 +122,4 @@ class DemoUpdater (val view: GridWorldView, val macro: MacroWorld, val gridWorld
         paths.clear()
     }
 
-
-
 }
-
