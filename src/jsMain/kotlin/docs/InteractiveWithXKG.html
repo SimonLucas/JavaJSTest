@@ -1,0 +1,117 @@
+<!doctype html>
+<meta charset="utf-8">
+<script src="https://distill.pub/template.v1.js"></script>
+
+<script type="text/front-matter">
+  title: "Enhancing Interactive Articles with XKG"
+  description: "A short tutorial on using a Kotlin framework to make complex interactive articles easier."
+  authors:
+  - Simon Lucas: https://github.com/SimonLucas/
+  affiliations:
+  - Queen Mary University of London: https://www.qmul.ac.uk/
+
+
+</script>
+
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
+
+<dt-article>
+    <h1>Enhancing Interactive Articles with XKG</h1>
+    <h2>Cross Platform Kotlin to ease the running of complex software in aa web browser.</h2>
+    <dt-byline>Byline goes here, but I can't see it on the page...</dt-byline>
+    <p>
+
+        Journals such as Distill publish high quality interactive articles, and
+        an extensive gallery of these can be found in Hohman et al <dt-cite key="hohman2020"></dt-cite>,
+        who also describe the barriers to producing interactive articles. Writing an interactive
+        article is much more time-consuming than authoring a traditional static
+        article, and also requires a wider skillset.
+
+    </p>
+
+    <p>
+
+        This paper gives a short tutorial on how to code the interactive elements in
+        the Kotlin language.  Kotlin is a modern high-level language with a number
+        of desirable features, such as strong protection against null-pointer exceptions,
+        and data classes that significantly reduce the need for boilerplate code
+        compared to C++ and Java.
+
+    </p>
+
+    <p>
+        When \(a \ne 0\), there are two solutions to \(ax^2 + bx + c = 0\) and they are
+        \[x = {-b \pm \sqrt{b^2-4ac} \over 2a}.\]
+    </p>
+
+
+    <p>
+        In any EA we need to define the following:
+    <ul>
+        <li>A way to represent solutions. For example, a vector of numbers.</li>
+        <li>A way to copy and vary a solution. For example, copy a vector numbers, but randomly change some in the
+            copying process.
+        </li>
+        <li>A way to evaluate the value (fitness) of a solution.
+            This can be defined in absolute terms (e.g. how fast can it move?) or
+            in relative terms (can solution A beat solution B in football?).
+        </li>
+
+        <li></li>
+
+    </ul>
+
+
+    <p>
+
+
+        <dt-code block language="kotlin">
+            var x = 25;
+            function(x){
+            return x * x;
+            }
+
+            interface StateFilter {
+                fun setKey(state: Any)
+                fun cp() : StateFilter
+            }
+
+
+        </dt-code>
+
+    </p>
+
+
+    <p>We can also cite
+        <dt-cite key="Perez2015openloop"></dt-cite>
+        external publications.
+    </p>
+</dt-article>
+
+<dt-appendix>
+</dt-appendix>
+
+<script type="text/bibliography">
+@INPROCEEDINGS{Perez2015openloop,
+  author = {Diego Perez-Liebana and Jens Dieskau and Martin Hünermund and Sanaz Mostaghim and Simon M. Lucas},
+  title = {{{Open Loop Search for General Video Game Playing}}},
+  booktitle = {{Proceedings of the Genetic and Evolutionary Computation Conference (GECCO)}},
+  pages = {337--344},
+  year = {2015},
+}
+
+@article{hohman2020,
+  author = {Hohman, Fred and Conlen, Matthew and Heer, Jeffrey and Chau, Duen Horng (Polo)},
+  title = {Communicating with Interactive Articles},
+  journal = {Distill},
+  year = {2020},
+  url = {https://distill.pub/2020/communicating-with-interactive-articles},
+  doi = {10.23915/distill.00028}
+}
+
+</script>
