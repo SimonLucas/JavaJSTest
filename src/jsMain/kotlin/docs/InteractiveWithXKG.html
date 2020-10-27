@@ -10,7 +10,6 @@
 <script src="https://distill.pub/template.v1.js"></script>
 
 
-
 <!-- <script type="text/javascript" src="./jquery.js"></script> -->
 
 <script type="text/javascript" src="./kotlin.js"></script>
@@ -22,6 +21,8 @@
   - Simon Lucas: https://github.com/SimonLucas/
   affiliations:
   - Queen Mary University of London: https://www.qmul.ac.uk/
+
+
 </script>
 
 
@@ -39,7 +40,8 @@
 
         Journals such as Distill publish high quality interactive articles, and
         an extensive gallery of these can be found in Hohman et al
-        <dt-cite key="hohman2020"></dt-cite>,
+        <dt-cite key="hohman2020"></dt-cite>
+        ,
         who discuss the potential advantages of such articles and the significant
         barriers to producing them. Writing an interactive
         article is much more time-consuming than authoring a traditional static
@@ -47,9 +49,24 @@
 
     </p>
 
-    <canvas id="treeRectCanvas" width = "400" height="200"
-            style="border:10px solid #FF0099;">
-    </canvas>
+
+    <div align="center">
+        <p>
+            <canvas id="treeRectCanvas" width="400" height="200"
+                    style="border:10px solid #FF0099;">
+            </canvas>
+        </p>
+
+    </div>
+    <script type="text/javascript" src="../../../../build/js/packages/JavaJSTest/kotlin/JavaJSTest.js"></script>
+
+    <script>
+
+  new JavaJSTest.sample.XAppLauncher("treeRectCanvas", "TreeRect").run();
+
+
+
+    </script>
 
 
     <p>
@@ -57,7 +74,7 @@
         This paper gives a short tutorial on how to code the interactive elements in
         the Kotlin language together with the XKG framwork built on top of Kotlin.
         Kotlin is a modern high-level language with many
-        of desirable features, such as strong protection against null-pointer exceptions,
+        desirable features, such as strong protection against null-pointer exceptions,
         and data classes that significantly reduce the need for boilerplate code
         compared to C++ and Java. By default Kotlin programs run on a Java Virtual Machine (JVM),
         and Kotlin code seamlessly interoperates with Java code. When run on the JVM
@@ -69,7 +86,7 @@
         can be transpiled into JavaScript to run in the browser. While this
         is great, there are some key limitations: only pure Kotlin code can be
         used, which means that any programs that use Java libraries cannot be used
-        in this way.  By default, the GUI aspects of an application still have to be written
+        in this way. By default, the GUI aspects of an application still have to be written
         differently depending on whether the target platform is JVM or Browser,
         which is a significant limitation.
 
@@ -155,151 +172,132 @@
     </p>
 
     <p>
-        We're ready to write our first XKG App.
+        We're ready to write our first XKG App - the Hello World equivalent.
+        Rather than drip-feeding each item, we'll dive in and do several
+        things with this program:
+    </p>
 
-        <dt-code block language="javascript">
-            class HelloXKG : XApp {
-                override fun paint(xg: XGraphics) {
-                    // draw a rectangle using default style
-                    xg.draw(XRect(xg.centre(), xg.width()/2, xg.height()/2))
-                }
-            }
-        </dt-code>
+    <ul>
+        <li>Paint a rectangle using the default style.</li>
+        <li>Display a count of the number of times the <tt>paint</tt> method has been calleld.</li>
+        <li>Reset the counter whenever the canvas is clicked.</li>
+    </ul>
 
+
+    <dt-code block language="javascript">
+        class HelloXKG : XApp {
+        var n = 0
+
+        override fun paint(xg: XGraphics) {
+        // draw a rectangle using default style
+        // centered in the canvas, and half the width and height
+        xg.draw(XRect(xg.centre(), xg.width()/2, xg.height()/2))
+
+        val text = XText("nRepaints: ${n++}",
+        xg.centre(), TStyle(fg=XColor.yellow), XStyle())
+        xg.draw(text)
+        }
+
+        override fun handleMouseEvent(e: XMouseEvent) {
+        // ignore the event details, just reset the counter
+        n = 0
+        }
+        }
+    </dt-code>
+
+    <p>
         Assuming you're reading this in a Web Browser, this app will
         be running right here.
     </p>
 
-<p>
-    <canvas id="bodyCanvas" width = "400" height="200" style="border:5px solid #009999;">
-    </canvas>
-</p>
-
-
-    <aside>Some text in an aside, margin notes, etc...</aside>
-    <p>Here's a test of an inline equation <d-math>c = a^2 + b^2</d-math>.
-        Also with configurable katex standards just
-        using inline '$' signs: $$x^2$$ And then there's a block equation:</p>
-
-
     <p>
-        The following Canvas will call an XApp the first time you click on it
-    </p>
-
-
-    <p>This example demonstrates how to assign an "onclick" event to a p element.</p>
-
-    <div onclick="myFunction2()">
-        Div clicker
-    </div>
-
-    <p id="demo"  onclick="myFunction()">Click me.</p>
-
-
-    <script type="text/javascript" src="../../../../build/js/packages/JavaJSTest/kotlin/JavaJSTest.js"></script>
-
-
-    <script>
-function myFunction() {
-  document.getElementById("demo").innerHTML = "YOU CLICKED ME!";
-
-}
-function myFunction2() {
-  document.getElementById("demo").innerHTML = "Div Clicked";
-
-<!--for ( var i in window ) {-->
-<!--    console.log(i, typeof window[i], window[i]);-->
-<!--}-->
-
-  new JavaJSTest.sample.XAppLauncher("clickCanvas").run();
-}
-</script>
-
-
-    <p>
-
-        Will add a direct "onClick" call here, to invoke an xApp directly each time it is clicked.
-
-
-
-        <canvas id="clickCanvas" width = "400" height="200"
-                style="border:10px solid #FF0099;">
+        <canvas id="bodyCanvas" width="400" height="200"
+                style="border:5px solid #009999;">
         </canvas>
     </p>
+
+    <p>
+    Connecting a Canvas element to an XApp is straightforward (when you know how!),
+        and can be done in a number of ways.  Here we'll use a convenience XKG
+        class called the <tt>XAppLauncher</tt>.  To call this we give it the name
+        of the XApp class.
+
+    </p>
+
+    <script>
+
+  new JavaJSTest.sample.XAppLauncher("bodyCanvas").run();
+
+    </script>
 
 
 
 </dt-article>
 
 
-
-
 <dt-appendix>
     <h2>Appendix: Embedding XKG Apps in Web Pages</h2>
 
 
-<p>
+    <p>
 
-    So far we've seen how to write XKG Apps, but we still need to run them in
-    a web browser.  This involves loading the JavaScript code, creating
-    a canvas for each XApp, hooking up events, and calling the <code>paint</code> method
-    of the XApp at the right times.  This can either be done based on user-driven
-    events, or at regular intervals by setting timers.
+        So far we've seen how to write XKG Apps, but we still need to run them in
+        a web browser. This involves loading the JavaScript code, creating
+        a canvas for each XApp, hooking up events, and calling the <code>paint</code> method
+        of the XApp at the right times. This can either be done based on user-driven
+        events, or at regular intervals by setting timers.
 
-</p>
+    </p>
 
-<p>
+    <p>
 
-    By default, the JavaScript code will be in two files.  The JS for Kotlin library
-    code will be in <code>kotlin.js</code>.  This is the same for any project, though there
-    are different versions: my advice is to use the most recent stable version.  Currently
-    much of the Kotlin/JS code is in Alpha release, and while it works fine
-    there is no guarantee that future versions will be backwards compatible.  I recently had
-    a project break when upgrading to the latest version of Intellij, as the W3C Dom
-    support in Kotlin migrated from the <code>kotlin.*</code> package to <code>kotlinx.*</code>.
+        By default, the JavaScript code will be in two files. The JS for Kotlin library
+        code will be in <code>kotlin.js</code>. This is the same for any project, though there
+        are different versions: my advice is to use the most recent stable version. Currently
+        much of the Kotlin/JS code is in Alpha release, and while it works fine
+        there is no guarantee that future versions will be backwards compatible. I recently had
+        a project break when upgrading to the latest version of Intellij, as the W3C Dom
+        support in Kotlin migrated from the <code>kotlin.*</code> package to <code>kotlinx.*</code>.
 
-</p>
+    </p>
 
-<p>
+    <p>
 
-    The second JS file to load is the project specific file.  This is the same
-    for an entire project, and by default will be called <code>ProjectName.js</code>.
-    Having one main executable per project is a bit of a pain, as normally one
-    would like to have many runnable programs per project.  Not a major
-    problem though, and easy to program our way around it.
+        The second JS file to load is the project specific file. This is the same
+        for an entire project, and by default will be called <code>ProjectName.js</code>.
+        Having one main executable per project is a bit of a pain, as normally one
+        would like to have many runnable programs per project. Not a major
+        problem though, and easy to program our way around it.
 
-</p>
+    </p>
 
-<p>
-    What we're aiming for is to have a project with multiple HTML web pages, each running
-    different XApps, and some possibly running multiple XApps in the same page.
-    Since each XApp needs its own <code>Canvas</code> object to draw on, there are
-    two ways to created these.  We can either create them when authoring the HTML
-    web page (call this the <em>HTML</em> method), or we can create them when loading the
-    <code>ProjectName.js</code> script (call this the <em>Script</em> method).
+    <p>
+        What we're aiming for is to have a project with multiple HTML web pages, each running
+        different XApps, and some possibly running multiple XApps in the same page.
+        Since each XApp needs its own <code>Canvas</code> object to draw on, there are
+        two ways to created these. We can either create them when authoring the HTML
+        web page (call this the <em>HTML</em> method), or we can create them when loading the
+        <code>ProjectName.js</code> script (call this the <em>Script</em> method).
 
-    The HTML method is ideal for articles like the current one, where we need author
-    control of where the XApps should be displayed.  The Script method might be better when
-    the only purpose of the HTML page is to launch the XApp.
-</p>
+        The HTML method is ideal for articles like the current one, where we need author
+        control of where the XApps should be displayed. The Script method might be better when
+        the only purpose of the HTML page is to launch the XApp.
+    </p>
 
-<p>We're nearly there: the only other thing to arrange is how to ensure that
-each Canvas is connected with the correct XApp.  In the HTML version this is straightforward:
-we give each Canvas a unique ID attribute (this should be unique across the project,
-not just across the web page), then pass the ID to a dispatcher in the project script.</p>
+    <p>We're nearly there: the only other thing to arrange is how to ensure that
+        each Canvas is connected with the correct XApp. In the HTML version this is straightforward:
+        we give each Canvas a unique ID attribute (this should be unique across the project,
+        not just across the web page), then pass the ID to a dispatcher in the project script.</p>
 
-<p>In the Script version, we currently use a simple trick: look for a unique substring
-in the HTML page title, and use this to decide which XApp to connect to a dynamically created
-Canvas object.</p>
-
-
-
-<p>
+    <p>In the Script version, we currently use a simple trick: look for a unique substring
+        in the HTML page title, and use this to decide which XApp to connect to a dynamically created
+        Canvas object.</p>
 
 
+    <p>
 
-    The steps are as follows:
 
+        The steps are as follows:
 
 
     <ol>
@@ -308,10 +306,7 @@ Canvas object.</p>
     </ol>
 
 
-
-
-
-</p>
+    </p>
 
 </dt-appendix>
 
@@ -334,6 +329,8 @@ Canvas object.</p>
   pages = {774--775},
   year = {2020},
 }
+
+
 
 
 
