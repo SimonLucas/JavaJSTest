@@ -16,9 +16,9 @@ import ggik.GameRunner
 import math.Vec2d
 import org.w3c.dom.*
 import org.w3c.dom.events.MouseEvent
-import kotlin.browser.document
-import kotlin.browser.window
-import kotlin.dom.appendText
+import kotlinx.browser.document
+import kotlinx.browser.window
+import kotlinx.dom.appendText
 import kotlin.random.Random
 import kotlin.time.ExperimentalTime
 import kotlin.time.TestTimeSource
@@ -60,14 +60,24 @@ val canvas = initalizeCanvas()
 @ExperimentalTime
 val test = Dispatcher()
 
+class SampleJs {}
+
 fun initalizeCanvas(): HTMLCanvasElement {
-    println("Init canvas")
+
+    println("~~~Init canvas in SampleJS.kt")
+    println("Document: $document")
     val canvas = document.createElement("canvas") as HTMLCanvasElement
+    println("Canvas: $canvas")
     val context = canvas.getContext("2d") as CanvasRenderingContext2D
+    println("Context: $context")
     context.canvas.width = window.innerWidth - 50 // 800
     context.canvas.height = window.innerHeight - 50 // 400
 
-    document.body!!.appendChild(canvas)
+    println(document.body)
+    val body = document.body
+    body?.appendChild(canvas)
+    // document.body!!.appendChild(canvas)
+    println("Returning the canvas")
     return canvas
 
 }
@@ -84,6 +94,7 @@ class Dispatcher() {
             title.contains("Poly") -> PolyTest().run()
             title.contains("Asteroids") -> AsteroidsTest().run()
             title.contains("Subgoal") -> SubgoalDemoTest().run()
+            title.contains("XKG") -> ArticleMultiCanvas().run()
             title.contains("XMLHTTP") -> HTTPTest().run()
         }
     }
@@ -93,7 +104,6 @@ class GriddleTest : GriddleControl {
     val context = canvas.getContext("2d") as CanvasRenderingContext2D
     val height = canvas.height.toDouble()
     val width = canvas.width.toDouble()
-
 
     var x = 0
     val xg = XGraphicsJS(canvas)
@@ -184,7 +194,7 @@ class GriddleTest : GriddleControl {
                 app.handleMouseEvent(XMouseEvent(eventType, Vec2d(e.x - rect.left, e.y - rect.top)))
                 document.title = app.game.score().toString()
                 // println(e.key)
-                println(e.y)
+                // println(e.y)
             }
         }
     }

@@ -1,16 +1,27 @@
 <!doctype html>
 <meta charset="utf-8">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XKG Article</title>
+</head>
+
 <script src="https://distill.pub/template.v1.js"></script>
 
+
+
+<!-- <script type="text/javascript" src="./jquery.js"></script> -->
+
+<script type="text/javascript" src="./kotlin.js"></script>
+
 <script type="text/front-matter">
-  title: "Enhancing Interactive Articles with XKG"
-  description: "A short tutorial on using a Kotlin framework to make complex interactive articles easier."
+  title: "Enhancing Interactive Articles with Kotlin and XKG"
+  description: "A short tutorial on using the XKG framework to make complex interactive articles easier."
   authors:
   - Simon Lucas: https://github.com/SimonLucas/
   affiliations:
   - Queen Mary University of London: https://www.qmul.ac.uk/
-
-
 </script>
 
 
@@ -21,89 +32,291 @@
 
 
 <dt-article>
-    <h1>Enhancing Interactive Articles with XKG</h1>
+    <h1>Enhancing Interactive Articles with Kotlin and XKG</h1>
     <h2>Cross Platform Kotlin to ease the running of complex software in aa web browser.</h2>
     <dt-byline>Byline goes here, but I can't see it on the page...</dt-byline>
     <p>
 
         Journals such as Distill publish high quality interactive articles, and
-        an extensive gallery of these can be found in Hohman et al <dt-cite key="hohman2020"></dt-cite>,
-        who also describe the barriers to producing interactive articles. Writing an interactive
+        an extensive gallery of these can be found in Hohman et al
+        <dt-cite key="hohman2020"></dt-cite>,
+        who discuss the potential advantages of such articles and the significant
+        barriers to producing them. Writing an interactive
         article is much more time-consuming than authoring a traditional static
         article, and also requires a wider skillset.
 
     </p>
 
+    <canvas id="treeRectCanvas" width = "400" height="200"
+            style="border:10px solid #FF0099;">
+    </canvas>
+
+
     <p>
 
         This paper gives a short tutorial on how to code the interactive elements in
-        the Kotlin language.  Kotlin is a modern high-level language with a number
+        the Kotlin language together with the XKG framwork built on top of Kotlin.
+        Kotlin is a modern high-level language with many
         of desirable features, such as strong protection against null-pointer exceptions,
         and data classes that significantly reduce the need for boilerplate code
-        compared to C++ and Java.
+        compared to C++ and Java. By default Kotlin programs run on a Java Virtual Machine (JVM),
+        and Kotlin code seamlessly interoperates with Java code. When run on the JVM
+        the speed of Kotlin programs is similar to Java and C++.
+
+    </p>
+    <p>
+        Important for the current task, Kotlin code
+        can be transpiled into JavaScript to run in the browser. While this
+        is great, there are some key limitations: only pure Kotlin code can be
+        used, which means that any programs that use Java libraries cannot be used
+        in this way.  By default, the GUI aspects of an application still have to be written
+        differently depending on whether the target platform is JVM or Browser,
+        which is a significant limitation.
 
     </p>
 
     <p>
-        When \(a \ne 0\), there are two solutions to \(ax^2 + bx + c = 0\) and they are
-        \[x = {-b \pm \sqrt{b^2-4ac} \over 2a}.\]
-    </p>
+        In order to address this, Lucas
+        <dt-cite key="LucasXKGDemo"></dt-cite>
+        introduced a framework for
+        developing cross-platform applications using Kotlin that run without
+        any modification on a Java Virtual Machine (JVM) for the best speed
+        (and in some respects the best convenience),
+        or in a Web Browser for ease of deployment and maximum cross-platform use.
 
+        Authors not wishing to have this cross platform (Browser + JVM) facility
+        could program in pure Kotlin using the
+        <a href="https://kotlinlang.org/docs/tutorials/javascript/kotlin-to-javascript/kotlin-to-javascript.html">JavaScript
+            interop classes</a> for
+        Web Browser interactions.
+        A version of Breakout that uses this approach can be played
+        <a href="https://github.com/SimonLucas/KotlinGamesJS">here</a>.
+        This article will use the XKG approach, covering the following:
 
-    <p>
-        In any EA we need to define the following:
     <ul>
-        <li>A way to represent solutions. For example, a vector of numbers.</li>
-        <li>A way to copy and vary a solution. For example, copy a vector numbers, but randomly change some in the
-            copying process.
-        </li>
-        <li>A way to evaluate the value (fitness) of a solution.
-            This can be defined in absolute terms (e.g. how fast can it move?) or
-            in relative terms (can solution A beat solution B in football?).
-        </li>
-
-        <li></li>
-
+        <li>Hello world: drawing a blank canvas</li>
+        <li>Drawing geometric objects and text</li>
+        <li>Handling events</li>
     </ul>
 
+    <p>
+        Note: this article will not cover setting up a cross platform software project: doing this
+        will depend on the IDE you're using, and changes depending on the version of the
+        IDE and the build system you're using (e.g. Gradle or Maven). IntelliJ IDEA is
+        a good IDE to use, it has Kotlin support built in.
+
+    </p>
+
+    <h2>Hello World</h2>
+
 
     <p>
 
+        Let's start with the easy and fun stuff. Each application implements the
+        <tt>XApp</tt> interface:
 
-        <dt-code block language="kotlin">
-            var x = 25;
-            function(x){
-            return x * x;
+        <dt-code block language="javascript">
+            interface XApp {
+            fun paint(xg: XGraphics) {}
+            fun handleMouseEvent(e: XMouseEvent) {}
+            fun handleKeyEvent(e: XKeyEvent) {}
             }
-
-            interface StateFilter {
-                fun setKey(state: Any)
-                fun cp() : StateFilter
-            }
-
-
         </dt-code>
 
+        Each method has a default dummy implementation specified by the empty curly braces: <tt>{}</tt>.
+        This means we don't have to provide empty implementations of the methods when defining applications
+        that don't use them (e.g. no need to implement <tt>handleKeyEvent</tt> if the application
+        does not use keyboard input).
+    </p>
+
+    <p>
+
+        To produce output we need to implement the <tt>paint</tt> method. This takes
+        a single parameter: an <tt>XGraphics</tt> object. This provides
+        access to the size of the canvas and enables drawing:
+
+        <dt-code block language="javascript">
+            interface XGraphics {
+            fun draw(toDraw: Drawable)
+            var style: XStyle
+            fun width(): Double
+            fun height(): Double
+            fun centre() = Vec2d(width() / 2, height() / 2)
+            ...
+            }
+        </dt-code>
+
+        The <tt>draw</tt> method draws any <tt>Drawable</tt> item onto the screen; each <tt>Drawable</tt>
+        knows it's own location and size. When setting up items to draw we need to know
+        the size of the drawing area, given by width and height; the centre is also provided
+        as a convenience. The style variable defines the current drawing style, including the
+        width of strokes and the colours to use for filling and stroking shapes.
+
+    </p>
+
+    <p>
+        We're ready to write our first XKG App.
+
+        <dt-code block language="javascript">
+            class HelloXKG : XApp {
+                override fun paint(xg: XGraphics) {
+                    // draw a rectangle using default style
+                    xg.draw(XRect(xg.centre(), xg.width()/2, xg.height()/2))
+                }
+            }
+        </dt-code>
+
+        Assuming you're reading this in a Web Browser, this app will
+        be running right here.
+    </p>
+
+<p>
+    <canvas id="bodyCanvas" width = "400" height="200" style="border:5px solid #009999;">
+    </canvas>
+</p>
+
+
+    <aside>Some text in an aside, margin notes, etc...</aside>
+    <p>Here's a test of an inline equation <d-math>c = a^2 + b^2</d-math>.
+        Also with configurable katex standards just
+        using inline '$' signs: $$x^2$$ And then there's a block equation:</p>
+
+
+    <p>
+        The following Canvas will call an XApp the first time you click on it
     </p>
 
 
-    <p>We can also cite
-        <dt-cite key="Perez2015openloop"></dt-cite>
-        external publications.
+    <p>This example demonstrates how to assign an "onclick" event to a p element.</p>
+
+    <div onclick="myFunction2()">
+        Div clicker
+    </div>
+
+    <p id="demo"  onclick="myFunction()">Click me.</p>
+
+
+    <script type="text/javascript" src="../../../../build/js/packages/JavaJSTest/kotlin/JavaJSTest.js"></script>
+
+
+    <script>
+function myFunction() {
+  document.getElementById("demo").innerHTML = "YOU CLICKED ME!";
+
+}
+function myFunction2() {
+  document.getElementById("demo").innerHTML = "Div Clicked";
+
+<!--for ( var i in window ) {-->
+<!--    console.log(i, typeof window[i], window[i]);-->
+<!--}-->
+
+  new JavaJSTest.sample.XAppLauncher("clickCanvas").run();
+}
+</script>
+
+
+    <p>
+
+        Will add a direct "onClick" call here, to invoke an xApp directly each time it is clicked.
+
+
+
+        <canvas id="clickCanvas" width = "400" height="200"
+                style="border:10px solid #FF0099;">
+        </canvas>
     </p>
+
+
+
 </dt-article>
 
+
+
+
 <dt-appendix>
+    <h2>Appendix: Embedding XKG Apps in Web Pages</h2>
+
+
+<p>
+
+    So far we've seen how to write XKG Apps, but we still need to run them in
+    a web browser.  This involves loading the JavaScript code, creating
+    a canvas for each XApp, hooking up events, and calling the <code>paint</code> method
+    of the XApp at the right times.  This can either be done based on user-driven
+    events, or at regular intervals by setting timers.
+
+</p>
+
+<p>
+
+    By default, the JavaScript code will be in two files.  The JS for Kotlin library
+    code will be in <code>kotlin.js</code>.  This is the same for any project, though there
+    are different versions: my advice is to use the most recent stable version.  Currently
+    much of the Kotlin/JS code is in Alpha release, and while it works fine
+    there is no guarantee that future versions will be backwards compatible.  I recently had
+    a project break when upgrading to the latest version of Intellij, as the W3C Dom
+    support in Kotlin migrated from the <code>kotlin.*</code> package to <code>kotlinx.*</code>.
+
+</p>
+
+<p>
+
+    The second JS file to load is the project specific file.  This is the same
+    for an entire project, and by default will be called <code>ProjectName.js</code>.
+    Having one main executable per project is a bit of a pain, as normally one
+    would like to have many runnable programs per project.  Not a major
+    problem though, and easy to program our way around it.
+
+</p>
+
+<p>
+    What we're aiming for is to have a project with multiple HTML web pages, each running
+    different XApps, and some possibly running multiple XApps in the same page.
+    Since each XApp needs its own <code>Canvas</code> object to draw on, there are
+    two ways to created these.  We can either create them when authoring the HTML
+    web page (call this the <em>HTML</em> method), or we can create them when loading the
+    <code>ProjectName.js</code> script (call this the <em>Script</em> method).
+
+    The HTML method is ideal for articles like the current one, where we need author
+    control of where the XApps should be displayed.  The Script method might be better when
+    the only purpose of the HTML page is to launch the XApp.
+</p>
+
+<p>We're nearly there: the only other thing to arrange is how to ensure that
+each Canvas is connected with the correct XApp.  In the HTML version this is straightforward:
+we give each Canvas a unique ID attribute (this should be unique across the project,
+not just across the web page), then pass the ID to a dispatcher in the project script.</p>
+
+<p>In the Script version, we currently use a simple trick: look for a unique substring
+in the HTML page title, and use this to decide which XApp to connect to a dynamically created
+Canvas object.</p>
+
+
+
+<p>
+
+
+
+    The steps are as follows:
+
+
+
+    <ol>
+        <li></li>
+
+    </ol>
+
+
+
+
+
+</p>
+
 </dt-appendix>
 
+
 <script type="text/bibliography">
-@INPROCEEDINGS{Perez2015openloop,
-  author = {Diego Perez-Liebana and Jens Dieskau and Martin Hünermund and Sanaz Mostaghim and Simon M. Lucas},
-  title = {{{Open Loop Search for General Video Game Playing}}},
-  booktitle = {{Proceedings of the Genetic and Evolutionary Computation Conference (GECCO)}},
-  pages = {337--344},
-  year = {2015},
-}
 
 @article{hohman2020,
   author = {Hohman, Fred and Conlen, Matthew and Heer, Jeffrey and Chau, Duen Horng (Polo)},
@@ -113,5 +326,16 @@
   url = {https://distill.pub/2020/communicating-with-interactive-articles},
   doi = {10.23915/distill.00028}
 }
+
+@INPROCEEDINGS{LucasXKGDemo,
+  author = {Simon M. Lucas},
+  title = {Cross Platform Games in Kotlin},
+  booktitle = {Proceedings of IEEE Conference on Games},
+  pages = {774--775},
+  year = {2020},
+}
+
+
+
 
 </script>

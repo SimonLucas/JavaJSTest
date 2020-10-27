@@ -7,10 +7,10 @@ import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.url.URLSearchParams
 import test.XGraphicsJS
-import kotlin.browser.document
-import kotlin.browser.window
-import kotlin.dom.appendElement
-import kotlin.dom.createElement
+import kotlinx.browser.document
+import kotlinx.browser.window
+import kotlinx.dom.appendElement
+import kotlinx.dom.createElement
 
 class SubgoalDemoTest : SubgoalDemoControl {
     val context = canvas.getContext("2d") as CanvasRenderingContext2D

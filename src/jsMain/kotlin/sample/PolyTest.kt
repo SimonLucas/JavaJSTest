@@ -12,8 +12,8 @@ import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.HTMLScriptElement
 import org.w3c.dom.events.MouseEvent
 import test.XGraphicsJS
-import kotlin.browser.document
-import kotlin.browser.window
+import kotlinx.browser.document
+import kotlinx.browser.window
 
 class PolyTest  {
     val context = canvas.getContext("2d") as CanvasRenderingContext2D

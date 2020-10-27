@@ -1,21 +1,19 @@
 package sample
 
+// import or
 import games.arcade.ArcadeTestApp
-import games.arcade.AsteroidsGame
-import games.griddle.GriddleControl
-import games.griddle.GriddleController
-import gui.*
-import gui.geometry.ContainsTestApp
-import math.Vec2d
+import gui.XApp
+import gui.XKeyEvent
+import gui.XKeyEventType
+import kotlinx.browser.document
 import org.w3c.dom.CanvasRenderingContext2D
+import kotlinx.browser.window
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.HTMLScriptElement
 import org.w3c.dom.events.KeyboardEvent
 import org.w3c.dom.events.MouseEvent
 import test.XGraphicsJS
-import kotlin.browser.document
-import kotlin.browser.window
 
 class AsteroidsTest {
     val context = canvas.getContext("2d") as CanvasRenderingContext2D

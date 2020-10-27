@@ -85,9 +85,9 @@ data class TStyle(
 )
 
 interface XApp {
-    fun paint(xg: XGraphics)
-    fun handleMouseEvent(e: XMouseEvent)
-    fun handleKeyEvent(e: XKeyEvent)
+    fun paint(xg: XGraphics) {}
+    fun handleMouseEvent(e: XMouseEvent) {}
+    fun handleKeyEvent(e: XKeyEvent) {}
 }
 
 enum class XMouseEventType { Down, Up, Moved, Dragged, Clicked }
