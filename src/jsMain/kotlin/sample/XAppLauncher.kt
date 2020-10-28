@@ -6,6 +6,7 @@ import kotlinx.browser.document
 import kotlinx.browser.window
 import math.Vec2d
 import org.w3c.dom.HTMLCanvasElement
+import org.w3c.dom.events.KeyboardEvent
 import kotlin.js.Date
 import kotlin.math.nextDown
 
@@ -55,16 +56,44 @@ class XAppLauncher(val canvasID: String, val appName: String = "HelloXKG", var i
         if (canv != null) {
             val rect = canv.getBoundingClientRect();
             // canv.get
+            println("Attaching: $canvasID : $canv")
             canv.onmousedown = { e ->
                 var eventType = XMouseEventType.Down
                 val s = Vec2d(e.x, e.y)
                 app.handleMouseEvent(XMouseEvent(eventType, Vec2d(e.x - rect.left, e.y - rect.top)))
-                // println("Offset: ${Vec2d(canv.offsetLeft.toDouble(), canv.offsetTop.toDouble()) }")
-//                println("Rect: " + Vec2d(rect.left.nextDown(), rect.top.nextDown()))
-//                println("Raw: " + s)
-                // println(e.key)
-                // println(e.y)
             }
+            canv.onclick = { e ->
+                var eventType = XMouseEventType.Clicked
+                val s = Vec2d(e.x, e.y)
+                app.handleMouseEvent(XMouseEvent(eventType, Vec2d(e.x - rect.left, e.y - rect.top)))
+            }
+
+            canv.onkeypress = { e ->
+                if (e is KeyboardEvent) {
+                    var eventType = XKeyEventType.Pressed
+                    app.handleKeyEvent(XKeyEvent(eventType, e.keyCode))
+                    // println(e.key)
+                }
+            }
+
+            canv.onkeydown = { e ->
+                if (e is KeyboardEvent) {
+                    var eventType = XKeyEventType.Down
+                    app.handleKeyEvent(XKeyEvent(eventType, e.keyCode))
+                    // println(e.key)
+                }
+            }
+
+            canv.onkeyup = { e ->
+                if (e is KeyboardEvent) {
+                    var eventType = XKeyEventType.Released
+                    app.handleKeyEvent(XKeyEvent(eventType, e.keyCode))
+                    // println(e.key)
+                }
+            }
+
+
+
         }
 
 

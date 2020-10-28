@@ -9,7 +9,7 @@ class HelloXKG : XApp {
         xg.draw(XRect(xg.centre(), xg.width()/2, xg.height()/2))
 
         val text = XText("nRepaints: ${n++}",
-            xg.centre(), TStyle(fg=XColor.yellow), XStyle())
+            xg.centre(), TStyle(fg=XColor.yellow))
         xg.draw(text)
     }
 

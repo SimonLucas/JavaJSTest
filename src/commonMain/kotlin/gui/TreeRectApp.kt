@@ -35,21 +35,32 @@ class TreeRectApp : XApp {
 
         // fresh image once in a while...
         n++
-        if (n % updatePeriod == 0) seed++
+        if (n % updatePeriod == 0) {
+            seed++
+        }
 
     }
 
     override fun handleMouseEvent(e: XMouseEvent) {
-        if (e.t == XMouseEventType.Clicked) {
+        println(e.t)
+        if (e.t == XMouseEventType.Down) {
             palette = XPalette(100, min = 0.0, max = 1.0, seed = seed++)
+            // println("Updated pallete")
+            n = 0
         }
     }
 
     override fun handleKeyEvent(e: XKeyEvent) {
-        seed++
+        println("Key Event: $e")
+        if (e.t == XKeyEventType.Down) {
+            seed++
+            n = 0
+        }
     }
 }
 
+// a bit over-designed? - could have just used a Boolean or Int
+// to indicate the current split direcction.
 enum class Split {
     V {
         override fun flip() = H
