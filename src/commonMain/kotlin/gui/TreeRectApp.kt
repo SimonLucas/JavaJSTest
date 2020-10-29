@@ -4,6 +4,8 @@ import math.Vec2d
 import kotlin.math.PI
 import kotlin.random.Random
 
+// fun t() {}
+
 class TreeRectApp : XApp {
 
     val tb = TreeBuilder(5, 0.7)
@@ -52,7 +54,7 @@ class TreeRectApp : XApp {
 
     override fun handleKeyEvent(e: XKeyEvent) {
         println("Key Event: $e")
-        if (e.t == XKeyEventType.Down) {
+        if (e.t == XKeyEventType.Pressed) {
             seed++
             n = 0
         }

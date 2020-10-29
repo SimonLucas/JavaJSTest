@@ -3,6 +3,15 @@ plugins {
     id 'org.jetbrains.kotlin.multiplatform' version '1.4.10'
 }
 
+apply plugin: "java-library"
+
+// this didn't work
+tasks.register("count") {
+    doLast {
+        repeat(4) { print("$it ") }
+    }
+}
+
 
 repositories {
     mavenCentral()
@@ -14,9 +23,20 @@ version '0.0.1'
 
 apply plugin: 'maven-publish'
 
+
+// this didn't work
+tasks.register("copy") {
+    copy {
+        from("/build/js/packages/JavaJSTest/kotlin/JavaJSTest.js")
+        into("/src/jsMain/kotlin/docs")
+    }
+}
+
+println("Hello 1")
+
 kotlin {
     jvm()
-    js  {
+    js {
         browser {
         }
 //        nodejs {
@@ -68,4 +88,16 @@ kotlin {
 //        macosTest {
 //        }
     }
+
+
+    // task(type)
+
 }
+
+println("Hello 2")
+
+//
+//copy {
+//    from("/build/js/packages/JavaJSTest/kotlin/JavaJSTest.js")
+//    into("/src/jsMain/kotlin/docs")
+//}
