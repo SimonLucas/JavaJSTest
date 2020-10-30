@@ -55,7 +55,7 @@
 
     <div align="center">
         <p>
-            <canvas id="treeRectCanvas" tabindex="1" width = "800" height="400"
+            <canvas id="treeRectCanvas" tabindex="1" width = "400" height="150"
                     style="border:10px solid #FF0099;">
             </canvas>
         </p>
@@ -66,11 +66,44 @@
     <script>
 new JavaJSTest.sample.XAppLauncher("treeRectCanvas", "TreeRect").run();
 
+function successCallback() {
+  var canvas = document.getElementById("treeRectCanvas")
+  canvas.width=window.innerWidth;
+  canvas.height=window.innerHeight;
+  canvas.onfullscreenchange = handleFullscreenChange;
+  console.log("Success");
+}
+
+function handleFullscreenChange(event) {
+  console.log("Fullscreen change event");
+  console.log(event)
+  var docel = document.fullscreenElement;
+<!--  console.log("Doc El:" + docel);-->
+<!--  console.log(docel == null);-->
+<!--  console.log(docel === null);-->
+<!--  console.log(!docel);-->
+  var elem = event.target;
+
+  if (docel === null) {
+    console.log("Shrinking canvas");
+    elem.width = 400;
+    elem.height = 150;
+  } else {
+        console.log("NOT shrinking canvas");
+  }
+}
+
+
+function failureCallback() {
+  console.log("Failure!");
+}
+
 function fullScreenRect() {
   console.log("Requesting full screen");
-  document.getElementById("treeRectCanvas").requestFullscreen();
-  console.log("After request");
+  const promise = document.getElementById("treeRectCanvas").requestFullscreen();
+  promise.then(successCallback, failureCallback);
 }
+
     </script>
 
     <p>
