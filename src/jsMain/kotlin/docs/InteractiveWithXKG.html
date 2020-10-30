@@ -9,6 +9,8 @@
 
 <script src="https://distill.pub/template.v1.js"></script>
 
+<script src="./bundle.js"></script>
+
 
 <!-- <script type="text/javascript" src="./jquery.js"></script> -->
 
@@ -21,6 +23,7 @@
   - Simon Lucas: https://github.com/SimonLucas/
   affiliations:
   - Queen Mary University of London: https://www.qmul.ac.uk/
+
 
 
 </script>
@@ -52,7 +55,7 @@
 
     <div align="center">
         <p>
-            <canvas id="treeRectCanvas"  tabindex="1"  width="400" height="200"
+            <canvas id="treeRectCanvas" tabindex="1" width = "800" height="400"
                     style="border:10px solid #FF0099;">
             </canvas>
         </p>
@@ -61,8 +64,18 @@
     <script type="text/javascript" src="./JavaJSTest.js"></script>
 
     <script>
-  new JavaJSTest.sample.XAppLauncher("treeRectCanvas", "TreeRect").run();
+new JavaJSTest.sample.XAppLauncher("treeRectCanvas", "TreeRect").run();
+
+function fullScreenRect() {
+  console.log("Requesting full screen");
+  document.getElementById("treeRectCanvas").requestFullscreen();
+  console.log("After request");
+}
     </script>
+
+    <p>
+        <button onclick="fullScreenRect()">Full Screen</button>
+    </p>
 
 
     <p>
@@ -213,9 +226,9 @@
     </p>
 
     <p>
-    Connecting a Canvas element to an XApp is straightforward (when you know how!),
-        and can be done in a number of ways.  Here we'll use a convenience XKG
-        class called the <tt>XAppLauncher</tt>.  To call this we give it the name
+        Connecting a Canvas element to an XApp is straightforward (when you know how!),
+        and can be done in a number of ways. Here we'll use a convenience XKG
+        class called the <tt>XAppLauncher</tt>. To call this we give it the name
         of the XApp class.
 
     </p>
@@ -224,8 +237,8 @@
 
   new JavaJSTest.sample.XAppLauncher("bodyCanvas").run();
 
-    </script>
 
+    </script>
 
 
 </dt-article>
@@ -325,6 +338,7 @@
   pages = {774--775},
   year = {2020},
 }
+
 
 
 
