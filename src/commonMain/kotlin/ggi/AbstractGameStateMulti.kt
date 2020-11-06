@@ -29,12 +29,15 @@ interface AbstractGameStateMulti {
 
     fun nTicks(): Int
 
+    // return id of player to move
+    fun toMove() : Int
+
 }
 
 interface ExtendedAbstractGameStateMulti : AbstractGameStateMulti {
     fun totalTicks() : Long
 
-    fun resetTotalTicks(): Unit
+    fun resetTotalTicks(): Unit {}
 
     fun randomInitialState(): AbstractGameStateMulti
 }

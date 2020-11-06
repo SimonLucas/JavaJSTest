@@ -6,10 +6,10 @@ import util.Picker
 
 class CaveMap {
     var anchors = ArrayList<Vec2d>()
-//    val items = hashMapOf<ItemPosition,Item>(
-//        ItemPosition(10, 5) to Fruit(),
-//        ItemPosition(20, 7) to Bomb()
-//    )
+    val items = hashMapOf<ItemPosition,Item>(
+        ItemPosition(10, 5) to Fruit(),
+        ItemPosition(20, 7) to Bomb()
+    )
 
     // make something up for now
     var bounds = XRect(Vec2d(), 100.0, 100.0)
@@ -53,4 +53,65 @@ class CaveMap {
         setAnchors(params.nAnchors, params.meanAnchorHeight)
         return this
     }
+}
+
+data class ItemPosition(val x:Int, val y : Int)
+
+abstract class Item {
+    var alive: Boolean = true
+    abstract fun applyEffect(state: CaveGameInternalState)
+}
+
+class Fruit : Item() {
+
+    override fun applyEffect(state: CaveGameInternalState) {
+
+        // do it dirty for now
+        if (alive) {
+            state.bonusScore += 5000
+            alive = false
+        }
+
+
+    }
+}
+
+class Bomb : Item() {
+    override fun applyEffect(state: CaveGameInternalState) {
+
+        if (alive) {
+            state.bonusScore -= 5000
+            alive = false
+        }
+
+    }
+}
+
+
+data class CaveGameInternalState (
+    var params: CaveSwingParams = CaveSwingParams(),
+    var map: CaveMap = CaveMap().setup(params),
+    // var nextAnchorIndex: Int = 0,
+    var nTicks: Int = 0,
+    var avatar: MovableObject = MovableObject(),
+    var gameOver: Boolean = false,
+    var currentAnchor: Vec2d? = null,
+    var bonusScore: Int = 0
+) {
+    fun deepCopy() : CaveGameInternalState {
+        val cgs = CaveGameInternalState()
+        // shallow copy the map and the current Anchor
+        // deep copy the avatar and the params
+        cgs.avatar = avatar.copy()
+        cgs.params = params.copy()
+
+        // shallow copy the other ones
+        cgs.map = map
+        cgs.currentAnchor = currentAnchor
+        cgs.nTicks = nTicks
+        cgs.gameOver = gameOver
+        cgs.bonusScore = bonusScore
+        return cgs
+    }
+
 }

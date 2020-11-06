@@ -25,7 +25,6 @@
   - Queen Mary University of London: https://www.qmul.ac.uk/
 
 
-
 </script>
 
 
@@ -37,34 +36,89 @@
 
 <dt-article>
     <h1>Enhancing Interactive Articles with Kotlin and XKG</h1>
-    <h2>Cross Platform Kotlin to ease the running of complex software in aa web browser.</h2>
+    <h4>Cross Platform Kotlin to ease the running of complex software in a web browser.</h4>
     <dt-byline>Byline goes here, but I can't see it on the page...</dt-byline>
+
+
+    <h3>Contents</h3>
+
+    <p>
+    <ul id="toc"></ul>
+    </p>
+
+
+    <script language="JavaScript">
+        window.addEventListener('load', function() {
+            console.log('All assets are loaded here');
+
+            // this loop iteratin works fine
+            var tocItems = document.getElementsByTagName("H2");
+            var toc = document.getElementById("toc");
+            console.log("nToCEntries: " + tocItems.length);
+            var i;
+            for (i = 0; i < tocItems.length; i++) {
+                var item = tocItems[i];
+                item.style.backgroundColor = "yellow";
+                var entry = document.createElement("li");
+                var link = document.createElement("a");
+                // console.log(item.innerHTML);
+                console.log(item.innerText);
+                link.innerText = item.innerText;
+                link.href = "#" + item.innerText;
+                item.id = item.innerText;
+                entry.appendChild(link);
+                toc.appendChild(entry);
+            }
+        })
+
+    </script>
+
+    <script src="./>toc.js"></script>
+
+    <d-contents id="toc"></d-contents>
+
+    <h2>Introduction</h2>
+
+
+    <div class = "l-gutter">
     <p>
 
         Journals such as Distill publish high quality interactive articles, and
         an extensive gallery of these can be found in Hohman et al
         <dt-cite key="hohman2020"></dt-cite>
-        ,
         who discuss the potential advantages of such articles and the significant
         barriers to producing them. Writing an interactive
         article is much more time-consuming than authoring a traditional static
         article, and also requires a wider skillset.
 
     </p>
-
+    </div>
 
     <div align="center">
         <p>
-            <canvas id="treeRectCanvas" tabindex="1" width = "400" height="150"
-                    style="border:10px solid #FF0099;">
+            <canvas id="treeRectCanvas" tabindex="1" width="250" height="150"
+                    style="border:5px solid #FF0099;">
             </canvas>
         </p>
 
     </div>
+
+    <div align="center">
+        <p>
+            <canvas id="OXOCanvas" tabindex="1" width="250" height="150"
+                    style="border:5px solid #FF0099;">
+            </canvas>
+        </p>
+
+    </div>
+
+
     <script type="text/javascript" src="./JavaJSTest.js"></script>
 
     <script>
 new JavaJSTest.sample.XAppLauncher("treeRectCanvas", "TreeRect").run();
+
+new JavaJSTest.sample.XAppLauncher("OXOCanvas", "OXO").run();
 
 function successCallback() {
   var canvas = document.getElementById("treeRectCanvas")
@@ -103,6 +157,7 @@ function fullScreenRect() {
   const promise = document.getElementById("treeRectCanvas").requestFullscreen();
   promise.then(successCallback, failureCallback);
 }
+
 
     </script>
 
@@ -174,13 +229,15 @@ function fullScreenRect() {
         Let's start with the easy and fun stuff. Each application implements the
         <tt>XApp</tt> interface:
 
+        <!--            @formatter:off-->
         <dt-code block language="javascript">
             interface XApp {
-            fun paint(xg: XGraphics) {}
-            fun handleMouseEvent(e: XMouseEvent) {}
-            fun handleKeyEvent(e: XKeyEvent) {}
+                fun paint(xg: XGraphics) {}
+                fun handleMouseEvent(e: XMouseEvent) {}
+                fun handleKeyEvent(e: XKeyEvent) {}
             }
         </dt-code>
+        <!--            @formatter:on-->
 
         Each method has a default dummy implementation specified by the empty curly braces: <tt>{}</tt>.
         This means we don't have to provide empty implementations of the methods when defining applications
@@ -194,16 +251,18 @@ function fullScreenRect() {
         a single parameter: an <tt>XGraphics</tt> object. This provides
         access to the size of the canvas and enables drawing:
 
+        <!--            @formatter:off-->
         <dt-code block language="javascript">
             interface XGraphics {
-            fun draw(toDraw: Drawable)
-            var style: XStyle
-            fun width(): Double
-            fun height(): Double
-            fun centre() = Vec2d(width() / 2, height() / 2)
-            ...
+                fun draw(toDraw: Drawable)
+                var style: XStyle
+                fun width(): Double
+                fun height(): Double
+                fun centre() = Vec2d(width() / 2, height() / 2)
+                ...
             }
         </dt-code>
+        <!--            @formatter:on-->
 
         The <tt>draw</tt> method draws any <tt>Drawable</tt> item onto the screen; each <tt>Drawable</tt>
         knows it's own location and size. When setting up items to draw we need to know
@@ -212,6 +271,7 @@ function fullScreenRect() {
         width of strokes and the colours to use for filling and stroking shapes.
 
     </p>
+
 
     <p>
         We're ready to write our first XKG App - the Hello World equivalent.
@@ -226,26 +286,27 @@ function fullScreenRect() {
     </ul>
 
 
+    <!--            @formatter:off-->
     <dt-code block language="javascript">
         class HelloXKG : XApp {
-        var n = 0
+            var n = 0
 
-        override fun paint(xg: XGraphics) {
-        // draw a rectangle using default style
-        // centered in the canvas, and half the width and height
-        xg.draw(XRect(xg.centre(), xg.width()/2, xg.height()/2))
+            override fun paint(xg: XGraphics) {
+                // draw a rectangle using default style
+                // centered in the canvas, and half the width and height
+                xg.draw(XRect(xg.centre(), xg.width()/2, xg.height()/2))
+                val text = XText("nRepaints: ${n++}", xg.centre(),
+                                 TStyle(fg=XColor.yellow), XStyle())
+                xg.draw(text)
+            }
 
-        val text = XText("nRepaints: ${n++}",
-        xg.centre(), TStyle(fg=XColor.yellow), XStyle())
-        xg.draw(text)
-        }
-
-        override fun handleMouseEvent(e: XMouseEvent) {
-        // ignore the event details, just reset the counter
-        n = 0
-        }
+            override fun handleMouseEvent(e: XMouseEvent) {
+                // ignore the event details, just reset the counter
+                n = 0
+            }
         }
     </dt-code>
+    <!--            @formatter:on-->
 
     <p>
         Assuming you're reading this in a Web Browser, this app will
@@ -258,28 +319,16 @@ function fullScreenRect() {
         </canvas>
     </p>
 
-    <p>
-        Connecting a Canvas element to an XApp is straightforward (when you know how!),
-        and can be done in a number of ways. Here we'll use a convenience XKG
-        class called the <tt>XAppLauncher</tt>. To call this we give it the name
-        of the XApp class.
-
-    </p>
-
     <script>
+       new JavaJSTest.sample.XAppLauncher("bodyCanvas", "HelloXKG").run();
 
-  new JavaJSTest.sample.XAppLauncher("bodyCanvas").run();
+
 
 
     </script>
 
 
-</dt-article>
-
-
-<dt-appendix>
-    <h2>Appendix: Embedding XKG Apps in Web Pages</h2>
-
+    <h2>Embedding XApps in Web Pages</h2>
 
     <p>
 
@@ -293,62 +342,183 @@ function fullScreenRect() {
 
     <p>
 
-        By default, the JavaScript code will be in two files. The JS for Kotlin library
+        By default, the JavaScript code will be in two files. The JavaScript Kotlin library
         code will be in <code>kotlin.js</code>. This is the same for any project, though there
-        are different versions: my advice is to use the most recent stable version. Currently
-        much of the Kotlin/JS code is in Alpha release, and while it works fine
-        there is no guarantee that future versions will be backwards compatible. I recently had
-        a project break when upgrading to the latest version of Intellij, as the W3C Dom
-        support in Kotlin migrated from the <code>kotlin.*</code> package to <code>kotlinx.*</code>.
+        are different versions of the library: my advice is to use the most recent stable version.
 
+        <dt-fn>
+            Currently much of the Kotlin/JS code is in Alpha release, and while it works fine
+            there is no guarantee that future versions will be backwards compatible. I recently had
+            a project break when upgrading to the latest version of Intellij, as the W3C Dom
+            support in Kotlin migrated from the <code>kotlin.*</code> package to <code>kotlinx.*</code>.
+        </dt-fn>
     </p>
 
     <p>
 
-        The second JS file to load is the project specific file. This is the same
+        The second JavaScript file to load is the project specific file. This is the same
         for an entire project, and by default will be called <code>ProjectName.js</code>.
-        Having one main executable per project is a bit of a pain, as normally one
-        would like to have many runnable programs per project. Not a major
-        problem though, and easy to program our way around it.
-
+        This has a single main executable per project, which is run one each time
+        an HTML the page is loaded that loads <code>ProjectName.js</code>.
+        Typically we'd like to have many different XApps per project, so
+        instead of launching them from the main project JavaScript file,
+        we'll launch them directly where each one is used. In this way
+        we can have multiple HTML files, each with multiple XApps (some of which
+        may launch different instances of the same XApp).
     </p>
 
     <p>
-        What we're aiming for is to have a project with multiple HTML web pages, each running
-        different XApps, and some possibly running multiple XApps in the same page.
-        Since each XApp needs its own <code>Canvas</code> object to draw on, there are
-        two ways to created these. We can either create them when authoring the HTML
-        web page (call this the <em>HTML</em> method), or we can create them when loading the
-        <code>ProjectName.js</code> script (call this the <em>Script</em> method).
-
-        The HTML method is ideal for articles like the current one, where we need author
-        control of where the XApps should be displayed. The Script method might be better when
-        the only purpose of the HTML page is to launch the XApp.
+        Since each XApp needs its own <code>Canvas</code> object to draw on, we embed
+        these directly in the HTML, giving full control of their location and size.
+        This method is ideal for articles like the current one, where we need author
+        control of where the XApps should be displayed. It is also possible to
+        control this using Kotlin or JavaScript code, by writing elements into the
+        page's Document Object Model (DOM). The example below inserts a Canvas directly into
+        the HTML.
     </p>
+
+    <p>
+
+        <!--            @formatter:off-->
+        <dt-code block language="html">
+            <canvas id="bodyCanvas" width="400" height="200"
+                    style="border:5px solid #009999;">
+            </canvas>
+        </dt-code>
+        <!--            @formatter:on-->
+
+
+    </p>
+
 
     <p>We're nearly there: the only other thing to arrange is how to ensure that
         each Canvas is connected with the correct XApp. In the HTML version this is straightforward:
-        we give each Canvas a unique ID attribute (this should be unique across the project,
-        not just across the web page), then pass the ID to a dispatcher in the project script.</p>
+        we give each Canvas a unique <tt>id</tt> attribute (this should be unique across the project,
+        not just across the web page), then pass the <tt>id</tt> to a dispatcher in the project script;
+        this is called <tt>XAppLauncher</tt>.
+        I like to place the script just after the canvas element: keeping them together
+        makes it easy to keep track of, and to copy and paste into new documents as required.
+    </p>
 
-    <p>In the Script version, we currently use a simple trick: look for a unique substring
-        in the HTML page title, and use this to decide which XApp to connect to a dynamically created
-        Canvas object.</p>
+    <p>
+        <!--            @formatter:off-->
+        <dt-code block language="html">
+                new JavaJSTest.sample.XAppLauncher("bodyCanvas", "HelloXKG").run();
+        </dt-code>
+        <!--            @formatter:on-->
 
+    </p>
 
     <p>
 
-
-        The steps are as follows:
-
-
+        The <tt>XAppLauncher</tt> class uses a Hashmap
+        to looks up the type of XApp to launch given the specified name of the app,
+        in this case <em>HelloXKG</em>. It is also possible to specify the app's refresh
+        rate i.e. the number of times per secod it's paint method is called; this defaults to 10 times per second
+        (i.e. a timer is set to update every 100ms).
     <ol>
         <li></li>
-
     </ol>
 
 
     </p>
+
+
+    <h2>Enabling Full Screen Mode</h2>
+
+    <p>
+        For many articles it's desirable to have the interactive elements positioned and sized
+        under author control, but in some cases we'd also like to switch elements
+        to full-screen mode, which is often ideal for games and videos.
+        In order to make this work across all modern browsers it's best to use
+        a library, and here we use: <a href="https://fscreen.rafgraph.dev">https://fscreen.rafgraph.dev</a>.
+        Here we wish to control each element going full screen.
+        There are a couple of tricks needed in order to do this well.
+        The easiest approach is to simply take an element into full mode using
+        the library, but if done directly it will just scale up a low-res
+        canvas to full screen size, causing it to appear blurry.
+    </p>
+
+    <p>
+        To avoid this, we need to track "fullscreen" events, and alter the canvas size accordingly.
+        And to enable all this we need to load the fullscreen library, which is compiled into
+        the file <tt>bundle.js</tt>. The JavaScript needed is shown below.
+    </p>
+
+    <h4>Load the fullscreen library:</h4>
+
+    <p>
+        <!--            @formatter:off-->
+    <dt-code block language="javascript">
+<!--        <script src="./bundle.js"></script>-->
+    </dt-code>
+    <!--            @formatter:on-->
+    </p>
+
+    <h4>JavaScript to control canvas resizing:</h4>
+    <!--            @formatter:off-->
+    <dt-code block language="javascript">
+        <script>
+
+<!--  new JavaJSTest.sample.XAppLauncher("treeRectCanvas", "TreeRect").run();-->
+
+        function successCallback() {
+            var canvas = document.getElementById("treeRectCanvas")
+            canvas.width=window.innerWidth;
+            canvas.height=window.innerHeight;
+            canvas.onfullscreenchange = handleFullscreenChange;
+            console.log("Success");
+        }
+
+        function handleFullscreenChange(event) {
+            console.log("Fullscreen change event");
+            console.log(event)
+            var docel = document.fullscreenElement;
+            var elem = event.target;
+
+            if (docel === null) {
+                console.log("Shrinking canvas");
+                elem.width = 250;
+                elem.height = 150;
+            } else {
+                console.log("NOT shrinking canvas");
+            }
+        }
+
+
+        function failureCallback() {
+            console.log("Failure!");
+        }
+
+        function fullScreenRect() {
+            console.log("Requesting full screen");
+            const promise = document.getElementById("treeRectCanvas").requestFullscreen();
+            promise.then(successCallback, failureCallback);
+        }
+    </script>
+    </dt-code>
+    <!--            @formatter:on-->
+
+
+    <h4>Create a way to switch to fullscreen mode:</h4>
+    <p>
+        Here we add the event to a button, but you can control this as needed.
+    </p>
+    <!--            @formatter:off-->
+    <dt-code block language="javascript">
+<!--        <p>-->
+<!--            <button onclick="fullScreenRect()">Full Screen</button>-->
+<!--        </p>-->
+    </dt-code>
+    <!--            @formatter:on-->
+
+
+</dt-article>
+
+
+<dt-appendix>
+    <h2>Appendix: Additional Info</h2>
+
 
 </dt-appendix>
 
@@ -371,6 +541,21 @@ function fullScreenRect() {
   pages = {774--775},
   year = {2020},
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

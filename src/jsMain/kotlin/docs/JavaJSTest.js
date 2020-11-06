@@ -53,6 +53,7 @@
   var shuffle_0 = Kotlin.kotlin.collections.shuffle_9jeydg$;
   var copyToArray = Kotlin.kotlin.collections.copyToArray;
   var trim = Kotlin.kotlin.text.trim_gw00vp$;
+  var Exception = Kotlin.kotlin.Exception;
   var kotlin_js_internal_DoubleCompanionObject = Kotlin.kotlin.js.internal.DoubleCompanionObject;
   var asSequence = Kotlin.kotlin.collections.asSequence_abgq59$;
   var toCollection = Kotlin.kotlin.sequences.toCollection_gtszxp$;
@@ -71,7 +72,6 @@
   var L76 = Kotlin.Long.fromInt(76);
   var numberToDouble = Kotlin.numberToDouble;
   var Comparable = Kotlin.kotlin.Comparable;
-  var Exception = Kotlin.kotlin.Exception;
   var contains = Kotlin.kotlin.text.contains_li3zpu$;
   var toLong = Kotlin.kotlin.text.toLong_pdl1vz$;
   var L10 = Kotlin.Long.fromInt(10);
@@ -95,6 +95,12 @@
   Dir.prototype.constructor = Dir;
   Actions.prototype = Object.create(Enum.prototype);
   Actions.prototype.constructor = Actions;
+  CellState.prototype = Object.create(Enum.prototype);
+  CellState.prototype.constructor = CellState;
+  LineState.prototype = Object.create(Enum.prototype);
+  LineState.prototype.constructor = LineState;
+  GridState.prototype = Object.create(Enum.prototype);
+  GridState.prototype.constructor = GridState;
   Split.prototype = Object.create(Enum.prototype);
   Split.prototype.constructor = Split;
   Split$V.prototype = Object.create(Split.prototype);
@@ -793,13 +799,19 @@
     else
       return this.random.nextInt_za3lpa$(gameState.nActions());
   };
+  RandomAgent.prototype.getAction_ycovnx$ = function (gameState, playerId) {
+    if (gameState.nActions_za3lpa$(playerId) < 1)
+      return 0;
+    else
+      return this.random.nextInt_za3lpa$(gameState.nActions_za3lpa$(playerId));
+  };
   RandomAgent.prototype.reset = function () {
     return this;
   };
   RandomAgent.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'RandomAgent',
-    interfaces: [SimplePlayerInterface]
+    interfaces: [SimplePlayerInterfaceMulti, SimplePlayerInterface]
   };
   function SimpleEvoAgent(flipAtLeastOneValue, probMutation, totallyRandomMutations, sequenceLength, nEvals, useShiftBuffer, useMutationTransducer, repeatProb, discountFactor, opponentModel, epsilon) {
     if (flipAtLeastOneValue === void 0)
@@ -3856,6 +3868,248 @@
     simpleName: 'TrieNode',
     interfaces: []
   };
+  function GridGame() {
+  }
+  GridGame.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'GridGame',
+    interfaces: []
+  };
+  function TicTacToe(lg, toMoveVar) {
+    TicTacToe$Companion_getInstance();
+    if (toMoveVar === void 0)
+      toMoveVar = 0;
+    this.lg = lg;
+    this.toMoveVar = toMoveVar;
+    this.nTic = 0;
+  }
+  function TicTacToe$Companion() {
+    TicTacToe$Companion_instance = this;
+    this.totTicks = 0;
+  }
+  TicTacToe$Companion.prototype.getGame_za3lpa$ = function (n) {
+    if (n === void 0)
+      n = 3;
+    var lineTester = new LineTester();
+    lineTester.addAllDirections_za3lpa$(n);
+    var lineGrid = new LineGrid(n, n, lineTester);
+    var gridGame = new TicTacToe(lineGrid);
+    return gridGame;
+  };
+  TicTacToe$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var TicTacToe$Companion_instance = null;
+  function TicTacToe$Companion_getInstance() {
+    if (TicTacToe$Companion_instance === null) {
+      new TicTacToe$Companion();
+    }return TicTacToe$Companion_instance;
+  }
+  TicTacToe.prototype.copy = function () {
+    var gridCopy = this.lg.copy();
+    return new TicTacToe(gridCopy, this.toMoveVar);
+  };
+  TicTacToe.prototype.next_q5rwfd$ = function (actions) {
+    try {
+      this.next_2j9h0j$(this.lg.vacancies().get_za3lpa$(actions[0]));
+    } catch (e) {
+      if (Kotlin.isType(e, Exception)) {
+        println(e);
+      } else
+        throw e;
+    }
+    return this;
+  };
+  TicTacToe.prototype.next_2j9h0j$ = function (placeAt) {
+    var tmp$;
+    if (this.lg.isVacant_2j9h0j$(placeAt)) {
+      this.lg.play_1xt2oh$(placeAt, this.toMoveVar);
+      this.toMoveVar = 1 - this.toMoveVar | 0;
+      this.nTic = this.nTic + 1 | 0;
+      tmp$ = TicTacToe$Companion_getInstance().totTicks;
+      TicTacToe$Companion_getInstance().totTicks = tmp$ + 1 | 0;
+    }};
+  TicTacToe.prototype.nActions_za3lpa$ = function (playerId) {
+    return this.lg.nVacant();
+  };
+  TicTacToe.prototype.score_za3lpa$ = function (playerId) {
+    var state = this.lg.gridState();
+    if (state === GridState$Win1_getInstance())
+      return 1.0;
+    if (state === GridState$Win2_getInstance())
+      return -1.0;
+    return 0.0;
+  };
+  TicTacToe.prototype.isTerminal_za3lpa$ = function (playerId) {
+    return this.lg.nVacant() === 0;
+  };
+  TicTacToe.prototype.nTicks = function () {
+    return this.nTic;
+  };
+  TicTacToe.prototype.toMove = function () {
+    return this.toMoveVar;
+  };
+  TicTacToe.prototype.totalTicks = function () {
+    return Kotlin.Long.fromInt(TicTacToe$Companion_getInstance().totTicks);
+  };
+  TicTacToe.prototype.reset = function () {
+    this.nTic = 0;
+    this.toMoveVar = 0;
+    this.lg.reset();
+  };
+  TicTacToe.prototype.randomInitialState = function () {
+    this.reset();
+    return this;
+  };
+  TicTacToe.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'TicTacToe',
+    interfaces: [ExtendedAbstractGameStateMulti]
+  };
+  function GridGameApp() {
+    this.n = 3;
+    this.lineTester = new LineTester();
+    this.lineGrid = new LineGrid(this.n, this.n, this.lineTester);
+    this.gridGame = new TicTacToe(this.lineGrid);
+    this.gridView = new GridView(this.lineGrid);
+    this.lineTester.addAllDirections_za3lpa$(this.n);
+    this.gridGame.next_2j9h0j$(new IntVec2d(1, 1));
+    println(this.gridGame.lg.gridState());
+    println(this.gridGame.lg.lineTester.lines.size);
+    println(this.lineTester.lines.size);
+  }
+  GridGameApp.prototype.paint_vzjx8w$ = function (xg) {
+    this.gridView.draw_vzjx8w$(xg);
+  };
+  GridGameApp.prototype.handleMouseEvent_x4hb96$ = function (e) {
+    println(e);
+    if (e.t === XMouseEventType$Clicked_getInstance()) {
+      var cell = this.gridView.getCell_5lk9kw$(e.s);
+      if (cell != null) {
+        this.gridGame.next_2j9h0j$(cell);
+      }}};
+  GridGameApp.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'GridGameApp',
+    interfaces: [XApp]
+  };
+  function GridView(lg, gs) {
+    if (lg === void 0)
+      lg = new LineGrid(3, 3, new LineTester());
+    if (gs === void 0)
+      gs = new GridStyle();
+    this.lg = lg;
+    this.gs = gs;
+    this.cellSize = 0.0;
+    this.centre = new Vec2d();
+  }
+  GridView.prototype.getCell_5lk9kw$ = function (s) {
+    if (this.cellSize <= 0.0)
+      return null;
+    var leftX = this.centre.x - this.cellSize * this.lg.w * 0.5;
+    var topY = this.centre.y - this.cellSize * this.lg.h * 0.5;
+    var x = (s.x - leftX) / this.cellSize;
+    var y = (s.y - topY) / this.cellSize;
+    if (x < 0.0 || y < 0.0 || x >= this.lg.w || y >= this.lg.h)
+      return null;
+    var cell = new IntVec2d(numberToInt(x), numberToInt(y));
+    println(cell);
+    return cell;
+  };
+  GridView.prototype.draw_vzjx8w$ = function (xg) {
+    var tmp$, tmp$_0;
+    var ratio = 1.0 - 2.0 * this.gs.boardMargin;
+    var xCell = xg.width() * ratio / this.lg.w;
+    var yCell = xg.height() * ratio / this.lg.h;
+    this.cellSize = Math_0.min(xCell, yCell);
+    this.centre = xg.centre();
+    xg.draw_dvdmun$(new XRect(xg.centre(), xg.width(), xg.height(), new XStyle(this.gs.bg, void 0, void 0, false, true)));
+    tmp$ = this.lg.w;
+    for (var x = 0; x < tmp$; x++) {
+      tmp$_0 = this.lg.h;
+      for (var y = 0; y < tmp$_0; y++) {
+        var gx = xg.centre().x + (x - (this.lg.w - 1 | 0) * 0.5) * this.cellSize;
+        var gy = xg.centre().y + (y - (this.lg.h - 1 | 0) * 0.5) * this.cellSize;
+        var cellStyle = new XStyle(this.gs.boardCell, void 0, this.gs.cellBorderColor, void 0, void 0, this.gs.cellBorder * this.cellSize);
+        var cell = new XRect(new Vec2d(gx, gy), this.cellSize, this.cellSize, cellStyle);
+        xg.draw_dvdmun$(cell);
+        if (this.lg.grid[x][y] !== CellState$Empty_getInstance()) {
+          var str = this.lg.grid[x][y] === CellState$P1_getInstance() ? 'X' : 'O';
+          var tStyle = new TStyle(this.gs.tc, void 0, this.cellSize);
+          var text = new XText(str, new Vec2d(gx, gy), tStyle, new XStyle());
+          xg.draw_dvdmun$(text);
+        }}
+    }
+  };
+  GridView.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'GridView',
+    interfaces: []
+  };
+  function GridStyle(cellBorder, boardMargin, bg, tc, boardCell, cellBorderColor) {
+    if (cellBorder === void 0)
+      cellBorder = 0.08;
+    if (boardMargin === void 0)
+      boardMargin = 0.1;
+    if (bg === void 0)
+      bg = XColor$Companion_getInstance().black;
+    if (tc === void 0)
+      tc = XColor$Companion_getInstance().white;
+    if (boardCell === void 0)
+      boardCell = XColor$Companion_getInstance().blue;
+    if (cellBorderColor === void 0)
+      cellBorderColor = XColor$Companion_getInstance().gray;
+    this.cellBorder = cellBorder;
+    this.boardMargin = boardMargin;
+    this.bg = bg;
+    this.tc = tc;
+    this.boardCell = boardCell;
+    this.cellBorderColor = cellBorderColor;
+  }
+  GridStyle.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'GridStyle',
+    interfaces: []
+  };
+  GridStyle.prototype.component1 = function () {
+    return this.cellBorder;
+  };
+  GridStyle.prototype.component2 = function () {
+    return this.boardMargin;
+  };
+  GridStyle.prototype.component3 = function () {
+    return this.bg;
+  };
+  GridStyle.prototype.component4 = function () {
+    return this.tc;
+  };
+  GridStyle.prototype.component5 = function () {
+    return this.boardCell;
+  };
+  GridStyle.prototype.component6 = function () {
+    return this.cellBorderColor;
+  };
+  GridStyle.prototype.copy_qxpbv4$ = function (cellBorder, boardMargin, bg, tc, boardCell, cellBorderColor) {
+    return new GridStyle(cellBorder === void 0 ? this.cellBorder : cellBorder, boardMargin === void 0 ? this.boardMargin : boardMargin, bg === void 0 ? this.bg : bg, tc === void 0 ? this.tc : tc, boardCell === void 0 ? this.boardCell : boardCell, cellBorderColor === void 0 ? this.cellBorderColor : cellBorderColor);
+  };
+  GridStyle.prototype.toString = function () {
+    return 'GridStyle(cellBorder=' + Kotlin.toString(this.cellBorder) + (', boardMargin=' + Kotlin.toString(this.boardMargin)) + (', bg=' + Kotlin.toString(this.bg)) + (', tc=' + Kotlin.toString(this.tc)) + (', boardCell=' + Kotlin.toString(this.boardCell)) + (', cellBorderColor=' + Kotlin.toString(this.cellBorderColor)) + ')';
+  };
+  GridStyle.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.cellBorder) | 0;
+    result = result * 31 + Kotlin.hashCode(this.boardMargin) | 0;
+    result = result * 31 + Kotlin.hashCode(this.bg) | 0;
+    result = result * 31 + Kotlin.hashCode(this.tc) | 0;
+    result = result * 31 + Kotlin.hashCode(this.boardCell) | 0;
+    result = result * 31 + Kotlin.hashCode(this.cellBorderColor) | 0;
+    return result;
+  };
+  GridStyle.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.cellBorder, other.cellBorder) && Kotlin.equals(this.boardMargin, other.boardMargin) && Kotlin.equals(this.bg, other.bg) && Kotlin.equals(this.tc, other.tc) && Kotlin.equals(this.boardCell, other.boardCell) && Kotlin.equals(this.cellBorderColor, other.cellBorderColor)))));
+  };
   function MaxGame(n, m) {
     MaxGame$Companion_getInstance();
     if (n === void 0)
@@ -5639,6 +5893,353 @@
   Cell.prototype.equals = function (other) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.x, other.x) && Kotlin.equals(this.y, other.y)))));
   };
+  function CellState(name, ordinal) {
+    Enum.call(this);
+    this.name$ = name;
+    this.ordinal$ = ordinal;
+  }
+  function CellState_initFields() {
+    CellState_initFields = function () {
+    };
+    CellState$Empty_instance = new CellState('Empty', 0);
+    CellState$P1_instance = new CellState('P1', 1);
+    CellState$P2_instance = new CellState('P2', 2);
+  }
+  var CellState$Empty_instance;
+  function CellState$Empty_getInstance() {
+    CellState_initFields();
+    return CellState$Empty_instance;
+  }
+  var CellState$P1_instance;
+  function CellState$P1_getInstance() {
+    CellState_initFields();
+    return CellState$P1_instance;
+  }
+  var CellState$P2_instance;
+  function CellState$P2_getInstance() {
+    CellState_initFields();
+    return CellState$P2_instance;
+  }
+  CellState.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'CellState',
+    interfaces: [Enum]
+  };
+  function CellState$values() {
+    return [CellState$Empty_getInstance(), CellState$P1_getInstance(), CellState$P2_getInstance()];
+  }
+  CellState.values = CellState$values;
+  function CellState$valueOf(name) {
+    switch (name) {
+      case 'Empty':
+        return CellState$Empty_getInstance();
+      case 'P1':
+        return CellState$P1_getInstance();
+      case 'P2':
+        return CellState$P2_getInstance();
+      default:throwISE('No enum constant games.uti.CellState.' + name);
+    }
+  }
+  CellState.valueOf_61zpoe$ = CellState$valueOf;
+  function LineState(name, ordinal) {
+    Enum.call(this);
+    this.name$ = name;
+    this.ordinal$ = ordinal;
+  }
+  function LineState_initFields() {
+    LineState_initFields = function () {
+    };
+    LineState$Empty_instance = new LineState('Empty', 0);
+    LineState$Open_instance = new LineState('Open', 1);
+    LineState$Mixed_instance = new LineState('Mixed', 2);
+    LineState$Partial1_instance = new LineState('Partial1', 3);
+    LineState$Partial2_instance = new LineState('Partial2', 4);
+    LineState$P1_instance = new LineState('P1', 5);
+    LineState$P2_instance = new LineState('P2', 6);
+    LineState$Unwon_instance = new LineState('Unwon', 7);
+  }
+  var LineState$Empty_instance;
+  function LineState$Empty_getInstance() {
+    LineState_initFields();
+    return LineState$Empty_instance;
+  }
+  var LineState$Open_instance;
+  function LineState$Open_getInstance() {
+    LineState_initFields();
+    return LineState$Open_instance;
+  }
+  var LineState$Mixed_instance;
+  function LineState$Mixed_getInstance() {
+    LineState_initFields();
+    return LineState$Mixed_instance;
+  }
+  var LineState$Partial1_instance;
+  function LineState$Partial1_getInstance() {
+    LineState_initFields();
+    return LineState$Partial1_instance;
+  }
+  var LineState$Partial2_instance;
+  function LineState$Partial2_getInstance() {
+    LineState_initFields();
+    return LineState$Partial2_instance;
+  }
+  var LineState$P1_instance;
+  function LineState$P1_getInstance() {
+    LineState_initFields();
+    return LineState$P1_instance;
+  }
+  var LineState$P2_instance;
+  function LineState$P2_getInstance() {
+    LineState_initFields();
+    return LineState$P2_instance;
+  }
+  var LineState$Unwon_instance;
+  function LineState$Unwon_getInstance() {
+    LineState_initFields();
+    return LineState$Unwon_instance;
+  }
+  LineState.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'LineState',
+    interfaces: [Enum]
+  };
+  function LineState$values() {
+    return [LineState$Empty_getInstance(), LineState$Open_getInstance(), LineState$Mixed_getInstance(), LineState$Partial1_getInstance(), LineState$Partial2_getInstance(), LineState$P1_getInstance(), LineState$P2_getInstance(), LineState$Unwon_getInstance()];
+  }
+  LineState.values = LineState$values;
+  function LineState$valueOf(name) {
+    switch (name) {
+      case 'Empty':
+        return LineState$Empty_getInstance();
+      case 'Open':
+        return LineState$Open_getInstance();
+      case 'Mixed':
+        return LineState$Mixed_getInstance();
+      case 'Partial1':
+        return LineState$Partial1_getInstance();
+      case 'Partial2':
+        return LineState$Partial2_getInstance();
+      case 'P1':
+        return LineState$P1_getInstance();
+      case 'P2':
+        return LineState$P2_getInstance();
+      case 'Unwon':
+        return LineState$Unwon_getInstance();
+      default:throwISE('No enum constant games.uti.LineState.' + name);
+    }
+  }
+  LineState.valueOf_61zpoe$ = LineState$valueOf;
+  function GridState(name, ordinal) {
+    Enum.call(this);
+    this.name$ = name;
+    this.ordinal$ = ordinal;
+  }
+  function GridState_initFields() {
+    GridState_initFields = function () {
+    };
+    GridState$GameOn_instance = new GridState('GameOn', 0);
+    GridState$Draw_instance = new GridState('Draw', 1);
+    GridState$Win1_instance = new GridState('Win1', 2);
+    GridState$Win2_instance = new GridState('Win2', 3);
+  }
+  var GridState$GameOn_instance;
+  function GridState$GameOn_getInstance() {
+    GridState_initFields();
+    return GridState$GameOn_instance;
+  }
+  var GridState$Draw_instance;
+  function GridState$Draw_getInstance() {
+    GridState_initFields();
+    return GridState$Draw_instance;
+  }
+  var GridState$Win1_instance;
+  function GridState$Win1_getInstance() {
+    GridState_initFields();
+    return GridState$Win1_instance;
+  }
+  var GridState$Win2_instance;
+  function GridState$Win2_getInstance() {
+    GridState_initFields();
+    return GridState$Win2_instance;
+  }
+  GridState.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'GridState',
+    interfaces: [Enum]
+  };
+  function GridState$values() {
+    return [GridState$GameOn_getInstance(), GridState$Draw_getInstance(), GridState$Win1_getInstance(), GridState$Win2_getInstance()];
+  }
+  GridState.values = GridState$values;
+  function GridState$valueOf(name) {
+    switch (name) {
+      case 'GameOn':
+        return GridState$GameOn_getInstance();
+      case 'Draw':
+        return GridState$Draw_getInstance();
+      case 'Win1':
+        return GridState$Win1_getInstance();
+      case 'Win2':
+        return GridState$Win2_getInstance();
+      default:throwISE('No enum constant games.uti.GridState.' + name);
+    }
+  }
+  GridState.valueOf_61zpoe$ = GridState$valueOf;
+  function LineGrid(w, h, lineTester) {
+    this.w = w;
+    this.h = h;
+    this.lineTester = lineTester;
+    var array = Array_0(this.w);
+    var tmp$;
+    tmp$ = array.length - 1 | 0;
+    for (var i = 0; i <= tmp$; i++) {
+      var array_0 = Array_0(this.h);
+      var tmp$_0;
+      tmp$_0 = array_0.length - 1 | 0;
+      for (var i_0 = 0; i_0 <= tmp$_0; i_0++) {
+        array_0[i_0] = CellState$Empty_getInstance();
+      }
+      array[i] = array_0;
+    }
+    this.grid = array;
+  }
+  LineGrid.prototype.copy = function () {
+    var tmp$, tmp$_0;
+    var cp = new LineGrid(this.w, this.h, this.lineTester);
+    tmp$ = this.w;
+    for (var i = 0; i < tmp$; i++) {
+      tmp$_0 = this.h;
+      for (var j = 0; j < tmp$_0; j++) {
+        cp.grid[i][j] = this.grid[i][j];
+      }
+    }
+    return cp;
+  };
+  LineGrid.prototype.nVacant = function () {
+    var tmp$, tmp$_0;
+    var vac = 0;
+    tmp$ = this.w;
+    for (var i = 0; i < tmp$; i++) {
+      tmp$_0 = this.h;
+      for (var j = 0; j < tmp$_0; j++) {
+        if (this.grid[i][j] === CellState$Empty_getInstance()) {
+          vac = vac + 1 | 0;
+        }}
+    }
+    return vac;
+  };
+  LineGrid.prototype.isVacant_2j9h0j$ = function (s) {
+    return this.grid[s.x][s.y] === CellState$Empty_getInstance();
+  };
+  LineGrid.prototype.vacancies = function () {
+    var tmp$, tmp$_0;
+    var list = ArrayList_init();
+    tmp$ = this.w;
+    for (var i = 0; i < tmp$; i++) {
+      tmp$_0 = this.h;
+      for (var j = 0; j < tmp$_0; j++) {
+        if (this.grid[i][j] === CellState$Empty_getInstance())
+          list.add_11rb$(new IntVec2d(i, j));
+      }
+    }
+    return list;
+  };
+  LineGrid.prototype.testLine_mkf55g$ = function (line) {
+    var tmp$;
+    var counter = new HashCounter();
+    tmp$ = line.iterator();
+    while (tmp$.hasNext()) {
+      var cell = tmp$.next();
+      counter.count_za3rmp$(this.grid[cell.x][cell.y]);
+    }
+    if (counter.map.get_11rb$(CellState$P1_getInstance()) === line.size)
+      return LineState$P1_getInstance();
+    if (counter.map.get_11rb$(CellState$P2_getInstance()) === line.size)
+      return LineState$P2_getInstance();
+    if (counter.map.get_11rb$(CellState$Empty_getInstance()) === line.size)
+      return LineState$Empty_getInstance();
+    return LineState$Unwon_getInstance();
+  };
+  LineGrid.prototype.gridState = function () {
+    var tmp$;
+    var gameOn = false;
+    tmp$ = this.lineTester.lines.iterator();
+    while (tmp$.hasNext()) {
+      var line = tmp$.next();
+      var ls = this.testLine_mkf55g$(line);
+      if (ls === LineState$P1_getInstance())
+        return GridState$Win1_getInstance();
+      if (ls === LineState$P2_getInstance())
+        return GridState$Win2_getInstance();
+      if (ls === LineState$Empty_getInstance())
+        gameOn = true;
+    }
+    if (gameOn)
+      return GridState$GameOn_getInstance();
+    else
+      return GridState$Draw_getInstance();
+  };
+  LineGrid.prototype.play_1xt2oh$ = function (s, toMove) {
+    this.grid[s.x][s.y] = toMove === 0 ? CellState$P1_getInstance() : CellState$P2_getInstance();
+  };
+  LineGrid.prototype.reset = function () {
+    var tmp$, tmp$_0;
+    tmp$ = this.w;
+    for (var i = 0; i < tmp$; i++) {
+      tmp$_0 = this.h;
+      for (var j = 0; j < tmp$_0; j++) {
+        this.grid[i][j] = CellState$Empty_getInstance();
+      }
+    }
+  };
+  LineGrid.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'LineGrid',
+    interfaces: []
+  };
+  function LineTester() {
+    this.lines = ArrayList_init();
+  }
+  LineTester.prototype.addAllDirections_za3lpa$ = function (n) {
+    this.addHorizontal_za3lpa$(n);
+    this.addVertical_za3lpa$(n);
+    this.addLeading_za3lpa$(n);
+    this.addReverse_za3lpa$(n);
+    println('Made ' + this.lines.size + ' lines');
+  };
+  LineTester.prototype.addVertical_za3lpa$ = function (n) {
+    for (var x = 0; x < n; x++) {
+      var line = ArrayList_init();
+      for (var y = 0; y < n; y++)
+        line.add_11rb$(new IntVec2d(x, y));
+      this.lines.add_11rb$(line);
+    }
+  };
+  LineTester.prototype.addHorizontal_za3lpa$ = function (n) {
+    for (var y = 0; y < n; y++) {
+      var line = ArrayList_init();
+      for (var x = 0; x < n; x++)
+        line.add_11rb$(new IntVec2d(x, y));
+      this.lines.add_11rb$(line);
+    }
+  };
+  LineTester.prototype.addLeading_za3lpa$ = function (n) {
+    var line = ArrayList_init();
+    for (var i = 0; i < n; i++)
+      line.add_11rb$(new IntVec2d(i, i));
+    this.lines.add_11rb$(line);
+  };
+  LineTester.prototype.addReverse_za3lpa$ = function (n) {
+    var line = ArrayList_init();
+    for (var i = 0; i < n; i++)
+      line.add_11rb$(new IntVec2d(i, n - 1 - i | 0));
+    this.lines.add_11rb$(line);
+  };
+  LineTester.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'LineTester',
+    interfaces: []
+  };
   function AbstractGameState() {
   }
   AbstractGameState.$metadata$ = {
@@ -5662,6 +6263,8 @@
   };
   function ExtendedAbstractGameStateMulti() {
   }
+  ExtendedAbstractGameStateMulti.prototype.resetTotalTicks = function () {
+  };
   ExtendedAbstractGameStateMulti.$metadata$ = {
     kind: Kind_INTERFACE,
     simpleName: 'ExtendedAbstractGameStateMulti',
@@ -7884,6 +8487,24 @@
     simpleName: 'IntField',
     interfaces: []
   };
+  function HashCounter() {
+    this.map = HashMap_init();
+  }
+  HashCounter.prototype.count_za3rmp$ = function (a) {
+    var n = this.map.get_11rb$(a);
+    if (n == null) {
+      this.map.put_xwzc9p$(a, 1);
+    } else {
+      var $receiver = this.map;
+      var value = n + 1 | 0;
+      $receiver.put_xwzc9p$(a, value);
+    }
+  };
+  HashCounter.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'HashCounter',
+    interfaces: []
+  };
   function Picker(order) {
     Picker$Companion_getInstance();
     if (order === void 0)
@@ -8713,7 +9334,7 @@
     this.canvasID = canvasID;
     this.appName = appName;
     this.intervalTime = intervalTime;
-    this.appMap = hashMapOf([to('HelloXKG', new HelloXKG()), to('TreeRect', new TreeRectApp())]);
+    this.appMap = hashMapOf([to('HelloXKG', new HelloXKG()), to('OXO', new GridGameApp()), to('TreeRect', new TreeRectApp())]);
     this.app = new HelloXKG();
     this.canvas1 = null;
     var tmp$;
@@ -9153,6 +9774,15 @@
     get: TrieNode$Companion_getInstance
   });
   package$words.TrieNode = TrieNode;
+  var package$gridgames = package$games.gridgames || (package$games.gridgames = {});
+  package$gridgames.GridGame = GridGame;
+  Object.defineProperty(TicTacToe, 'Companion', {
+    get: TicTacToe$Companion_getInstance
+  });
+  package$gridgames.TicTacToe = TicTacToe;
+  package$gridgames.GridGameApp = GridGameApp;
+  package$gridgames.GridView = GridView;
+  package$gridgames.GridStyle = GridStyle;
   Object.defineProperty(MaxGame, 'Companion', {
     get: MaxGame$Companion_getInstance
   });
@@ -9243,6 +9873,57 @@
   });
   package$tetris.TetronSprite = TetronSprite;
   package$tetris.Cell = Cell;
+  Object.defineProperty(CellState, 'Empty', {
+    get: CellState$Empty_getInstance
+  });
+  Object.defineProperty(CellState, 'P1', {
+    get: CellState$P1_getInstance
+  });
+  Object.defineProperty(CellState, 'P2', {
+    get: CellState$P2_getInstance
+  });
+  var package$uti = package$games.uti || (package$games.uti = {});
+  package$uti.CellState = CellState;
+  Object.defineProperty(LineState, 'Empty', {
+    get: LineState$Empty_getInstance
+  });
+  Object.defineProperty(LineState, 'Open', {
+    get: LineState$Open_getInstance
+  });
+  Object.defineProperty(LineState, 'Mixed', {
+    get: LineState$Mixed_getInstance
+  });
+  Object.defineProperty(LineState, 'Partial1', {
+    get: LineState$Partial1_getInstance
+  });
+  Object.defineProperty(LineState, 'Partial2', {
+    get: LineState$Partial2_getInstance
+  });
+  Object.defineProperty(LineState, 'P1', {
+    get: LineState$P1_getInstance
+  });
+  Object.defineProperty(LineState, 'P2', {
+    get: LineState$P2_getInstance
+  });
+  Object.defineProperty(LineState, 'Unwon', {
+    get: LineState$Unwon_getInstance
+  });
+  package$uti.LineState = LineState;
+  Object.defineProperty(GridState, 'GameOn', {
+    get: GridState$GameOn_getInstance
+  });
+  Object.defineProperty(GridState, 'Draw', {
+    get: GridState$Draw_getInstance
+  });
+  Object.defineProperty(GridState, 'Win1', {
+    get: GridState$Win1_getInstance
+  });
+  Object.defineProperty(GridState, 'Win2', {
+    get: GridState$Win2_getInstance
+  });
+  package$uti.GridState = GridState;
+  package$uti.LineGrid = LineGrid;
+  package$uti.LineTester = LineTester;
   var package$ggi = _.ggi || (_.ggi = {});
   package$ggi.AbstractGameState = AbstractGameState;
   package$ggi.ExtendedAbstractGameState = ExtendedAbstractGameState;
@@ -9385,6 +10066,7 @@
   package$util.InputFormBuilder = InputFormBuilder;
   package$util.Para = Para;
   package$util.IntField = IntField;
+  package$util.HashCounter = HashCounter;
   Object.defineProperty(Picker, 'Companion', {
     get: Picker$Companion_getInstance
   });
@@ -9423,6 +10105,8 @@
   package$sample.SubgoalDemoTest = SubgoalDemoTest;
   package$sample.XAppLauncher = XAppLauncher;
   package$test.XGraphicsJS = XGraphicsJS;
+  TicTacToe.prototype.resetTotalTicks = ExtendedAbstractGameStateMulti.prototype.resetTotalTicks;
+  GridGameApp.prototype.handleKeyEvent_wtf8cg$ = XApp.prototype.handleKeyEvent_wtf8cg$;
   DefaultDemoControl.prototype.useDoorways = SubgoalDemoControl.prototype.useDoorways;
   HelloXKG.prototype.handleKeyEvent_wtf8cg$ = XApp.prototype.handleKeyEvent_wtf8cg$;
   XGraphicsJS.prototype.centre = XGraphics.prototype.centre;

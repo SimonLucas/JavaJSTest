@@ -1,5 +1,6 @@
 package sample
 
+import games.gridgames.GridGameApp
 import gui.*
 import test.XGraphicsJS
 import kotlinx.browser.document
@@ -10,14 +11,17 @@ import org.w3c.dom.events.KeyboardEvent
 import kotlin.js.Date
 import kotlin.math.nextDown
 
-class XAppLauncher(val canvasID: String, val appName: String = "HelloXKG", var intervalTime: Int = 100) {
+class XAppLauncher(val canvasID: String,
+                   val appName: String = "HelloXKG", var intervalTime: Int = 100) {
 
     // note: there are better ways to do this, but this is simple
     // and ok for now, and avoids need to use reflection
     val appMap = hashMapOf<String, XApp>(
         "HelloXKG" to HelloXKG(),
+        "OXO" to GridGameApp(),
         "TreeRect" to TreeRectApp()
     )
+
 
     // set this as a default, override with a specified one in the Init part
     var app: XApp = HelloXKG()
