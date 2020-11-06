@@ -37,6 +37,7 @@
   var sequenceOf = Kotlin.kotlin.sequences.sequenceOf_i5x0yv$;
   var NotImplementedError_init = Kotlin.kotlin.NotImplementedError;
   var numberToInt = Kotlin.numberToInt;
+  var Random_0 = Kotlin.kotlin.random.Random_za3lpa$;
   var unboxChar = Kotlin.unboxChar;
   var toBoxedChar = Kotlin.toBoxedChar;
   var charArray = Kotlin.charArray;
@@ -49,7 +50,7 @@
   var Comparator = Kotlin.kotlin.Comparator;
   var iterator = Kotlin.kotlin.text.iterator_gw00vp$;
   var split = Kotlin.kotlin.text.split_ip8yn$;
-  var Random_0 = Kotlin.kotlin.random.Random_s8cxhz$;
+  var Random_1 = Kotlin.kotlin.random.Random_s8cxhz$;
   var shuffle_0 = Kotlin.kotlin.collections.shuffle_9jeydg$;
   var copyToArray = Kotlin.kotlin.collections.copyToArray;
   var trim = Kotlin.kotlin.text.trim_gw00vp$;
@@ -62,7 +63,6 @@
   var HashSet_init = Kotlin.kotlin.collections.HashSet_init_287e2$;
   var lines = Kotlin.kotlin.text.lines_gw00vp$;
   var IntRange = Kotlin.kotlin.ranges.IntRange;
-  var Random_1 = Kotlin.kotlin.random.Random_za3lpa$;
   var abs = Kotlin.kotlin.math.abs_za3lpa$;
   var max = Kotlin.kotlin.collections.max_exjks8$;
   var collectionSizeOrDefault = Kotlin.kotlin.collections.collectionSizeOrDefault_ba2ldo$;
@@ -89,6 +89,12 @@
   MoveAction.prototype.constructor = MoveAction;
   ObjectType.prototype = Object.create(Enum.prototype);
   ObjectType.prototype.constructor = ObjectType;
+  CaveActions.prototype = Object.create(Enum.prototype);
+  CaveActions.prototype.constructor = CaveActions;
+  Fruit.prototype = Object.create(Item.prototype);
+  Fruit.prototype.constructor = Fruit;
+  Bomb.prototype = Object.create(Item.prototype);
+  Bomb.prototype.constructor = Bomb;
   GriddleState.prototype = Object.create(Enum.prototype);
   GriddleState.prototype.constructor = GriddleState;
   Dir.prototype = Object.create(Enum.prototype);
@@ -2430,8 +2436,151 @@
     simpleName: 'Ship',
     interfaces: [Shape]
   };
+  function CaveActions(name, ordinal) {
+    Enum.call(this);
+    this.name$ = name;
+    this.ordinal$ = ordinal;
+  }
+  function CaveActions_initFields() {
+    CaveActions_initFields = function () {
+    };
+    CaveActions$Release_instance = new CaveActions('Release', 0);
+    CaveActions$Attach_instance = new CaveActions('Attach', 1);
+  }
+  var CaveActions$Release_instance;
+  function CaveActions$Release_getInstance() {
+    CaveActions_initFields();
+    return CaveActions$Release_instance;
+  }
+  var CaveActions$Attach_instance;
+  function CaveActions$Attach_getInstance() {
+    CaveActions_initFields();
+    return CaveActions$Attach_instance;
+  }
+  CaveActions.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'CaveActions',
+    interfaces: [Enum]
+  };
+  function CaveActions$values() {
+    return [CaveActions$Release_getInstance(), CaveActions$Attach_getInstance()];
+  }
+  CaveActions.values = CaveActions$values;
+  function CaveActions$valueOf(name) {
+    switch (name) {
+      case 'Release':
+        return CaveActions$Release_getInstance();
+      case 'Attach':
+        return CaveActions$Attach_getInstance();
+      default:throwISE('No enum constant games.caveswing.CaveActions.' + name);
+    }
+  }
+  CaveActions.valueOf_61zpoe$ = CaveActions$valueOf;
+  function CaveGameState() {
+    CaveGameState$Companion_getInstance();
+    this.state = new CaveGameInternalState();
+  }
+  CaveGameState.prototype.randomInitialState = function () {
+    println('Not actually randomised');
+    return this;
+  };
+  CaveGameState.prototype.resetTotalTicks = function () {
+    CaveGameState$Companion_getInstance().totalTicks = L0;
+  };
+  function CaveGameState$Companion() {
+    CaveGameState$Companion_instance = this;
+    this.totalTicks = L0;
+  }
+  CaveGameState$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var CaveGameState$Companion_instance = null;
+  function CaveGameState$Companion_getInstance() {
+    if (CaveGameState$Companion_instance === null) {
+      new CaveGameState$Companion();
+    }return CaveGameState$Companion_instance;
+  }
+  CaveGameState.prototype.totalTicks = function () {
+    return CaveGameState$Companion_getInstance().totalTicks;
+  };
+  CaveGameState.prototype.nTicks = function () {
+    return this.state.nTicks;
+  };
+  CaveGameState.prototype.score = function () {
+    var $receiver = this.state;
+    var score = $receiver.avatar.s.x * $receiver.params.pointPerX + $receiver.avatar.s.y * $receiver.params.pointPerY - Kotlin.imul($receiver.nTicks, $receiver.params.costPerTick);
+    if ($receiver.avatar.s.x >= $receiver.params.width) {
+      score += $receiver.params.successBonus;
+    }if ($receiver.avatar.s.y < 0 || $receiver.avatar.s.y >= $receiver.params.height) {
+      score -= $receiver.params.failurePenalty;
+    }score += $receiver.bonusScore;
+    return Math_0.floor(score);
+  };
+  CaveGameState.prototype.isTerminal = function () {
+    var $receiver = this.state;
+    if ($receiver.gameOver)
+      return $receiver.gameOver;
+    if ($receiver.nTicks >= $receiver.params.maxTicks || !$receiver.map.bounds.contains_vi8533$($receiver.avatar.s)) {
+      $receiver.gameOver = true;
+    }return $receiver.gameOver;
+  };
+  CaveGameState.prototype.setup_vpbbpv$ = function (params) {
+    if (params === void 0)
+      params = this.state.params;
+    var $receiver = this.state;
+    $receiver.map = (new CaveMap()).setup_vpbbpv$(params);
+    var s = new Vec2d(params.width / 10, params.height / 2);
+    $receiver.avatar = new MovableObject(s, new Vec2d());
+    return this;
+  };
+  CaveGameState.prototype.copy = function () {
+    var cp = new CaveGameState();
+    cp.state = this.state.deepCopy();
+    return cp;
+  };
+  CaveGameState.prototype.collision_qlrit1$ = function (state) {
+    var x = numberToInt(state.avatar.s.x / state.params.gridScale);
+    var y = numberToInt(state.avatar.s.y / state.params.gridScale);
+    var item = state.map.items.get_11rb$(new ItemPosition(x, y));
+    if (item != null) {
+      item.applyEffect_qlrit1$(state);
+    }};
+  CaveGameState.prototype.next_q5rwfd$ = function (actions) {
+    var tmp$;
+    if (this.isTerminal())
+      return this;
+    var $receiver = this.state;
+    var tmp$_0, tmp$_1;
+    this.collision_qlrit1$(this.state);
+    var action = actions[0];
+    var resultantForce = {v: $receiver.params.gravity};
+    if (action === CaveActions$Attach_getInstance().ordinal) {
+      if ($receiver.currentAnchor == null) {
+        $receiver.currentAnchor = $receiver.map.getClosestAnchor_5lk9kw$($receiver.avatar.s);
+      }if ((tmp$_0 = $receiver.currentAnchor) != null) {
+        var tension = tmp$_0.minus_5lk9kw$($receiver.avatar.s).times_14dthe$($receiver.params.hooke);
+        resultantForce.v = resultantForce.v.plus_5lk9kw$(tension);
+      }} else if (action === CaveActions$Release_getInstance().ordinal) {
+      $receiver.currentAnchor = null;
+    }$receiver.avatar.update_6neuge$(resultantForce.v, $receiver.params.lossFactor);
+    tmp$_1 = $receiver.nTicks, $receiver.nTicks = tmp$_1 + 1 | 0;
+    tmp$ = CaveGameState$Companion_getInstance().totalTicks;
+    CaveGameState$Companion_getInstance().totalTicks = tmp$.inc();
+    return this;
+  };
+  CaveGameState.prototype.nActions = function () {
+    return CaveActions$values().length;
+  };
+  CaveGameState.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'CaveGameState',
+    interfaces: [ExtendedAbstractGameState]
+  };
   function CaveMap() {
     this.anchors = ArrayList_init();
+    this.items = hashMapOf([to(new ItemPosition(10, 5), new Fruit()), to(new ItemPosition(20, 7), new Bomb())]);
     this.bounds = new XRect(new Vec2d(), 100.0, 100.0);
   }
   CaveMap.prototype.getAnchor_za3lpa$ = function (index) {
@@ -2477,6 +2626,157 @@
     kind: Kind_CLASS,
     simpleName: 'CaveMap',
     interfaces: []
+  };
+  function ItemPosition(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+  ItemPosition.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'ItemPosition',
+    interfaces: []
+  };
+  ItemPosition.prototype.component1 = function () {
+    return this.x;
+  };
+  ItemPosition.prototype.component2 = function () {
+    return this.y;
+  };
+  ItemPosition.prototype.copy_vux9f0$ = function (x, y) {
+    return new ItemPosition(x === void 0 ? this.x : x, y === void 0 ? this.y : y);
+  };
+  ItemPosition.prototype.toString = function () {
+    return 'ItemPosition(x=' + Kotlin.toString(this.x) + (', y=' + Kotlin.toString(this.y)) + ')';
+  };
+  ItemPosition.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.x) | 0;
+    result = result * 31 + Kotlin.hashCode(this.y) | 0;
+    return result;
+  };
+  ItemPosition.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.x, other.x) && Kotlin.equals(this.y, other.y)))));
+  };
+  function Item() {
+    this.alive = true;
+  }
+  Item.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Item',
+    interfaces: []
+  };
+  function Fruit() {
+    Item.call(this);
+  }
+  Fruit.prototype.applyEffect_qlrit1$ = function (state) {
+    if (this.alive) {
+      state.bonusScore = state.bonusScore + 5000 | 0;
+      this.alive = false;
+    }};
+  Fruit.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Fruit',
+    interfaces: [Item]
+  };
+  function Bomb() {
+    Item.call(this);
+  }
+  Bomb.prototype.applyEffect_qlrit1$ = function (state) {
+    if (this.alive) {
+      state.bonusScore = state.bonusScore - 5000 | 0;
+      this.alive = false;
+    }};
+  Bomb.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Bomb',
+    interfaces: [Item]
+  };
+  function CaveGameInternalState(params, map, nTicks, avatar, gameOver, currentAnchor, bonusScore) {
+    if (params === void 0)
+      params = new CaveSwingParams();
+    if (map === void 0)
+      map = (new CaveMap()).setup_vpbbpv$(params);
+    if (nTicks === void 0)
+      nTicks = 0;
+    if (avatar === void 0)
+      avatar = new MovableObject();
+    if (gameOver === void 0)
+      gameOver = false;
+    if (currentAnchor === void 0)
+      currentAnchor = null;
+    if (bonusScore === void 0)
+      bonusScore = 0;
+    this.params = params;
+    this.map = map;
+    this.nTicks = nTicks;
+    this.avatar = avatar;
+    this.gameOver = gameOver;
+    this.currentAnchor = currentAnchor;
+    this.bonusScore = bonusScore;
+  }
+  CaveGameInternalState.prototype.deepCopy = function () {
+    var cgs = new CaveGameInternalState();
+    cgs.avatar = this.avatar.copy();
+    cgs.params = this.params.copy_dqovla$();
+    cgs.map = this.map;
+    cgs.currentAnchor = this.currentAnchor;
+    cgs.nTicks = this.nTicks;
+    cgs.gameOver = this.gameOver;
+    cgs.bonusScore = this.bonusScore;
+    return cgs;
+  };
+  CaveGameInternalState.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'CaveGameInternalState',
+    interfaces: []
+  };
+  CaveGameInternalState.prototype.component1 = function () {
+    return this.params;
+  };
+  CaveGameInternalState.prototype.component2 = function () {
+    return this.map;
+  };
+  CaveGameInternalState.prototype.component3 = function () {
+    return this.nTicks;
+  };
+  CaveGameInternalState.prototype.component4 = function () {
+    return this.avatar;
+  };
+  CaveGameInternalState.prototype.component5 = function () {
+    return this.gameOver;
+  };
+  CaveGameInternalState.prototype.component6 = function () {
+    return this.currentAnchor;
+  };
+  CaveGameInternalState.prototype.component7 = function () {
+    return this.bonusScore;
+  };
+  CaveGameInternalState.prototype.copy_1x6lyl$ = function (params, map, nTicks, avatar, gameOver, currentAnchor, bonusScore) {
+    return new CaveGameInternalState(params === void 0 ? this.params : params, map === void 0 ? this.map : map, nTicks === void 0 ? this.nTicks : nTicks, avatar === void 0 ? this.avatar : avatar, gameOver === void 0 ? this.gameOver : gameOver, currentAnchor === void 0 ? this.currentAnchor : currentAnchor, bonusScore === void 0 ? this.bonusScore : bonusScore);
+  };
+  CaveGameInternalState.prototype.toString = function () {
+    return 'CaveGameInternalState(params=' + Kotlin.toString(this.params) + (', map=' + Kotlin.toString(this.map)) + (', nTicks=' + Kotlin.toString(this.nTicks)) + (', avatar=' + Kotlin.toString(this.avatar)) + (', gameOver=' + Kotlin.toString(this.gameOver)) + (', currentAnchor=' + Kotlin.toString(this.currentAnchor)) + (', bonusScore=' + Kotlin.toString(this.bonusScore)) + ')';
+  };
+  CaveGameInternalState.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.params) | 0;
+    result = result * 31 + Kotlin.hashCode(this.map) | 0;
+    result = result * 31 + Kotlin.hashCode(this.nTicks) | 0;
+    result = result * 31 + Kotlin.hashCode(this.avatar) | 0;
+    result = result * 31 + Kotlin.hashCode(this.gameOver) | 0;
+    result = result * 31 + Kotlin.hashCode(this.currentAnchor) | 0;
+    result = result * 31 + Kotlin.hashCode(this.bonusScore) | 0;
+    return result;
+  };
+  CaveGameInternalState.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.params, other.params) && Kotlin.equals(this.map, other.map) && Kotlin.equals(this.nTicks, other.nTicks) && Kotlin.equals(this.avatar, other.avatar) && Kotlin.equals(this.gameOver, other.gameOver) && Kotlin.equals(this.currentAnchor, other.currentAnchor) && Kotlin.equals(this.bonusScore, other.bonusScore)))));
+  };
+  function CaveSwingApp() {
+  }
+  CaveSwingApp.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'CaveSwingApp',
+    interfaces: [XApp]
   };
   function CaveSwingParams(maxTicks, gravity, hooke, lossFactor, width, height, nAnchors, gridScale, meanAnchorHeight, successBonus, failurePenalty, pointPerX, pointPerY, costPerTick, sandpit, random) {
     if (maxTicks === void 0)
@@ -2609,6 +2909,192 @@
   };
   CaveSwingParams.prototype.equals = function (other) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.maxTicks, other.maxTicks) && Kotlin.equals(this.gravity, other.gravity) && Kotlin.equals(this.hooke, other.hooke) && Kotlin.equals(this.lossFactor, other.lossFactor) && Kotlin.equals(this.width, other.width) && Kotlin.equals(this.height, other.height) && Kotlin.equals(this.nAnchors, other.nAnchors) && Kotlin.equals(this.gridScale, other.gridScale) && Kotlin.equals(this.meanAnchorHeight, other.meanAnchorHeight) && Kotlin.equals(this.successBonus, other.successBonus) && Kotlin.equals(this.failurePenalty, other.failurePenalty) && Kotlin.equals(this.pointPerX, other.pointPerX) && Kotlin.equals(this.pointPerY, other.pointPerY) && Kotlin.equals(this.costPerTick, other.costPerTick) && Kotlin.equals(this.sandpit, other.sandpit) && Kotlin.equals(this.random, other.random)))));
+  };
+  function CaveView() {
+    CaveView$Companion_getInstance();
+    this.params = null;
+    this.gameState = null;
+    this.internalState = null;
+    this.bg = XColor$Companion_getInstance().black;
+    this.deadZone = XColor$Companion_getInstance().gray;
+    this.goalZone = XColor$Companion_getInstance().green;
+    this.finishZone = new XColor(0.7, 1.0, 1.0);
+    this.sandpit = XColor$Companion_getInstance().yellow;
+    this.nStars = 200;
+    this.rad = 10;
+    this.anchorColor = XColor$Companion_getInstance().magenta;
+    this.avatarColor = XColor$Companion_getInstance().pink;
+    this.fruitColor = XColor$Companion_getInstance().green;
+    this.scoreFontSize = 16;
+    this.planetFontSize = 14;
+    this.scrollView = true;
+    this.scrollWidth = 600;
+    this.playouts = ArrayList_init();
+    this.scale = 1.0;
+    this.avatarStyle = new XStyle(this.avatarColor, void 0, void 0, false);
+    this.anchorPlain = new XStyle(this.anchorColor, void 0, void 0, false);
+    this.anchorSelected = new XStyle(XColor$Companion_getInstance().white, void 0, XColor$Companion_getInstance().red, void 0, void 0, 2.0);
+    this.nPaints = 0;
+    this.stars = ArrayList_init();
+  }
+  CaveView.prototype.setGameState_5ki6rs$ = function (gameState) {
+    this.gameState = gameState;
+    this.internalState = gameState.state;
+    this.setParams_bmtofm$(ensureNotNull(this.internalState).params);
+    return this;
+  };
+  CaveView.prototype.setParams_bmtofm$ = function (params) {
+    this.params = params;
+    this.setStars_0();
+    return this;
+  };
+  CaveView.prototype.setStars_0 = function () {
+    var tmp$;
+    tmp$ = this.nStars;
+    for (var i = 0; i < tmp$; i++) {
+    }
+  };
+  Object.defineProperty(CaveView.prototype, 'title', {
+    configurable: true,
+    get: function () {
+      return ensureNotNull(this.internalState).nTicks.toString() + ' : ' + toString(this.nPaints);
+    }
+  });
+  CaveView.prototype.paintComponent_vzjx8w$ = function (xg) {
+    xg.draw_dvdmun$(new XRect(xg.centre(), xg.width(), xg.height()));
+    var iState = this.internalState;
+    if (iState == null)
+      return;
+    var xScroll = -iState.avatar.s.x + (this.scrollWidth / 2 | 0);
+    this.paintStars_0(xg);
+    this.paintZones_0(xg);
+    this.paintAnchors_0(xg, iState.avatar.s, iState.map.anchors);
+    this.paintAvatar_0(xg, iState.avatar.s, iState.currentAnchor);
+    this.paintItems_0(xg);
+    this.nPaints = this.nPaints + 1 | 0;
+  };
+  CaveView.prototype.paintAnchors_0 = function (xg, avatar, anchors) {
+    var picker = new Picker(Picker$Companion_getInstance().MIN_FIRST);
+    var tmp$;
+    tmp$ = anchors.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      picker.add_41hqm1$(element.distanceTo_5lk9kw$(avatar), element);
+    }
+    var closest = picker.best;
+    var tmp$_0;
+    tmp$_0 = anchors.iterator();
+    while (tmp$_0.hasNext()) {
+      var element_0 = tmp$_0.next();
+      xg.draw_dvdmun$(new XEllipse(element_0, 10.0, 10.0, this.anchorPlain));
+    }
+    if (closest != null) {
+      xg.draw_dvdmun$(new XEllipse(closest, 10.0, 10.0, this.anchorSelected));
+    }};
+  CaveView.prototype.paintItems_0 = function (xg) {
+  };
+  CaveView.prototype.paintAvatar_0 = function (xg, s, anchor) {
+    var disc = new XEllipse(s, 10.0, 10.0, this.avatarStyle);
+    xg.draw_dvdmun$(disc);
+    if (anchor != null) {
+      xg.draw_dvdmun$(new XLine(s, anchor, CaveView$Companion_getInstance().ropeStyle));
+    }};
+  CaveView.prototype.paintStars_0 = function (xg) {
+    var tmp$;
+    tmp$ = this.stars.iterator();
+    while (tmp$.hasNext()) {
+      var star = tmp$.next();
+      star.draw_vzjx8w$(xg);
+    }
+  };
+  CaveView.prototype.paintZones_0 = function (xg) {
+  };
+  function CaveView$Companion() {
+    CaveView$Companion_instance = this;
+    this.ropeColor = new XColor(0.6, 0.12, 0.12);
+    this.ropeStyle = new XStyle(this.ropeColor, void 0, void 0, void 0, void 0, 4.0);
+    this.zoneWidth = 200;
+    this.goalRatio = 10;
+    this.borderRatio = 20;
+    this.rand = Random_0(1);
+  }
+  CaveView$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var CaveView$Companion_instance = null;
+  function CaveView$Companion_getInstance() {
+    if (CaveView$Companion_instance === null) {
+      new CaveView$Companion();
+    }return CaveView$Companion_instance;
+  }
+  CaveView.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'CaveView',
+    interfaces: []
+  };
+  function Star(s) {
+    this.s = s;
+    this.inc = 0.05 * (1.0 + CaveView$Companion_getInstance().rand.nextDouble() * 0.5);
+    this.shine = CaveView$Companion_getInstance().rand.nextDouble();
+  }
+  Star.prototype.draw_vzjx8w$ = function (xg) {
+    var tmp$;
+    this.shine += this.inc;
+    var x = this.shine;
+    var bright = (typeof (tmp$ = 1 + Math_0.sin(x)) === 'number' ? tmp$ : throwCCE()) / 2;
+    var grey = new XColor(bright, 1 - bright, bright);
+    var rect = new XRect(this.s, 2.0, 2.0, new XStyle(grey));
+    xg.draw_dvdmun$(rect);
+  };
+  Star.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Star',
+    interfaces: []
+  };
+  function MovableObject(s, v) {
+    if (s === void 0)
+      s = new Vec2d();
+    if (v === void 0)
+      v = new Vec2d();
+    this.s = s;
+    this.v = v;
+  }
+  MovableObject.prototype.update_6neuge$ = function (resultantForce, lossFactor) {
+    this.v = this.v.plus_5lk9kw$(resultantForce);
+    this.s = this.s.plus_5lk9kw$(this.v);
+    this.v = this.v.times_14dthe$(lossFactor);
+    return this;
+  };
+  MovableObject.prototype.toString = function () {
+    return this.s.toString() + ' : ' + this.v;
+  };
+  MovableObject.prototype.copy = function () {
+    return new MovableObject(this.s.copy_lu1900$(), this.v.copy_lu1900$());
+  };
+  MovableObject.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'MovableObject',
+    interfaces: []
+  };
+  MovableObject.prototype.component1 = function () {
+    return this.s;
+  };
+  MovableObject.prototype.component2 = function () {
+    return this.v;
+  };
+  MovableObject.prototype.copy_yw3f10$ = function (s, v) {
+    return new MovableObject(s === void 0 ? this.s : s, v === void 0 ? this.v : v);
+  };
+  MovableObject.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.s) | 0;
+    result = result * 31 + Kotlin.hashCode(this.v) | 0;
+    return result;
+  };
+  MovableObject.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.s, other.s) && Kotlin.equals(this.v, other.v)))));
   };
   function GriddleControl() {
   }
@@ -3532,7 +4018,7 @@
     if (seed === void 0)
       seed = L_1;
     var tmp$;
-    var rand = seed.toNumber() < 0 ? Random.Default : Random_0(seed);
+    var rand = seed.toNumber() < 0 ? Random.Default : Random_1(seed);
     var deck = StatDeck$Companion_getInstance().makeCards();
     var nTries = 0;
     do {
@@ -5433,7 +5919,7 @@
   };
   function TetrisModel$Companion() {
     TetrisModel$Companion_instance = this;
-    this.rand = Random_1(10);
+    this.rand = Random_0(10);
     this.baseReward = 100;
     this.heightFactor = 100;
     this.defaultRows = 24;
@@ -6338,7 +6824,7 @@
       seed = 1;
     this.seed = seed;
     this.xp = new XPalette(50, 0.2);
-    this.rand = Random_1(this.seed);
+    this.rand = Random_0(this.seed);
     this.data_0 = null;
   }
   EasyGraphPlot.prototype.paint_vzjx8w$ = function (xg) {
@@ -6469,7 +6955,7 @@
       seed = 1;
     this.seed = seed;
     this.xp = new XPalette();
-    this.rand = Random_1(this.seed);
+    this.rand = Random_0(this.seed);
   }
   RandomGraphPlot.prototype.paint_vzjx8w$ = function (xg) {
     var tmp$;
@@ -6481,7 +6967,7 @@
   };
   RandomGraphPlot.prototype.randLines_wb3cd9$ = function (xg, rand) {
     if (rand === void 0)
-      rand = Random_0(L1);
+      rand = Random_1(L1);
     var tmp$, tmp$_0;
     var lines = ArrayList_init();
     var ss = new StatSummary();
@@ -6523,7 +7009,7 @@
     var p1 = new Vec2d(0.0, 0.0);
     var p2 = new Vec2d(xg.width(), xg.height());
     var split = xg.width() > xg.height() ? Split$V_getInstance() : Split$H_getInstance();
-    TreeBuilder$Companion_getInstance().rand = Random_0(this.seed);
+    TreeBuilder$Companion_getInstance().rand = Random_1(this.seed);
     this.tb.build_kxd1x5$(p1, p2, split);
     var nc = 0;
     tmp$ = this.tb.rects.iterator();
@@ -6718,7 +7204,7 @@
   }
   function TreeBuilder$Companion() {
     TreeBuilder$Companion_instance = this;
-    this.rand = Random_1(1);
+    this.rand = Random_0(1);
     this.minSplit = 0.2;
   }
   TreeBuilder$Companion.$metadata$ = {
@@ -6849,7 +7335,7 @@
     this.seed = seed;
     this.alpha = alpha;
     this.colors = ArrayList_init();
-    this.rand = equals(this.seed, L_1) ? Random.Default : Random_0(this.seed);
+    this.rand = equals(this.seed, L_1) ? Random.Default : Random_1(this.seed);
     var tmp$;
     tmp$ = this.nColors;
     for (var i = 0; i < tmp$; i++)
@@ -9406,7 +9892,7 @@
     };
   }
   XAppLauncher.prototype.run = function () {
-    document.bgColor = 'red';
+    document.bgColor = '#FFEEEE';
     window.setInterval(XAppLauncher$run$lambda(this), this.intervalTime);
     var canv = this.canvas1;
     if (canv != null) {
@@ -9695,9 +10181,32 @@
   package$vehicles.Shape = Shape;
   package$vehicles.Asteroid = Asteroid;
   package$vehicles.Ship = Ship;
+  Object.defineProperty(CaveActions, 'Release', {
+    get: CaveActions$Release_getInstance
+  });
+  Object.defineProperty(CaveActions, 'Attach', {
+    get: CaveActions$Attach_getInstance
+  });
   var package$caveswing = package$games.caveswing || (package$games.caveswing = {});
+  package$caveswing.CaveActions = CaveActions;
+  Object.defineProperty(CaveGameState, 'Companion', {
+    get: CaveGameState$Companion_getInstance
+  });
+  package$caveswing.CaveGameState = CaveGameState;
   package$caveswing.CaveMap = CaveMap;
+  package$caveswing.ItemPosition = ItemPosition;
+  package$caveswing.Item = Item;
+  package$caveswing.Fruit = Fruit;
+  package$caveswing.Bomb = Bomb;
+  package$caveswing.CaveGameInternalState = CaveGameInternalState;
+  package$caveswing.CaveSwingApp = CaveSwingApp;
   package$caveswing.CaveSwingParams = CaveSwingParams;
+  Object.defineProperty(CaveView, 'Companion', {
+    get: CaveView$Companion_getInstance
+  });
+  package$caveswing.CaveView = CaveView;
+  package$caveswing.Star = Star;
+  package$caveswing.MovableObject = MovableObject;
   var package$griddle = package$games.griddle || (package$games.griddle = {});
   package$griddle.GriddleControl = GriddleControl;
   package$griddle.DefaultControl = DefaultControl;
@@ -10105,6 +10614,9 @@
   package$sample.SubgoalDemoTest = SubgoalDemoTest;
   package$sample.XAppLauncher = XAppLauncher;
   package$test.XGraphicsJS = XGraphicsJS;
+  CaveSwingApp.prototype.handleKeyEvent_wtf8cg$ = XApp.prototype.handleKeyEvent_wtf8cg$;
+  CaveSwingApp.prototype.handleMouseEvent_x4hb96$ = XApp.prototype.handleMouseEvent_x4hb96$;
+  CaveSwingApp.prototype.paint_vzjx8w$ = XApp.prototype.paint_vzjx8w$;
   TicTacToe.prototype.resetTotalTicks = ExtendedAbstractGameStateMulti.prototype.resetTotalTicks;
   GridGameApp.prototype.handleKeyEvent_wtf8cg$ = XApp.prototype.handleKeyEvent_wtf8cg$;
   DefaultDemoControl.prototype.useDoorways = SubgoalDemoControl.prototype.useDoorways;

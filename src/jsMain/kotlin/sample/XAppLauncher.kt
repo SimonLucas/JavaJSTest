@@ -51,7 +51,7 @@ class XAppLauncher(val canvasID: String,
 
 
     fun run() {
-        document.bgColor = "red"
+        document.bgColor = "#FFEEEE"
 //        println("doc body: ${document.body}" )
 //        println("App = $app")
         window.setInterval({ update() }, intervalTime);

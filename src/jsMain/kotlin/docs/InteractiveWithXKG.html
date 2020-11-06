@@ -25,6 +25,7 @@
   - Queen Mary University of London: https://www.qmul.ac.uk/
 
 
+
 </script>
 
 
@@ -58,7 +59,7 @@
             var i;
             for (i = 0; i < tocItems.length; i++) {
                 var item = tocItems[i];
-                item.style.backgroundColor = "yellow";
+                item.style.backgroundColor = "#EEEEEE";
                 var entry = document.createElement("li");
                 var link = document.createElement("a");
                 // console.log(item.innerHTML);
@@ -71,6 +72,7 @@
             }
         })
 
+
     </script>
 
     <script src="./>toc.js"></script>
@@ -80,37 +82,67 @@
     <h2>Introduction</h2>
 
 
-    <div class = "l-gutter">
-    <p>
+    <div>
+        <p>
 
-        Journals such as Distill publish high quality interactive articles, and
-        an extensive gallery of these can be found in Hohman et al
-        <dt-cite key="hohman2020"></dt-cite>
-        who discuss the potential advantages of such articles and the significant
-        barriers to producing them. Writing an interactive
-        article is much more time-consuming than authoring a traditional static
-        article, and also requires a wider skillset.
+            Journals such as Distill publish high quality interactive articles, and
+            an extensive gallery of these can be found in Hohman et al
+            <dt-cite key="hohman2020"></dt-cite>
+            who discuss the potential advantages of such articles and the significant
+            barriers to producing them. Writing an interactive
+            article is much more time-consuming than authoring a traditional static
+            article, and also requires a wider skillset.
 
-    </p>
+        </p>
+
+        <p>
+            The aim of this short article is to demonstrate a new way to
+            add elements to interactive web articles, where the elements
+            (called XApps, where the X is for cross platform) are authored
+            in Kotlin.  This can has significant advantages when developing
+            potentially complex applications, compared to authoring directly
+            in JavaScript or JavaScript libraries.  Note that there are already
+            amazing interactive examples using JavaScript directly, or other
+            alternatives such as Processing for JavaScript.  The examples in
+            this article will be underwhelming compared to many of those.
+            However, when designing interactive apps with complex underlying
+            algorithms, the XKG approach offers distinct advantages.  XKG
+            is especially well-suited to demonstrating games and game AI,
+            and supports full-screen mode to offer a more immersive experience -
+            see example below.
+        </p>
+
+
     </div>
 
+
     <div align="center">
-        <p>
+        <!--        <p>-->
+        <!--            <canvas id="treeRectCanvas" tabindex="1" width="250" height="150"-->
+        <!--                    style="border:5px solid #FF0099;">-->
+        <!--            </canvas>-->
+        <!--        </p>-->
+
+        <figure>
             <canvas id="treeRectCanvas" tabindex="1" width="250" height="150"
                     style="border:5px solid #FF0099;">
             </canvas>
-        </p>
+            <figcaption>A simple XApp art generator, illustrating full-screen mode (click button below to
+                go full screen, click canvas to generate new image and new palette.)
+            </figcaption>
+        </figure>
+
 
     </div>
 
-    <div align="center">
-        <p>
-            <canvas id="OXOCanvas" tabindex="1" width="250" height="150"
-                    style="border:5px solid #FF0099;">
-            </canvas>
-        </p>
+    <!--    <div align="center">-->
+    <!--        <p>-->
+    <!--            <canvas id="OXOCanvas" tabindex="1" width="250" height="150"-->
+    <!--                    style="border:5px solid #FF0099;">-->
+    <!--            </canvas>-->
+    <!--        </p>-->
 
-    </div>
+    <!--    </div>-->
 
 
     <script type="text/javascript" src="./JavaJSTest.js"></script>
@@ -157,6 +189,7 @@ function fullScreenRect() {
   const promise = document.getElementById("treeRectCanvas").requestFullscreen();
   promise.then(successCallback, failureCallback);
 }
+
 
 
     </script>
@@ -221,13 +254,13 @@ function fullScreenRect() {
 
     </p>
 
-    <h2>Hello World</h2>
+    <h2>Hello XApp World</h2>
 
 
     <p>
 
         Let's start with the easy and fun stuff. Each application implements the
-        <tt>XApp</tt> interface:
+        <tt>XApp</tt> interface. Apps implementing this interface should be able to run on a JVM or in a browser.
 
         <!--            @formatter:off-->
         <dt-code block language="javascript">
@@ -321,6 +354,7 @@ function fullScreenRect() {
 
     <script>
        new JavaJSTest.sample.XAppLauncher("bodyCanvas", "HelloXKG").run();
+
 
 
 
@@ -541,6 +575,7 @@ function fullScreenRect() {
   pages = {774--775},
   year = {2020},
 }
+
 
 
 
