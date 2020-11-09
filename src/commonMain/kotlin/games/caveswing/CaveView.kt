@@ -61,7 +61,6 @@ class CaveView () {
 
     fun paintComponent(xg: XGraphics) {
 
-
         xg.draw(XRect(xg.centre(), xg.width(), xg.height()))
 
         val iState = internalState

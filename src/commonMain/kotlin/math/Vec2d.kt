@@ -33,5 +33,10 @@ data class Vec2d(val x: Double = 0.0, val y: Double = 0.0) {
     // scalar product
     fun sp(a: Vec2d, b: Vec2d): Double = a.x * b.x + a.y * b.y
     fun sp(a: Vec2d): Double = x * a.x + y * a.y
+
+    companion object {
+        fun polar(r: Double, theta: Double) =
+            Vec2d(r * cos(theta), r * sin(theta))
+    }
 }
 

@@ -14,6 +14,7 @@ class GridGame {
 class TicTacToe (var lg: LineGrid, var toMoveVar: Int = 0): ExtendedAbstractGameStateMulti {
     companion object {
         var totTicks = 0
+
         fun getGame(n: Int = 3) : TicTacToe {
             var lineTester = LineTester()
             lineTester.addAllDirections(n)
@@ -80,6 +81,4 @@ class TicTacToe (var lg: LineGrid, var toMoveVar: Int = 0): ExtendedAbstractGame
         reset()
         return this
     }
-
-
 }
