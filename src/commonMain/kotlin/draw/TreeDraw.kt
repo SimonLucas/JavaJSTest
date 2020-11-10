@@ -6,6 +6,45 @@ import math.Vec2d
 import kotlin.math.PI
 import kotlin.math.min
 
+abstract class Positioner (){
+    abstract fun setup(xg: XGraphics, nLevels: Int)
+    abstract fun place(depth: Double, order: Double): Vec2d
+    abstract fun drawBackground(xp: XPalette)
+}
+
+class Radial() : Positioner() {
+    lateinit var xg: XGraphics
+    var nLevels: Int = 0
+    var ringSize = 0.0
+
+    override fun setup(xg: XGraphics, nLevels: Int) {
+        this.xg = xg
+        this.nLevels = nLevels
+        ringSize = min(xg.width(), xg.height()) / nLevels
+    }
+
+    override fun place(depth: Double, order: Double): Vec2d {
+        val depthFac = if (depth > 0) depth + 0.5 else 0.0
+        val r = 0.5 * ringSize * depthFac
+        val theta = order * 2 * PI
+        return Vec2d.polar(r, theta) + xg.centre()
+    }
+
+    override fun drawBackground(xp: XPalette) {
+        val ringSize = min(xg.width(), xg.height()) / nLevels
+
+        repeat(nLevels) {
+            val rad = (nLevels - it) * ringSize
+            xg.draw(XEllipse(xg.centre(), rad, rad, dStyle = XStyle(fg = xp.getColor(it), stroke = false)))
+        }
+
+    }
+
+}
+val sum = { x: Int, y: Int -> x + y }
+
+
+
 class TreeDraw : XApp {
 
     var root: TreeNode = TreeNode()
@@ -19,6 +58,8 @@ class TreeDraw : XApp {
     // val depthMap
     val drawMap = HashMap<TreeNode,DrawNode>()
     val drawNodes = ArrayList<DrawNode>()
+
+    var positioner = Radial()
 
     fun setup(root: TreeNode): TreeDraw {
         this.root = root
@@ -50,49 +91,39 @@ class TreeDraw : XApp {
     }
 
     override fun paint(xg: XGraphics) {
-        drawRadial(xg)
+        drawNodes(xg)
     }
 
-    fun drawRadial(xg: XGraphics) {
+    fun drawNodes(xg: XGraphics) {
         // start with the root in the centre
         // work out the size of each ring
 
+        positioner.setup(xg, root.height())
         xg.draw(XRect(xg.centre(), xg.width(), xg.height()))
-        val nRings = root.height()
-        val ringSize = min(xg.width(), xg.height()) / nRings
-
         val xp = XPalette(min = 0.6, seed = 10L)
-
-        repeat(nRings) {
-            val rad = (nRings - it) * ringSize
-            xg.draw(XEllipse(xg.centre(), rad, rad, dStyle = XStyle(fg = xp.getColor(it), stroke = false)))
-        }
+        positioner.drawBackground(xp)
 
         // now draw each node - first set the locations
         // then draw the lines
         // then draw the nodes
         for (dn in drawNodes) {
-            // calculate the polar coords of the node
             val order = widthMap[dn.depth]
             order?.let {
-                val depth = if (dn.depth > 0) dn.depth + 0.5 else 0.0
-                val r = 0.5 * ringSize * depth
-                val theta = dn.order * 2 * PI / it
-                // now x and y
-                val c = Vec2d.polar(r, theta)
-                dn.s = c + xg.centre()
-
-                // now draw a line to its parent if it has one
-
+                dn.s = positioner.place(dn.depth.toDouble(), dn.order.toDouble() / it)
             }
         }
-        val size = ringSize / 3
+
+        // draw lines connect each node with its parent, if it has one
         for (dn in drawNodes) {
             dn.tn.parent?.let {
                 val to = drawMap[it]
                 to?.let {  xg.draw(XLine(dn.s, to.s)) }
             }
         }
+
+        // draw the nodes
+        val levelGap = min(xg.width(), xg.height()) / root.height()
+        val size = levelGap / 3
         for (dn in drawNodes) {
             val style = XStyle(fg = getColor(dn.tn.score))
             // if (dn.tn.)
