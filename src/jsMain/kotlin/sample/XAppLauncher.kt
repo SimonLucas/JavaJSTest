@@ -1,5 +1,7 @@
 package sample
 
+import evo.SimpleEvoApp
+import games.caveswing.CaveSwingApp
 import games.gridgames.GridGameApp
 import gui.*
 import test.XGraphicsJS
@@ -19,7 +21,9 @@ class XAppLauncher(val canvasID: String,
     val appMap = hashMapOf<String, XApp>(
         "HelloXKG" to HelloXKG(),
         "OXO" to GridGameApp(),
-        "TreeRect" to TreeRectApp()
+        "TreeRect" to TreeRectApp(),
+        "CaveSwing" to CaveSwingApp(),
+        "EvoMaze" to SimpleEvoApp()
     )
 
 

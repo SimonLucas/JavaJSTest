@@ -2,6 +2,7 @@ package test
 
 import gui.*
 import gui.layout.LRect
+import math.Vec2d
 import org.w3c.dom.*
 import kotlin.math.PI
 
@@ -17,6 +18,12 @@ class XGraphicsJS(var canvas: HTMLCanvasElement) : XGraphics {
     override fun setBounds(rect: LRect) {
         this.rect = rect
 
+    }
+
+    var translate = Vec2d()
+
+    override fun setTranslate(x: Double, y: Double) {
+        translate += Vec2d(x,y)
     }
 
     override fun releaseBounds() {
@@ -47,6 +54,7 @@ class XGraphicsJS(var canvas: HTMLCanvasElement) : XGraphics {
             path2D.rect(0.0, 0.0, r.width, r.height)
             context.clip(path2D)
         }
+        context.translate(translate.x, translate.y)
 
         if (toDraw is XRect) drawRect(toDraw)
         if (toDraw is XEllipse) drawEllipse(toDraw)

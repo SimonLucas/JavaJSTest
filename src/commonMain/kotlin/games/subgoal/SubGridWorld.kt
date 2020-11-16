@@ -124,8 +124,6 @@ class SubGridWorld(val str: String) {
 
     fun nActions() = actions.size
 
-
-
     fun addRandomSubgoals(n: Int) {
 
         // try to add this number

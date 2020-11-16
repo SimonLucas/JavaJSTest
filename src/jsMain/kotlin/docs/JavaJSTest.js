@@ -24,16 +24,24 @@
   var ensureNotNull = Kotlin.ensureNotNull;
   var toDoubleArray = Kotlin.kotlin.collections.toDoubleArray_tcduak$;
   var asList = Kotlin.kotlin.collections.asList_us0mfu$;
+  var throwCCE = Kotlin.throwCCE;
+  var throwUPAE = Kotlin.throwUPAE;
+  var math = Kotlin.kotlin.math;
+  var Kind_OBJECT = Kotlin.Kind.OBJECT;
+  var L10 = Kotlin.Long.fromInt(10);
+  var Enum = Kotlin.kotlin.Enum;
+  var throwISE = Kotlin.throwISE;
+  var Kind_INTERFACE = Kotlin.Kind.INTERFACE;
+  var sum = Kotlin.kotlin.collections.sum_plj8ka$;
+  var abs = Kotlin.kotlin.math.abs_za3lpa$;
+  var ArrayList = Kotlin.kotlin.collections.ArrayList;
+  var collectionSizeOrDefault = Kotlin.kotlin.collections.collectionSizeOrDefault_ba2ldo$;
+  var ArrayList_init_0 = Kotlin.kotlin.collections.ArrayList_init_ww73n8$;
+  var Array_0 = Array;
   var L0 = Kotlin.Long.ZERO;
   var arrayListOf = Kotlin.kotlin.collections.arrayListOf_i5x0yv$;
   var to = Kotlin.kotlin.to_ujzrz7$;
   var hashMapOf = Kotlin.kotlin.collections.hashMapOf_qfcya0$;
-  var Kind_OBJECT = Kotlin.Kind.OBJECT;
-  var math = Kotlin.kotlin.math;
-  var Kind_INTERFACE = Kotlin.Kind.INTERFACE;
-  var throwCCE = Kotlin.throwCCE;
-  var Enum = Kotlin.kotlin.Enum;
-  var throwISE = Kotlin.throwISE;
   var sequenceOf = Kotlin.kotlin.sequences.sequenceOf_i5x0yv$;
   var NotImplementedError_init = Kotlin.kotlin.NotImplementedError;
   var numberToInt = Kotlin.numberToInt;
@@ -41,7 +49,6 @@
   var unboxChar = Kotlin.unboxChar;
   var toBoxedChar = Kotlin.toBoxedChar;
   var charArray = Kotlin.charArray;
-  var Array_0 = Array;
   var StringBuilder_init = Kotlin.kotlin.text.StringBuilder_init;
   var RuntimeException_init = Kotlin.kotlin.RuntimeException_init_pdl1vj$;
   var shuffle = Kotlin.kotlin.collections.shuffle_vvxzk3$;
@@ -63,22 +70,25 @@
   var HashSet_init = Kotlin.kotlin.collections.HashSet_init_287e2$;
   var lines = Kotlin.kotlin.text.lines_gw00vp$;
   var IntRange = Kotlin.kotlin.ranges.IntRange;
-  var abs = Kotlin.kotlin.math.abs_za3lpa$;
-  var max = Kotlin.kotlin.collections.max_exjks8$;
-  var collectionSizeOrDefault = Kotlin.kotlin.collections.collectionSizeOrDefault_ba2ldo$;
-  var ArrayList_init_0 = Kotlin.kotlin.collections.ArrayList_init_ww73n8$;
-  var L1 = Kotlin.Long.ONE;
   var equals = Kotlin.equals;
+  var Exception_init = Kotlin.kotlin.Exception_init_pdl1vj$;
+  var max = Kotlin.kotlin.collections.max_exjks8$;
+  var L1 = Kotlin.Long.ONE;
   var L76 = Kotlin.Long.fromInt(76);
   var numberToDouble = Kotlin.numberToDouble;
   var Comparable = Kotlin.kotlin.Comparable;
   var contains = Kotlin.kotlin.text.contains_li3zpu$;
   var toLong = Kotlin.kotlin.text.toLong_pdl1vz$;
-  var L10 = Kotlin.Long.fromInt(10);
   var appendText = Kotlin.kotlinx.dom.appendText_46n0ku$;
   var TestTimeSource = Kotlin.kotlin.time.TestTimeSource;
   var toInt = Kotlin.kotlin.text.toInt_pdl1vz$;
   var createElement = Kotlin.kotlinx.dom.createElement_7cgwi1$;
+  Radial.prototype = Object.create(Positioner.prototype);
+  Radial.prototype.constructor = Radial;
+  Linear.prototype = Object.create(Positioner.prototype);
+  Linear.prototype.constructor = Linear;
+  Aim.prototype = Object.create(Enum.prototype);
+  Aim.prototype.constructor = Aim;
   PlayerShip.prototype = Object.create(GameObject.prototype);
   PlayerShip.prototype.constructor = PlayerShip;
   Missile.prototype = Object.create(GameObject.prototype);
@@ -1116,6 +1126,766 @@
   StickToPlanRate.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'StickToPlanRate',
+    interfaces: []
+  };
+  function main_0() {
+    var pt = new PopTest();
+  }
+  function PopTest() {
+  }
+  PopTest.prototype.compete_6i3x5y$ = function (gs, s1, s2) {
+    var tmp$;
+    var state = Kotlin.isType(tmp$ = gs.copy(), ExtendedAbstractGameStateMulti) ? tmp$ : throwCCE();
+    var ix1 = 0;
+    var ix2 = 0;
+    while (!state.isTerminal_za3lpa$(state.toMove())) {
+    }
+    return state.score_za3lpa$(state.toMove());
+  };
+  PopTest.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'PopTest',
+    interfaces: []
+  };
+  function TreeNode_0(owner, parent, nActions) {
+    if (owner === void 0)
+      owner = 0;
+    if (parent === void 0)
+      parent = null;
+    if (nActions === void 0)
+      nActions = null;
+    this.owner = owner;
+    this.parent = parent;
+    this.nActions = nActions;
+    this.nextMap = HashMap_init();
+    this.ss = new StatSummary();
+  }
+  TreeNode_0.prototype.follow_za3lpa$ = function (action) {
+    var nextNode = this.nextMap.get_11rb$(action);
+    if (nextNode == null) {
+      nextNode = new TreeNode_0(void 0, this);
+      var $receiver = this.nextMap;
+      var value = nextNode;
+      $receiver.put_xwzc9p$(action, value);
+    }return nextNode;
+  };
+  TreeNode_0.prototype.nNodes = function () {
+    var tmp$;
+    var n = {v: 1};
+    tmp$ = this.nextMap.values.iterator();
+    while (tmp$.hasNext()) {
+      var node = tmp$.next();
+      if (node != null) {
+        n.v = n.v + node.nNodes() | 0;
+      }}
+    return n.v;
+  };
+  TreeNode_0.prototype.report_za3lpa$ = function (depth) {
+    var tmp$;
+    for (var index = 0; index < depth; index++) {
+      print('  ');
+    }
+    println('Depth ' + depth + ', size: ' + this.nNodes() + ', tried ' + this.nextMap.size + ' from ' + toString(this.nActions));
+    tmp$ = this.nextMap.values.iterator();
+    while (tmp$.hasNext()) {
+      var node = tmp$.next();
+      if (node != null) {
+        node.report_za3lpa$(1 + depth | 0);
+      }}
+  };
+  TreeNode_0.prototype.height = function () {
+    var tmp$;
+    var maxHeight = {v: 0};
+    tmp$ = this.nextMap.values.iterator();
+    while (tmp$.hasNext()) {
+      var node = tmp$.next();
+      if (node != null) {
+        var a = maxHeight.v;
+        var b = node.height();
+        maxHeight.v = Math_0.max(a, b);
+      }}
+    return 1 + maxHeight.v | 0;
+  };
+  TreeNode_0.prototype.noteScore_yrwdxb$ = function (score) {
+    if (score != null)
+      this.ss.add_14dthe$(score);
+  };
+  TreeNode_0.prototype.getScore = function () {
+    if (this.ss.n() === 0)
+      return null;
+    if (this.owner === 0)
+      return this.ss.max();
+    else
+      return this.ss.min();
+  };
+  TreeNode_0.prototype.minimax = function () {
+    var tmp$;
+    var current = this.getScore();
+    if (!this.nextMap.isEmpty()) {
+      this.ss.reset();
+      tmp$ = this.nextMap.values.iterator();
+      while (tmp$.hasNext()) {
+        var child = tmp$.next();
+        if (child != null) {
+          this.ss.add_14dthe$(child.minimax());
+        }}
+    }var updated = this.getScore();
+    if (current != updated) {
+      println(toString(current) + ' -> ' + toString(updated));
+    }if (this.owner === 0)
+      return this.ss.max();
+    else
+      return this.ss.min();
+  };
+  TreeNode_0.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'TreeNode',
+    interfaces: []
+  };
+  function Tree() {
+    this.root = new TreeNode_0();
+  }
+  Tree.prototype.add_e5jm6p$ = function (seq) {
+    var tmp$;
+    var node = this.root;
+    tmp$ = seq.iterator();
+    while (tmp$.hasNext()) {
+      var x = tmp$.next();
+      node = node.follow_za3lpa$(x);
+    }
+  };
+  Tree.prototype.contains_e5jm6p$ = function (seq) {
+    var tmp$;
+    var node = this.root;
+    tmp$ = seq.iterator();
+    while (tmp$.hasNext()) {
+      var x = tmp$.next();
+      var next = node.nextMap.get_11rb$(x);
+      if (next == null)
+        return false;
+      node = next;
+    }
+    return true;
+  };
+  Tree.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Tree',
+    interfaces: []
+  };
+  function Positioner() {
+  }
+  Positioner.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Positioner',
+    interfaces: []
+  };
+  function Radial() {
+    Positioner.call(this);
+    this.xg_h5d6ai$_0 = this.xg_h5d6ai$_0;
+    this.nLevels = 0;
+    this.ringSize = 0.0;
+  }
+  Object.defineProperty(Radial.prototype, 'xg', {
+    configurable: true,
+    get: function () {
+      if (this.xg_h5d6ai$_0 == null)
+        return throwUPAE('xg');
+      return this.xg_h5d6ai$_0;
+    },
+    set: function (xg) {
+      this.xg_h5d6ai$_0 = xg;
+    }
+  });
+  Radial.prototype.setup_8pjuke$ = function (xg, nLevels) {
+    this.xg = xg;
+    this.nLevels = nLevels;
+    var a = xg.width();
+    var b = xg.height();
+    this.ringSize = Math_0.min(a, b) / nLevels;
+  };
+  Radial.prototype.place_lu1900$ = function (depth, order) {
+    var depthFac = depth > 0 ? depth + 0.5 : 0.0;
+    var r = 1.0 * this.ringSize * depthFac;
+    var theta = order * 2 * math.PI;
+    return Vec2d$Companion_getInstance().polar_lu1900$(r, theta).plus_5lk9kw$(this.xg.centre());
+  };
+  Radial.prototype.drawBackground_7ngo8a$ = function (xp) {
+    var a = this.xg.width();
+    var b = this.xg.height();
+    var ringSize = Math_0.min(a, b) / this.nLevels;
+    var times = this.nLevels;
+    for (var index = 0; index < times; index++) {
+      var rad = (this.nLevels - index | 0) * ringSize;
+      this.xg.draw_dvdmun$(new XEllipse(this.xg.centre(), rad, rad, new XStyle(xp.getColor_za3lpa$(index), void 0, void 0, false)));
+    }
+  };
+  Radial.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Radial',
+    interfaces: [Positioner]
+  };
+  function Linear() {
+    Positioner.call(this);
+    this.xg_76b6l0$_0 = this.xg_76b6l0$_0;
+    this.nLevels = 0;
+    this.levelSize = 0.0;
+  }
+  Object.defineProperty(Linear.prototype, 'xg', {
+    configurable: true,
+    get: function () {
+      if (this.xg_76b6l0$_0 == null)
+        return throwUPAE('xg');
+      return this.xg_76b6l0$_0;
+    },
+    set: function (xg) {
+      this.xg_76b6l0$_0 = xg;
+    }
+  });
+  Linear.prototype.setup_8pjuke$ = function (xg, nLevels) {
+    this.xg = xg;
+    this.nLevels = nLevels;
+    this.levelSize = xg.height() / nLevels;
+  };
+  Linear.prototype.place_lu1900$ = function (depth, order) {
+    var x = this.xg.width() * order;
+    var y = this.xg.height() * (depth + 0.5) / this.nLevels;
+    return new Vec2d(x, y);
+  };
+  Linear.prototype.drawBackground_7ngo8a$ = function (xp) {
+    var levelHeight = this.xg.height() / this.nLevels;
+    var times = this.nLevels;
+    for (var index = 0; index < times; index++) {
+      var centre = new Vec2d(this.xg.width() / 2, (0.5 + index) * levelHeight);
+      this.xg.draw_dvdmun$(new XRect(centre, this.xg.width(), levelHeight, new XStyle(xp.getColor_za3lpa$(index), void 0, void 0, false)));
+    }
+  };
+  Linear.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Linear',
+    interfaces: [Positioner]
+  };
+  function TreeDraw() {
+    TreeDraw$Companion_getInstance();
+    this.root = new TreeNode_0();
+    this.widthMap = HashMap_init();
+    this.drawMap = HashMap_init();
+    this.drawNodes = ArrayList_init();
+    this.positioner = new Radial();
+  }
+  function TreeDraw$Companion() {
+    TreeDraw$Companion_instance = this;
+    this.margin = 0.05;
+  }
+  TreeDraw$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var TreeDraw$Companion_instance = null;
+  function TreeDraw$Companion_getInstance() {
+    if (TreeDraw$Companion_instance === null) {
+      new TreeDraw$Companion();
+    }return TreeDraw$Companion_instance;
+  }
+  TreeDraw.prototype.setup_7cbgj3$ = function (root) {
+    this.root = root;
+    this.widthMap.clear();
+    this.drawNodes.clear();
+    this.count_u5gfxf$(root, 0);
+    println('Tree is ' + root.height() + ' nodes high');
+    println_0();
+    println('Width profile: ');
+    var times = root.height();
+    for (var index = 0; index < times; index++) {
+      println(index.toString() + ' ' + '\t' + ' ->  ' + toString(this.widthMap.get_11rb$(index)));
+    }
+    return this;
+  };
+  TreeDraw.prototype.count_u5gfxf$ = function (node, depth) {
+    var tmp$;
+    var nd = this.widthMap.get_11rb$(depth);
+    if (nd == null)
+      nd = 0;
+    var dn = new DrawNode(node, depth, nd);
+    this.drawNodes.add_11rb$(dn);
+    this.drawMap.put_xwzc9p$(node, dn);
+    var $receiver = this.widthMap;
+    var value = 1 + nd | 0;
+    $receiver.put_xwzc9p$(depth, value);
+    tmp$ = node.nextMap.values.iterator();
+    while (tmp$.hasNext()) {
+      var x = tmp$.next();
+      if (x != null) {
+        this.count_u5gfxf$(x, 1 + depth | 0);
+      }}
+  };
+  TreeDraw.prototype.paint_vzjx8w$ = function (xg) {
+    this.drawNodes_vzjx8w$(xg);
+  };
+  TreeDraw.prototype.drawNodes_vzjx8w$ = function (xg) {
+    var tmp$, tmp$_0, tmp$_1, tmp$_2;
+    this.positioner.setup_8pjuke$(xg, this.root.height());
+    xg.draw_dvdmun$(new XRect(xg.centre(), xg.width(), xg.height()));
+    var xp = new XPalette(void 0, 0.6, void 0, L10);
+    this.positioner.drawBackground_7ngo8a$(xp);
+    tmp$ = this.drawNodes.iterator();
+    while (tmp$.hasNext()) {
+      var dn = tmp$.next();
+      var order = this.widthMap.get_11rb$(dn.depth);
+      if (order != null) {
+        dn.s = this.positioner.place_lu1900$(dn.depth, (dn.order + 0.5) / order);
+      }}
+    tmp$_0 = this.drawNodes.iterator();
+    while (tmp$_0.hasNext()) {
+      var dn_0 = tmp$_0.next();
+      if ((tmp$_1 = dn_0.tn.parent) != null) {
+        var to = this.drawMap.get_11rb$(tmp$_1);
+        if (to != null) {
+          xg.draw_dvdmun$(new XLine(dn_0.s, to.s));
+        }}}
+    var a = xg.width();
+    var b = xg.height();
+    var levelGap = Math_0.min(a, b) / this.root.height();
+    var size = levelGap / 3;
+    tmp$_2 = this.drawNodes.iterator();
+    while (tmp$_2.hasNext()) {
+      var dn_1 = tmp$_2.next();
+      var style = new XStyle(this.getColor_yrwdxb$(dn_1.tn.getScore()));
+      xg.draw_dvdmun$(new XEllipse(dn_1.s, size, size, style));
+    }
+  };
+  TreeDraw.prototype.getColor_yrwdxb$ = function (score) {
+    if (score == null)
+      return XColor$Companion_getInstance().gray;
+    if (score < 0.0)
+      return XColor$Companion_getInstance().black;
+    if (score === 0.0)
+      return XColor$Companion_getInstance().yellow;
+    if (score > 0.0)
+      return XColor$Companion_getInstance().white;
+    return XColor$Companion_getInstance().gray;
+  };
+  TreeDraw.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'TreeDraw',
+    interfaces: [XApp]
+  };
+  function DrawNode(tn, depth, order, s) {
+    if (s === void 0)
+      s = new Vec2d();
+    this.tn = tn;
+    this.depth = depth;
+    this.order = order;
+    this.s = s;
+  }
+  DrawNode.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'DrawNode',
+    interfaces: []
+  };
+  function Aim(name, ordinal) {
+    Enum.call(this);
+    this.name$ = name;
+    this.ordinal$ = ordinal;
+  }
+  function Aim_initFields() {
+    Aim_initFields = function () {
+    };
+    Aim$Minimise_instance = new Aim('Minimise', 0);
+    Aim$Maximise_instance = new Aim('Maximise', 1);
+  }
+  var Aim$Minimise_instance;
+  function Aim$Minimise_getInstance() {
+    Aim_initFields();
+    return Aim$Minimise_instance;
+  }
+  var Aim$Maximise_instance;
+  function Aim$Maximise_getInstance() {
+    Aim_initFields();
+    return Aim$Maximise_instance;
+  }
+  Aim.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Aim',
+    interfaces: [Enum]
+  };
+  function Aim$values() {
+    return [Aim$Minimise_getInstance(), Aim$Maximise_getInstance()];
+  }
+  Aim.values = Aim$values;
+  function Aim$valueOf(name) {
+    switch (name) {
+      case 'Minimise':
+        return Aim$Minimise_getInstance();
+      case 'Maximise':
+        return Aim$Maximise_getInstance();
+      default:throwISE('No enum constant evo.Aim.' + name);
+    }
+  }
+  Aim.valueOf_61zpoe$ = Aim$valueOf;
+  function SolutionEvaluator() {
+  }
+  SolutionEvaluator.prototype.select_1zogng$ = function (scoredMut, bestYet) {
+    var tmp$, tmp$_0;
+    if (this.aim() === Aim$Minimise_getInstance()) {
+      if (scoredMut.f <= bestYet.f) {
+        tmp$ = scoredMut;
+      } else
+        tmp$ = bestYet;
+      return tmp$;
+    } else {
+      if (scoredMut.f >= bestYet.f) {
+        tmp$_0 = scoredMut;
+      } else
+        tmp$_0 = bestYet;
+      return tmp$_0;
+    }
+  };
+  SolutionEvaluator.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'SolutionEvaluator',
+    interfaces: []
+  };
+  function MaxSum() {
+  }
+  MaxSum.prototype.fitness_e5jm6p$ = function (x) {
+    return sum(x);
+  };
+  MaxSum.prototype.aim = function () {
+    return Aim$Maximise_getInstance();
+  };
+  MaxSum.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'MaxSum',
+    interfaces: [SolutionEvaluator]
+  };
+  function MinSum() {
+  }
+  MinSum.prototype.fitness_e5jm6p$ = function (x) {
+    return sum(x);
+  };
+  MinSum.prototype.aim = function () {
+    return Aim$Minimise_getInstance();
+  };
+  MinSum.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'MinSum',
+    interfaces: [SolutionEvaluator]
+  };
+  function MinDiff(s) {
+    this.s = s;
+  }
+  MinDiff.prototype.aim = function () {
+    return Aim$Minimise_getInstance();
+  };
+  MinDiff.prototype.fitness_e5jm6p$ = function (x) {
+    var $receiver = this.s;
+    var first = $receiver.iterator();
+    var second = x.iterator();
+    var list = ArrayList_init_0(Math_0.min(collectionSizeOrDefault($receiver, 10), collectionSizeOrDefault(x, 10)));
+    while (first.hasNext() && second.hasNext()) {
+      list.add_11rb$(abs(first.next() - second.next() | 0));
+    }
+    return sum(list);
+  };
+  MinDiff.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'MinDiff',
+    interfaces: [SolutionEvaluator]
+  };
+  function ScoredSolution(s, f) {
+    this.s = s;
+    this.f = f;
+  }
+  ScoredSolution.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'ScoredSolution',
+    interfaces: []
+  };
+  ScoredSolution.prototype.component1 = function () {
+    return this.s;
+  };
+  ScoredSolution.prototype.component2 = function () {
+    return this.f;
+  };
+  ScoredSolution.prototype.copy_7ose8z$ = function (s, f) {
+    return new ScoredSolution(s === void 0 ? this.s : s, f === void 0 ? this.f : f);
+  };
+  ScoredSolution.prototype.toString = function () {
+    return 'ScoredSolution(s=' + Kotlin.toString(this.s) + (', f=' + Kotlin.toString(this.f)) + ')';
+  };
+  ScoredSolution.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.s) | 0;
+    result = result * 31 + Kotlin.hashCode(this.f) | 0;
+    return result;
+  };
+  ScoredSolution.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.s, other.s) && Kotlin.equals(this.f, other.f)))));
+  };
+  function SimpleEvo(n, m, eval_0, pOne) {
+    if (m === void 0)
+      m = 2;
+    if (pOne === void 0)
+      pOne = 0.0;
+    this.n = n;
+    this.m = m;
+    this.eval = eval_0;
+    this.pOne = pOne;
+    this.rand = Random.Default;
+    this.mutProb = 2.0 / this.n;
+    this.bestYet_xo72xk$_0 = this.bestYet_xo72xk$_0;
+    this.reset();
+  }
+  SimpleEvo.prototype.run_za3lpa$ = function (its) {
+    for (var index = 0; index < its; index++) {
+      var mut = this.mutate_e5jm6p$(this.bestYet.s);
+      var scoredMut = new ScoredSolution(mut, this.eval.fitness_e5jm6p$(mut));
+      this.bestYet = this.eval.select_1zogng$(scoredMut, this.bestYet);
+    }
+  };
+  SimpleEvo.prototype.randSeq = function () {
+    var list = ArrayList_init();
+    var times = this.n;
+    for (var index = 0; index < times; index++) {
+      list.add_11rb$(this.rand.nextInt_za3lpa$(this.m));
+    }
+    return list;
+  };
+  SimpleEvo.prototype.randBinSeq = function () {
+    var list = ArrayList_init();
+    var times = this.n;
+    for (var index = 0; index < times; index++) {
+      list.add_11rb$(this.rand.nextDouble() < this.pOne ? 1 : 0);
+    }
+    return list;
+  };
+  SimpleEvo.prototype.mutate_e5jm6p$ = function (s) {
+    var tmp$;
+    var destination = ArrayList_init_0(collectionSizeOrDefault(s, 10));
+    var tmp$_0;
+    tmp$_0 = s.iterator();
+    while (tmp$_0.hasNext()) {
+      var item = tmp$_0.next();
+      destination.add_11rb$(this.rand.nextDouble() < this.mutProb ? this.rand.nextInt_za3lpa$(this.m) : item);
+    }
+    return Kotlin.isType(tmp$ = destination, ArrayList) ? tmp$ : throwCCE();
+  };
+  Object.defineProperty(SimpleEvo.prototype, 'bestYet', {
+    configurable: true,
+    get: function () {
+      if (this.bestYet_xo72xk$_0 == null)
+        return throwUPAE('bestYet');
+      return this.bestYet_xo72xk$_0;
+    },
+    set: function (bestYet) {
+      this.bestYet_xo72xk$_0 = bestYet;
+    }
+  });
+  SimpleEvo.prototype.reset = function () {
+    var seq = this.m === 2 ? this.randBinSeq() : this.randSeq();
+    var score = this.eval.fitness_e5jm6p$(seq);
+    this.bestYet = new ScoredSolution(seq, score);
+  };
+  SimpleEvo.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'SimpleEvo',
+    interfaces: []
+  };
+  function PathSource() {
+  }
+  PathSource.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'PathSource',
+    interfaces: []
+  };
+  function SimpleEvoApp() {
+    this.nRows = 10;
+    this.nCols = 20;
+    this.eval = new MazeEval(this.nCols, this.nRows);
+    this.evo = new SimpleEvo(Kotlin.imul(this.nCols, this.nRows), 2, this.eval, 0.0);
+    this.view = new SimpleGridView(this.nCols, this.nRows);
+    this.nCycles = 500;
+    this.itsPerCycle = 10;
+    this.n = 0;
+    this.evo.reset();
+    this.evo.mutProb = 3.0 / Kotlin.imul(this.nCols, this.nRows);
+  }
+  SimpleEvoApp.prototype.paint_vzjx8w$ = function (xg) {
+    this.n = this.n + 1 | 0;
+    this.evo.run_za3lpa$(this.itsPerCycle);
+    var solutionPath = this.eval.best;
+    this.view.setData_e5jm6p$(solutionPath.x);
+    this.view.setPath_aq3443$(solutionPath.path);
+    this.view.message = 'n = ' + Kotlin.imul(this.n, this.itsPerCycle) + ', best = ' + solutionPath.score;
+    this.view.draw_vzjx8w$(xg);
+    if (this.n % this.nCycles === 0) {
+      this.evo.reset();
+      this.n = 0;
+      this.eval.best = new SolutionPath();
+    }};
+  SimpleEvoApp.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'SimpleEvoApp',
+    interfaces: [XApp]
+  };
+  function SolutionPath(x, path, score) {
+    if (x === void 0)
+      x = ArrayList_init();
+    if (path === void 0)
+      path = ArrayList_init();
+    if (score === void 0)
+      score = -1.0;
+    this.x = x;
+    this.path = path;
+    this.score = score;
+  }
+  SolutionPath.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'SolutionPath',
+    interfaces: []
+  };
+  SolutionPath.prototype.component1 = function () {
+    return this.x;
+  };
+  SolutionPath.prototype.component2 = function () {
+    return this.path;
+  };
+  SolutionPath.prototype.component3 = function () {
+    return this.score;
+  };
+  SolutionPath.prototype.copy_pucyzn$ = function (x, path, score) {
+    return new SolutionPath(x === void 0 ? this.x : x, path === void 0 ? this.path : path, score === void 0 ? this.score : score);
+  };
+  SolutionPath.prototype.toString = function () {
+    return 'SolutionPath(x=' + Kotlin.toString(this.x) + (', path=' + Kotlin.toString(this.path)) + (', score=' + Kotlin.toString(this.score)) + ')';
+  };
+  SolutionPath.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.x) | 0;
+    result = result * 31 + Kotlin.hashCode(this.path) | 0;
+    result = result * 31 + Kotlin.hashCode(this.score) | 0;
+    return result;
+  };
+  SolutionPath.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.x, other.x) && Kotlin.equals(this.path, other.path) && Kotlin.equals(this.score, other.score)))));
+  };
+  function MazeEval(nCols, nRows) {
+    this.nCols = nCols;
+    this.nRows = nRows;
+    this.best = new SolutionPath();
+  }
+  MazeEval.prototype.fitness_e5jm6p$ = function (x) {
+    var from = new IntVec2d(0, 0);
+    var to = new IntVec2d(this.nCols - 1 | 0, this.nRows - 1 | 0);
+    var eg = new EasyGraph(x, this.nCols, this.nRows);
+    var score = eg.shortestPath_fuuqxa$(from, to);
+    var path = eg.path;
+    if (score >= this.best.score) {
+      var cp = ArrayList_init();
+      cp.addAll_brywnq$(x);
+      this.best = new SolutionPath(cp, path, score);
+    }return score;
+  };
+  MazeEval.prototype.aim = function () {
+    return Aim$Maximise_getInstance();
+  };
+  MazeEval.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'MazeEval',
+    interfaces: [SolutionEvaluator]
+  };
+  function SimpleGridView(nCols, nRows) {
+    this.nCols = nCols;
+    this.nRows = nRows;
+    var array = Array_0(this.nCols);
+    var tmp$;
+    tmp$ = array.length - 1 | 0;
+    for (var i = 0; i <= tmp$; i++) {
+      array[i] = new Int32Array(this.nRows);
+    }
+    this.a = array;
+    this.cellSize = 0.0;
+    this.colors = [XColor$Companion_getInstance().yellow, XColor$Companion_getInstance().gray];
+    this.message = null;
+    this.pathStyle = new XStyle(void 0, void 0, XColor$Companion_getInstance().blue, void 0, false, 5.0);
+    this.bestPath = null;
+  }
+  SimpleGridView.prototype.setData_e5jm6p$ = function (list) {
+    var tmp$, tmp$_0, tmp$_1, tmp$_2;
+    var ix = 0;
+    tmp$ = this.nRows;
+    for (var y = 0; y < tmp$; y++) {
+      tmp$_0 = this.nCols;
+      for (var x = 0; x < tmp$_0; x++) {
+        tmp$_2 = (tmp$_1 = ix, ix = tmp$_1 + 1 | 0, tmp$_1);
+        this.a[x][y] = list.get_za3lpa$(tmp$_2);
+      }
+    }
+  };
+  SimpleGridView.prototype.draw_vzjx8w$ = function (xg) {
+    this.calcCellSize_vzjx8w$(xg);
+    this.drawBackground_vzjx8w$(xg);
+    this.drawCells_vzjx8w$(xg);
+    this.drawPath_vzjx8w$(xg);
+    this.drawMessage_0(xg);
+  };
+  SimpleGridView.prototype.drawMessage_0 = function (xg) {
+    var tmp$;
+    var textStyle = new TStyle(XColor$Companion_getInstance().black, void 0, this.cellSize);
+    if ((tmp$ = this.message) != null) {
+      xg.draw_dvdmun$(new XText(tmp$, new Vec2d(xg.width() / 2, this.cellSize), textStyle));
+    }};
+  SimpleGridView.prototype.drawBackground_vzjx8w$ = function (xg) {
+    var rect = new XRect(xg.centre(), xg.width(), xg.height());
+    xg.draw_dvdmun$(rect);
+  };
+  SimpleGridView.prototype.drawCells_vzjx8w$ = function (xg) {
+    var tmp$, tmp$_0;
+    var style = new XStyle();
+    var rect = new XRect(xg.centre(), this.cellSize, this.cellSize, style);
+    tmp$ = this.nCols;
+    for (var i = 0; i < tmp$; i++) {
+      tmp$_0 = this.nRows;
+      for (var j = 0; j < tmp$_0; j++) {
+        var iv = new IntVec2d(i, j);
+        style.fg = this.colors[this.a[i][j]];
+        style.stroke = true;
+        style.lineWidth = this.a[i][j] === 1 ? 3.0 : 1.0;
+        style.lc = XColor$Companion_getInstance().red;
+        style.stroke = this.a[i][j] === 0;
+        rect.centre = new Vec2d((i + 0.5) * this.cellSize, (j + 0.5) * this.cellSize);
+        xg.draw_dvdmun$(rect);
+      }
+    }
+  };
+  SimpleGridView.prototype.drawPath_vzjx8w$ = function (xg) {
+    var tmp$;
+    if ((tmp$ = this.bestPath) != null) {
+      var vecList = ArrayList_init();
+      var tmp$_0;
+      tmp$_0 = tmp$.iterator();
+      while (tmp$_0.hasNext()) {
+        var element = tmp$_0.next();
+        vecList.add_11rb$(this.getVec_2j9h0j$(element));
+      }
+      var polyLine = new XPoly(new Vec2d(), vecList, this.pathStyle, void 0, false);
+      xg.draw_dvdmun$(polyLine);
+    }};
+  SimpleGridView.prototype.getVec_2j9h0j$ = function (iv) {
+    return new Vec2d((iv.x + 0.5) * this.cellSize, (iv.y + 0.5) * this.cellSize);
+  };
+  SimpleGridView.prototype.calcCellSize_vzjx8w$ = function (xg) {
+    var colSize = xg.width() / this.nCols;
+    var rowSize = xg.height() / this.nRows;
+    this.cellSize = Math_0.min(colSize, rowSize);
+  };
+  SimpleGridView.prototype.setPath_aq3443$ = function (bestPath) {
+    this.bestPath = bestPath;
+  };
+  SimpleGridView.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'SimpleGridView',
     interfaces: []
   };
   function AsteroidsParams(nLives) {
@@ -2481,7 +3251,8 @@
     this.state = new CaveGameInternalState();
   }
   CaveGameState.prototype.randomInitialState = function () {
-    println('Not actually randomised');
+    println('Resetting after score of ' + this.score());
+    this.state = new CaveGameInternalState(this.state.params);
     return this;
   };
   CaveGameState.prototype.resetTotalTicks = function () {
@@ -2772,7 +3543,18 @@
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.params, other.params) && Kotlin.equals(this.map, other.map) && Kotlin.equals(this.nTicks, other.nTicks) && Kotlin.equals(this.avatar, other.avatar) && Kotlin.equals(this.gameOver, other.gameOver) && Kotlin.equals(this.currentAnchor, other.currentAnchor) && Kotlin.equals(this.bonusScore, other.bonusScore)))));
   };
   function CaveSwingApp() {
+    this.gameState = new CaveGameState();
+    this.gameView = new CaveView();
+    this.player = new SimpleEvoAgent();
   }
+  CaveSwingApp.prototype.paint_vzjx8w$ = function (xg) {
+    var action = this.player.getAction_84v5ee$(this.gameState, 0);
+    this.gameState.next_q5rwfd$(new Int32Array([action]));
+    if (this.gameState.isTerminal())
+      this.gameState.randomInitialState();
+    this.gameView.setupGameState_5ki6rs$(this.gameState);
+    this.gameView.draw_vzjx8w$(xg);
+  };
   CaveSwingApp.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'CaveSwingApp',
@@ -2935,9 +3717,10 @@
     this.anchorPlain = new XStyle(this.anchorColor, void 0, void 0, false);
     this.anchorSelected = new XStyle(XColor$Companion_getInstance().white, void 0, XColor$Companion_getInstance().red, void 0, void 0, 2.0);
     this.nPaints = 0;
+    this.centre = new Vec2d();
     this.stars = ArrayList_init();
   }
-  CaveView.prototype.setGameState_5ki6rs$ = function (gameState) {
+  CaveView.prototype.setupGameState_5ki6rs$ = function (gameState) {
     this.gameState = gameState;
     this.internalState = gameState.state;
     this.setParams_bmtofm$(ensureNotNull(this.internalState).params);
@@ -2960,18 +3743,34 @@
       return ensureNotNull(this.internalState).nTicks.toString() + ' : ' + toString(this.nPaints);
     }
   });
-  CaveView.prototype.paintComponent_vzjx8w$ = function (xg) {
-    xg.draw_dvdmun$(new XRect(xg.centre(), xg.width(), xg.height()));
+  CaveView.prototype.draw_vzjx8w$ = function (xg) {
+    var tmp$;
+    if (!((tmp$ = xg.centre()) != null ? tmp$.equals(this.centre) : null)) {
+      this.centre = xg.centre();
+      this.placeStars_0(xg);
+    }xg.draw_dvdmun$(new XRect(xg.centre(), xg.width(), xg.height()));
     var iState = this.internalState;
     if (iState == null)
       return;
     var xScroll = -iState.avatar.s.x + (this.scrollWidth / 2 | 0);
-    this.paintStars_0(xg);
+    if (this.scrollView) {
+      xg.setTranslate_lu1900$(xScroll, 0.0);
+    }this.paintStars_0(xg);
     this.paintZones_0(xg);
     this.paintAnchors_0(xg, iState.avatar.s, iState.map.anchors);
     this.paintAvatar_0(xg, iState.avatar.s, iState.currentAnchor);
     this.paintItems_0(xg);
-    this.nPaints = this.nPaints + 1 | 0;
+    if (this.scrollView) {
+      xg.setTranslate_lu1900$(-xScroll, 0.0);
+    }this.nPaints = this.nPaints + 1 | 0;
+  };
+  CaveView.prototype.placeStars_0 = function (xg) {
+    var nStars = 100;
+    this.stars.clear();
+    for (var index = 0; index < nStars; index++) {
+      var star = new Star(new Vec2d(CaveView$Companion_getInstance().rand.nextDouble_14dthe$(xg.width()), CaveView$Companion_getInstance().rand.nextDouble_14dthe$(xg.height())));
+      this.stars.add_11rb$(star);
+    }
   };
   CaveView.prototype.paintAnchors_0 = function (xg, avatar, anchors) {
     var picker = new Picker(Picker$Companion_getInstance().MIN_FIRST);
@@ -3040,12 +3839,11 @@
     this.shine = CaveView$Companion_getInstance().rand.nextDouble();
   }
   Star.prototype.draw_vzjx8w$ = function (xg) {
-    var tmp$;
     this.shine += this.inc;
     var x = this.shine;
-    var bright = (typeof (tmp$ = 1 + Math_0.sin(x)) === 'number' ? tmp$ : throwCCE()) / 2;
+    var bright = (1 + Math_0.sin(x)) / 2;
     var grey = new XColor(bright, 1 - bright, bright);
-    var rect = new XRect(this.s, 2.0, 2.0, new XStyle(grey));
+    var rect = new XEllipse(this.s, 2.0, 2.0, new XStyle(grey));
     xg.draw_dvdmun$(rect);
   };
   Star.$metadata$ = {
@@ -4761,7 +5559,7 @@
     simpleName: 'Graph',
     interfaces: []
   };
-  function main_0() {
+  function main_1() {
     println(Levels$list_getInstance().noSubgoals);
   }
   function GridWorldView(gridWorld, updater) {
@@ -5779,7 +6577,7 @@
     simpleName: 'TetrisGame',
     interfaces: [ExtendedAbstractGameState]
   };
-  function main_1() {
+  function main_2() {
     var model = new TetrisModel();
     println(model.gameOn());
   }
@@ -6819,6 +7617,133 @@
     simpleName: 'GameRunner',
     interfaces: []
   };
+  function EasyGraph(x, nCols, nRows) {
+    this.x = x;
+    this.nCols = nCols;
+    this.nRows = nRows;
+    this.grid = new ArrayAsGrid(this.x, this.nCols, this.nRows);
+    this.path = ArrayList_init();
+  }
+  EasyGraph.prototype.shortestPath_fuuqxa$ = function (from, to) {
+    this.path = ArrayList_init();
+    if (!this.grid.passable_2j9h0j$(from))
+      return 0.0;
+    var search = new Searcher(this.grid, to);
+    search.search_ligxv$(from, null, 0.0);
+    var cost = search.minCost.get_11rb$(to);
+    if (cost == null)
+      return 0.0;
+    else {
+      this.path = search.getPath_fuuqxa$(from, to);
+      return cost;
+    }
+  };
+  EasyGraph.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'EasyGraph',
+    interfaces: []
+  };
+  function Searcher(grid, to) {
+    this.grid = grid;
+    this.to = to;
+    this.minCost = HashMap_init();
+    this.prevMap = HashMap_init();
+  }
+  Searcher.prototype.search_ligxv$ = function (cur, prev, cost) {
+    var tmp$;
+    var bestYet = this.minCost.get_11rb$(cur);
+    if (bestYet == null || cost < bestYet) {
+      this.minCost.put_xwzc9p$(cur, cost);
+      this.prevMap.put_xwzc9p$(cur, prev);
+      tmp$ = this.grid.nextNodes_2j9h0j$(cur).iterator();
+      while (tmp$.hasNext()) {
+        var next = tmp$.next();
+        this.search_ligxv$(next, cur, 1 + cost);
+      }
+    }};
+  Searcher.prototype.getPath_fuuqxa$ = function (from, to) {
+    var cur = to;
+    var path = ArrayList_init();
+    while (cur != null) {
+      path.add_11rb$(cur);
+      if (equals(cur, from))
+        return path;
+      cur = this.prevMap.get_11rb$(cur);
+    }
+    return path;
+  };
+  Searcher.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Searcher',
+    interfaces: []
+  };
+  function ArrayAsGrid(a, nCols, nRows) {
+    ArrayAsGrid$Companion_getInstance();
+    this.a = a;
+    this.nCols = nCols;
+    this.nRows = nRows;
+    this.nextHash = HashMap_init();
+    if (this.a.size !== Kotlin.imul(this.nCols, this.nRows))
+      throw Exception_init('Array size (' + this.a.size + ') does not match grid size (' + this.nCols + ' x ' + this.nRows + ')');
+  }
+  function ArrayAsGrid$Companion() {
+    ArrayAsGrid$Companion_instance = this;
+    this.moves = [new IntVec2d(1, 0), new IntVec2d(0, -1), new IntVec2d(-1, 0), new IntVec2d(0, 1)];
+  }
+  ArrayAsGrid$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var ArrayAsGrid$Companion_instance = null;
+  function ArrayAsGrid$Companion_getInstance() {
+    if (ArrayAsGrid$Companion_instance === null) {
+      new ArrayAsGrid$Companion();
+    }return ArrayAsGrid$Companion_instance;
+  }
+  ArrayAsGrid.prototype.nextNodes_2j9h0j$ = function (s) {
+    var tmp$, tmp$_0, tmp$_1;
+    if ((tmp$ = this.nextHash.get_11rb$(s)) != null) {
+      return tmp$;
+    }var next = ArrayList_init();
+    tmp$_0 = ArrayAsGrid$Companion_getInstance().moves;
+    for (tmp$_1 = 0; tmp$_1 !== tmp$_0.length; ++tmp$_1) {
+      var m = tmp$_0[tmp$_1];
+      if (this.passable_2j9h0j$(s.plus_2j9h0j$(m)))
+        next.add_11rb$(s.plus_2j9h0j$(m));
+    }
+    this.nextHash.put_xwzc9p$(s, next);
+    return next;
+  };
+  ArrayAsGrid.prototype.passable_2j9h0j$ = function (s) {
+    return this.passable_vux9f0$(s.x, s.y);
+  };
+  ArrayAsGrid.prototype.passable_vux9f0$ = function (x, y) {
+    var ix = this.index_vux9f0$(x, y);
+    if (ix == null)
+      return false;
+    else
+      return this.a.get_za3lpa$(ix) === 0;
+  };
+  ArrayAsGrid.prototype.index_vux9f0$ = function (x, y) {
+    if (x < 0 || x >= this.nCols)
+      return null;
+    if (y < 0 || y >= this.nRows)
+      return null;
+    return x + Kotlin.imul(y, this.nCols) | 0;
+  };
+  ArrayAsGrid.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'ArrayAsGrid',
+    interfaces: []
+  };
+  function ShortestPath() {
+  }
+  ShortestPath.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'ShortestPath',
+    interfaces: []
+  };
   function EasyGraphPlot(seed) {
     if (seed === void 0)
       seed = 1;
@@ -7437,6 +8362,12 @@
   }
   XGraphics.prototype.centre = function () {
     return new Vec2d(this.width() / 2, this.height() / 2);
+  };
+  XGraphics.prototype.saveTransform = function () {
+  };
+  XGraphics.prototype.restoreTransform = function () {
+  };
+  XGraphics.prototype.setTranslate_lu1900$ = function (x, y) {
   };
   XGraphics.$metadata$ = {
     kind: Kind_INTERFACE,
@@ -8801,6 +9732,7 @@
     return new Vec2d(x, y);
   }
   function Vec2d(x, y) {
+    Vec2d$Companion_getInstance();
     if (x === void 0)
       x = 0.0;
     if (y === void 0)
@@ -8864,6 +9796,23 @@
   Vec2d.prototype.sp_5lk9kw$ = function (a) {
     return this.x * a.x + this.y * a.y;
   };
+  function Vec2d$Companion() {
+    Vec2d$Companion_instance = this;
+  }
+  Vec2d$Companion.prototype.polar_lu1900$ = function (r, theta) {
+    return new Vec2d(r * Math_0.cos(theta), r * Math_0.sin(theta));
+  };
+  Vec2d$Companion.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var Vec2d$Companion_instance = null;
+  function Vec2d$Companion_getInstance() {
+    if (Vec2d$Companion_instance === null) {
+      new Vec2d$Companion();
+    }return Vec2d$Companion_instance;
+  }
   Vec2d.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'Vec2d',
@@ -8903,7 +9852,7 @@
     simpleName: 'CommonTest',
     interfaces: []
   };
-  function main_2() {
+  function main_3() {
     println('Hello');
   }
   function BoxMuller(rand) {
@@ -9432,10 +10381,10 @@
       new Platform();
     }return Platform_instance;
   }
-  function main_3(args) {
+  function main_4(args) {
     println('println() test just in main()');
   }
-  function main_4() {
+  function main_5() {
     println('Trick main');
   }
   var canvas;
@@ -9820,7 +10769,7 @@
     this.canvasID = canvasID;
     this.appName = appName;
     this.intervalTime = intervalTime;
-    this.appMap = hashMapOf([to('HelloXKG', new HelloXKG()), to('OXO', new GridGameApp()), to('TreeRect', new TreeRectApp())]);
+    this.appMap = hashMapOf([to('HelloXKG', new HelloXKG()), to('OXO', new GridGameApp()), to('TreeRect', new TreeRectApp()), to('CaveSwing', new CaveSwingApp()), to('EvoMaze', new SimpleEvoApp())]);
     this.app = new HelloXKG();
     this.canvas1 = null;
     var tmp$;
@@ -9913,10 +10862,14 @@
     this.canvas = canvas;
     this.drawList = ArrayList_init();
     this.rect = null;
+    this.translate = new Vec2d();
     this.intStyle = new XStyle();
   }
   XGraphicsJS.prototype.setBounds_z39lsx$ = function (rect) {
     this.rect = rect;
+  };
+  XGraphicsJS.prototype.setTranslate_lu1900$ = function (x, y) {
+    this.translate = this.translate.plus_5lk9kw$(new Vec2d(x, y));
   };
   XGraphicsJS.prototype.releaseBounds = function () {
     this.rect = null;
@@ -9939,7 +10892,8 @@
       var path2D = new Path2D();
       path2D.rect(0.0, 0.0, r.width, r.height);
       context.clip(path2D);
-    }if (Kotlin.isType(toDraw, XRect))
+    }context.translate(this.translate.x, this.translate.y);
+    if (Kotlin.isType(toDraw, XRect))
       this.drawRect_ax8lih$(toDraw);
     if (Kotlin.isType(toDraw, XEllipse))
       this.drawEllipse_lu1dfr$(toDraw);
@@ -10098,6 +11052,39 @@
   package$agents.SimpleEvoAgent = SimpleEvoAgent;
   var package$analyse = package$agents.analyse || (package$agents.analyse = {});
   package$analyse.StickToPlanRate = StickToPlanRate;
+  var package$coev = _.coev || (_.coev = {});
+  package$coev.main = main_0;
+  package$coev.PopTest = PopTest;
+  package$coev.TreeNode = TreeNode_0;
+  package$coev.Tree = Tree;
+  var package$draw = _.draw || (_.draw = {});
+  package$draw.Positioner = Positioner;
+  package$draw.Radial = Radial;
+  package$draw.Linear = Linear;
+  Object.defineProperty(TreeDraw, 'Companion', {
+    get: TreeDraw$Companion_getInstance
+  });
+  package$draw.TreeDraw = TreeDraw;
+  package$draw.DrawNode = DrawNode;
+  Object.defineProperty(Aim, 'Minimise', {
+    get: Aim$Minimise_getInstance
+  });
+  Object.defineProperty(Aim, 'Maximise', {
+    get: Aim$Maximise_getInstance
+  });
+  var package$evo = _.evo || (_.evo = {});
+  package$evo.Aim = Aim;
+  package$evo.SolutionEvaluator = SolutionEvaluator;
+  package$evo.MaxSum = MaxSum;
+  package$evo.MinSum = MinSum;
+  package$evo.MinDiff = MinDiff;
+  package$evo.ScoredSolution = ScoredSolution;
+  package$evo.SimpleEvo = SimpleEvo;
+  package$evo.PathSource = PathSource;
+  package$evo.SimpleEvoApp = SimpleEvoApp;
+  package$evo.SolutionPath = SolutionPath;
+  package$evo.MazeEval = MazeEval;
+  package$evo.SimpleGridView = SimpleGridView;
   var package$games = _.games || (_.games = {});
   var package$arcade = package$games.arcade || (package$games.arcade = {});
   package$arcade.AsteroidsParams = AsteroidsParams;
@@ -10302,7 +11289,7 @@
   });
   var package$subgoal = package$games.subgoal || (package$games.subgoal = {});
   package$subgoal.Graph = Graph;
-  package$subgoal.main = main_0;
+  package$subgoal.main = main_1;
   Object.defineProperty(GridWorldView, 'Companion', {
     get: GridWorldView$Companion_getInstance
   });
@@ -10357,7 +11344,7 @@
     get: TetrisGame$Companion_getInstance
   });
   package$tetris.TetrisGame = TetrisGame;
-  package$tetris.main = main_1;
+  package$tetris.main = main_2;
   Object.defineProperty(TetrisModel, 'Companion', {
     get: TetrisModel$Companion_getInstance
   });
@@ -10443,6 +11430,14 @@
   package$ggi.SimplePlayerInterfaceMulti = SimplePlayerInterfaceMulti;
   var package$ggik = _.ggik || (_.ggik = {});
   package$ggik.GameRunner = GameRunner;
+  var package$graph = _.graph || (_.graph = {});
+  package$graph.EasyGraph = EasyGraph;
+  package$graph.Searcher = Searcher;
+  Object.defineProperty(ArrayAsGrid, 'Companion', {
+    get: ArrayAsGrid$Companion_getInstance
+  });
+  package$graph.ArrayAsGrid = ArrayAsGrid;
+  package$graph.ShortestPath = ShortestPath;
   var package$gui = _.gui || (_.gui = {});
   package$gui.EasyGraphPlot = EasyGraphPlot;
   package$gui.HelloXGraphics = HelloXGraphics;
@@ -10563,12 +11558,15 @@
   package$math.iv_vux9f0$ = iv;
   package$math.IntVec2d = IntVec2d;
   package$math.v_lu1900$ = v;
+  Object.defineProperty(Vec2d, 'Companion', {
+    get: Vec2d$Companion_getInstance
+  });
   package$math.Vec2d = Vec2d;
   var package$sample = _.sample || (_.sample = {});
   package$sample.hello = hello;
   var package$test = _.test || (_.test = {});
   package$test.CommonTest = CommonTest;
-  package$test.main = main_2;
+  package$test.main = main_3;
   var package$util = _.util || (_.util = {});
   package$util.BoxMuller = BoxMuller;
   package$util.ElapsedTimer = ElapsedTimer;
@@ -10592,8 +11590,8 @@
   Object.defineProperty(package$sample, 'Platform', {
     get: Platform_getInstance
   });
-  package$sample.main_kand9s$ = main_3;
-  package$sample.main = main_4;
+  package$sample.main_kand9s$ = main_4;
+  package$sample.main = main_5;
   Object.defineProperty(package$sample, 'canvas', {
     get: function () {
       return canvas;
@@ -10614,14 +11612,23 @@
   package$sample.SubgoalDemoTest = SubgoalDemoTest;
   package$sample.XAppLauncher = XAppLauncher;
   package$test.XGraphicsJS = XGraphicsJS;
-  CaveSwingApp.prototype.handleKeyEvent_wtf8cg$ = XApp.prototype.handleKeyEvent_wtf8cg$;
+  TreeDraw.prototype.handleMouseEvent_x4hb96$ = XApp.prototype.handleMouseEvent_x4hb96$;
+  TreeDraw.prototype.handleKeyEvent_wtf8cg$ = XApp.prototype.handleKeyEvent_wtf8cg$;
+  MaxSum.prototype.select_1zogng$ = SolutionEvaluator.prototype.select_1zogng$;
+  MinSum.prototype.select_1zogng$ = SolutionEvaluator.prototype.select_1zogng$;
+  MinDiff.prototype.select_1zogng$ = SolutionEvaluator.prototype.select_1zogng$;
+  SimpleEvoApp.prototype.handleKeyEvent_wtf8cg$ = XApp.prototype.handleKeyEvent_wtf8cg$;
+  SimpleEvoApp.prototype.handleMouseEvent_x4hb96$ = XApp.prototype.handleMouseEvent_x4hb96$;
+  MazeEval.prototype.select_1zogng$ = SolutionEvaluator.prototype.select_1zogng$;
   CaveSwingApp.prototype.handleMouseEvent_x4hb96$ = XApp.prototype.handleMouseEvent_x4hb96$;
-  CaveSwingApp.prototype.paint_vzjx8w$ = XApp.prototype.paint_vzjx8w$;
+  CaveSwingApp.prototype.handleKeyEvent_wtf8cg$ = XApp.prototype.handleKeyEvent_wtf8cg$;
   TicTacToe.prototype.resetTotalTicks = ExtendedAbstractGameStateMulti.prototype.resetTotalTicks;
   GridGameApp.prototype.handleKeyEvent_wtf8cg$ = XApp.prototype.handleKeyEvent_wtf8cg$;
   DefaultDemoControl.prototype.useDoorways = SubgoalDemoControl.prototype.useDoorways;
   HelloXKG.prototype.handleKeyEvent_wtf8cg$ = XApp.prototype.handleKeyEvent_wtf8cg$;
   XGraphicsJS.prototype.centre = XGraphics.prototype.centre;
+  XGraphicsJS.prototype.saveTransform = XGraphics.prototype.saveTransform;
+  XGraphicsJS.prototype.restoreTransform = XGraphics.prototype.restoreTransform;
   random = Random.Default;
   nodeCount = 0;
   rockHit = rockHit$lambda;

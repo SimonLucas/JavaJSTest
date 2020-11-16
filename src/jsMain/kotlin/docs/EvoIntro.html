@@ -25,6 +25,7 @@
   affiliations:
   - Queen Mary University of London: https://www.qmul.ac.uk/
 
+
 </script>
 
 
@@ -34,11 +35,36 @@
 </script>
 
 
+<script type="text/javascript" src="./JavaJSTest.js"></script>
+
+
 <dt-article>
     <h1>A Simple Intro to Evolutionary Algorithms</h1>
     <h4>The key elements of evolutionary algorithms, demonstrating
         their generality and ease of application</h4>
     <dt-byline>Byline goes here, but I can't see it on the page...</dt-byline>
+
+
+    <p align="center">
+        <canvas id="mazeCanvas" width="450" height="225"
+                style="border:5px solid #009999;">
+            <div align = "center">
+            <dt-caption>Application of the simple EA described below to evolve mazes. <em>n</em> shows
+                the number of fitness evaluations made. The fitness function
+                aims for the longest shortest-path distance between top left and bottom-right
+                of grid. The beauty of an EA is that we can keep all other things
+                equal and just changing the fitness function enables many different problems to be
+                solved.
+                <em>TO-DO: Add controls</em>
+            </dt-caption>
+            </div>
+        </canvas>
+    </p>
+
+    <script>
+       new JavaJSTest.sample.XAppLauncher("mazeCanvas", "EvoMaze", 100).run();
+
+    </script>
 
 
     <h3>Contents</h3>
@@ -72,6 +98,7 @@
             }
         })
 
+
     </script>
 
     <script src="./>toc.js"></script>
@@ -89,6 +116,24 @@
     </p>
 
     <p>
+        <canvas id="caveCanvas" width="500" height="350"
+                style="border:5px solid #009999;">
+            <figcaption>Cave Swing Game, Played by Evolving Action Plans
+                in Real Time.
+                <em>TO-DO: Add controls and offer human player mode.</em>
+
+            </figcaption>
+
+        </canvas>
+    </p>
+
+    <script>
+       new JavaJSTest.sample.XAppLauncher("caveCanvas", "CaveSwing", 20).run();
+
+    </script>
+
+
+    <p>
         The aim of this short article is to explain and demonstrate the key elements of
         an EA via a set of interactive elements embedded in this page. As you read through
         the article you can play with these to better understand them. The key elements are:
@@ -101,7 +146,6 @@
         <li>Selection</li>
     </ul>
 
-    <script type="text/javascript" src="./JavaJSTest.js"></script>
 
     <h2>Initialisation</h2>
 
@@ -110,14 +154,12 @@
     <p>
         A simple and effective type of variation operator is mutation.
         There are many types of mutation operator, but here
-        we're going to use a very simple one.  This will consider each
+        we're going to use a very simple one. This will consider each
         element of an individual in turn, randomly changing each one with a specified
-        probability, which you'll get to choose.  In other words,
+        probability, which you'll get to choose. In other words,
         we'll run along the vector of bits, flipping each one
         on the toss of a biased coin.
     </p>
-
-
 
 
     <h2>Evaluation</h2>
@@ -139,15 +181,15 @@
 
     <p>
         <em>Absolute</em> involves an objective measurement of an individual such as speed,
-        weight or height.  The measurement will in no way depend on other individuals
-        in the population.  However, the selection process will still make comparisons
+        weight or height. The measurement will in no way depend on other individuals
+        in the population. However, the selection process will still make comparisons
         with other individuals, but this does not affect the measurements.
     </p>
 
     <p>
         <em>Relative</em> is when each measurement is an outcome
         of an interaction between at least two individuals in the
-        population.  For example, we can evaluate the fitness
+        population. For example, we can evaluate the fitness
         of a set of chess playing algorithms by playing them against each other
         and measuring the points (wins and draws) each one obtains.
         The relative method has the great benefit of enabling
@@ -155,21 +197,23 @@
     </p>
 
     <p><em>Interactive</em> uses a human to select the best individual(s)
-    at each iteration of the algorithm.  This can be labour intensive
-    but sometimes leads to very interesting results that would
-    be difficult to obtain by other means.</p>
+        at each iteration of the algorithm. This can be labour intensive
+        but sometimes leads to very interesting results that would
+        be difficult to obtain by other means.</p>
 
     <p><em>In the wild</em> is where the evolved solutions compete
-    for survival in some real-world process: financial trading being
-        an obvious possibility.  Here, evolved algorithmic traders
+        for survival in some real-world process: financial trading being
+        an obvious possibility. Here, evolved algorithmic traders
         operate in real-world financial markets, with survival being dependent
-        on their ability to prosper.  Like the relative method,
+        on their ability to prosper. Like the relative method,
         this can also lead to ever-increasing intelligence, where
         algrorithms can obtain a competitive advantage by processing
         more data streams (news, social media, financial tick data)
-        in cleverer ways.  It's not clear whether this is used much
+        in cleverer ways. It's not clear whether this is used much
         in practice, at least in its purest form, but has been the subject of
-        some interesting fiction including <dt-cite key="FearIndex">The Fear Index</dt-cite>.
+        some interesting fiction including
+        <dt-cite key="FearIndex">The Fear Index</dt-cite>
+        .
     </p>
 
     <p>
@@ -189,7 +233,7 @@
         In the interests of keeping it simple, we're going to select
         the best each time (also called elitist selection), with
         the subtle twist of preferring the newer one if two candidates
-        have equal fitness.  This avoids getting stuck in areas of
+        have equal fitness. This avoids getting stuck in areas of
         the search space where the fitness landscape is flat.
     </p>
 
@@ -225,6 +269,7 @@
   pages = {774--775},
   year = {2020},
 }
+
 
 
 </script>

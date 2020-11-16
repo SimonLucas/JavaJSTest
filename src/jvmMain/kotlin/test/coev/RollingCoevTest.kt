@@ -25,6 +25,7 @@ fun main() {
     val game = TicTacToe.getGame(3)
     val gameTester = GameTreeBuilder(game, nGames = 50)
     gameTester.runTests()
+    gameTester.root.minimax()
 
     // gameTester.root.report(0)
     println("Game tree has ${gameTester.root.nNodes()} nodes")
@@ -88,7 +89,6 @@ class AppTest {
             Thread.sleep(delay.toLong())
         }
     }
-
 }
 
 class CoevTest() {
@@ -174,12 +174,19 @@ class GameTreeBuilder(
 
     fun backup(node: TreeNode, score: Double) {
         var cur: TreeNode? = node
-        node.score = score
-//        while (cur != null) {
-//            cur?.let {
-//
-//            }
-//        }
+        node.noteScore(score)
+        while (cur != null) {
+            cur?.let {
+                // it.noteScore(score)
+                val parent = it.parent
+                if (parent != null) {
+                   parent.noteScore(it.getScore())
+                }
+                cur = parent
+            }
+        }
     }
+
+
 
 }

@@ -58,6 +58,11 @@ interface XGraphics {
     fun setBounds(rect: LRect)
     fun releaseBounds()
 
+    fun saveTransform() {}
+    fun restoreTransform() {}
+
+    fun setTranslate(x: Double, y: Double) {}
+
     // var pane: LRect
 }
 

@@ -35,10 +35,11 @@ class CaveView () {
     val anchorPlain = XStyle(fg = anchorColor, stroke = false)
     val anchorSelected = XStyle(fg = XColor.white, lc = XColor.red, lineWidth = 2.0)
 
-    fun setGameState(gameState: CaveGameState): CaveView {
+    fun setupGameState(gameState: CaveGameState): CaveView {
         this.gameState = gameState
         internalState = gameState.state
         setParams(internalState!!.params)
+        // println("Set params")
         return this
     }
 
@@ -59,7 +60,15 @@ class CaveView () {
 
     var nPaints = 0
 
-    fun paintComponent(xg: XGraphics) {
+    // this will change when we resize
+    // redraw random stars when needed
+    var centre = Vec2d()
+
+    fun draw(xg: XGraphics) {
+        if (xg.centre() != centre) {
+            centre = xg.centre()
+            placeStars(xg)
+        }
 
         xg.draw(XRect(xg.centre(), xg.width(), xg.height()))
 
@@ -69,7 +78,7 @@ class CaveView () {
         val xScroll = -iState.avatar.s.x + scrollWidth / 2
         if (scrollView) {
             // aha, need to cope with translating etc...
-            // xg.translate(xScroll, 0.0)
+              xg.setTranslate(xScroll, 0.0)
         }
         paintStars(xg)
         paintZones(xg)
@@ -78,11 +87,20 @@ class CaveView () {
         paintItems(xg)
         // drawPlayouts(xg)
         if (scrollView) {
-            // g.translate(-xScroll, 0.0)
+            xg.setTranslate(-xScroll, 0.0)
         }
         // have to paint the score last so that it is not obscured by any game objects
         // paintScore(xg)
         nPaints++
+    }
+
+    private fun placeStars(xg: XGraphics) {
+        val nStars = 100
+        stars.clear()
+        repeat(nStars) {
+            val star = Star(Vec2d(rand.nextDouble(xg.width()), rand.nextDouble(xg.height())))
+            stars.add( star )
+        }
     }
 
     private fun paintAnchors(xg: XGraphics, avatar: Vec2d, anchors: ArrayList<Vec2d>) {
@@ -187,9 +205,9 @@ class Star (val s: Vec2d){
     var shine = rand.nextDouble()
     fun draw(xg: XGraphics) {
         shine += inc
-        val bright = (1 + sin(shine)) as Float / 2
+        val bright = (1 + sin(shine)).toFloat() / 2
         val grey = XColor(bright, 1 - bright, bright)
-        val rect = XRect(s, 2.0, 2.0, XStyle(fg = grey))
+        val rect = XEllipse(s, 2.0, 2.0, XStyle(fg = grey))
         xg.draw(rect)
     }
 }

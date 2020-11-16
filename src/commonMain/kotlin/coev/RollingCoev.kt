@@ -12,7 +12,7 @@ typealias GameState = ExtendedAbstractGameStateMulti
 
 
 class TreeNode (var owner: Int = 0, val parent : TreeNode? = null, var nActions : Int? = null) {
-    var score: Double? = null
+    // var score: Double? = null
 
     // for now assume actions are enumerated by Ints
     val nextMap = HashMap<Int,TreeNode?>()
@@ -56,7 +56,34 @@ class TreeNode (var owner: Int = 0, val parent : TreeNode? = null, var nActions 
             node?.let { maxHeight = max(maxHeight, it.height()) }
         }
         return 1 + maxHeight
+    }
 
+    fun noteScore(score: Double?) {
+        if (score != null) ss.add(score)
+    }
+
+    fun getScore() : Double? {
+        if (ss.n() == 0) return null
+        if (owner == 0) return ss.max()
+        else return ss.min()
+    }
+
+    fun minimax(): Double {
+        val current = getScore()
+
+        // calculate a minimax value if non-terminal
+        if (!nextMap.isEmpty()) {
+            ss.reset()
+            for (child in nextMap.values)
+                child?.let{ss.add(child.minimax())}
+        }
+
+        val updated = getScore()
+        if (current != updated) {
+            println("$current -> $updated")
+        }
+        if (owner == 0) return ss.max()
+        else return ss.min()
     }
 }
 

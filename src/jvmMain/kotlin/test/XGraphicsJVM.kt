@@ -117,6 +117,10 @@ class XGraphicsJVM(val jc: JComponent) : XGraphics {
         rect = null
     }
 
+    override fun setTranslate(x: Double, y: Double) {
+        graphics2D?.let { it.translate(x,y) }
+    }
+
     override fun width(): Double {
         val bounds = rect
         return if (bounds != null) bounds.width else jc.width.toDouble()
@@ -242,6 +246,7 @@ class XGraphicsJVM(val jc: JComponent) : XGraphics {
 
 
     fun drawPoly(poly: XPoly) {
+        if (poly.points.isEmpty()) return
         val path = Path2D.Double()
         // path.contains(0.0, 0.0)
         with(poly) {

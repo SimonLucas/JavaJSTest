@@ -6,7 +6,7 @@ import math.Vec2d
 import kotlin.math.PI
 import kotlin.math.min
 
-abstract class Positioner (){
+abstract class Positioner() {
     abstract fun setup(xg: XGraphics, nLevels: Int)
     abstract fun place(depth: Double, order: Double): Vec2d
     abstract fun drawBackground(xp: XPalette)
@@ -25,7 +25,7 @@ class Radial() : Positioner() {
 
     override fun place(depth: Double, order: Double): Vec2d {
         val depthFac = if (depth > 0) depth + 0.5 else 0.0
-        val r = 0.5 * ringSize * depthFac
+        val r = 1.0 * ringSize * depthFac
         val theta = order * 2 * PI
         return Vec2d.polar(r, theta) + xg.centre()
     }
@@ -37,12 +37,40 @@ class Radial() : Positioner() {
             val rad = (nLevels - it) * ringSize
             xg.draw(XEllipse(xg.centre(), rad, rad, dStyle = XStyle(fg = xp.getColor(it), stroke = false)))
         }
+    }
+}
 
+class Linear() : Positioner() {
+    lateinit var xg: XGraphics
+    var nLevels: Int = 0
+    var levelSize = 0.0
+
+    override fun setup(xg: XGraphics, nLevels: Int) {
+        this.xg = xg
+        this.nLevels = nLevels
+        levelSize = xg.height() / nLevels
     }
 
-}
-val sum = { x: Int, y: Int -> x + y }
+    override fun place(depth: Double, order: Double): Vec2d {
+        val x = xg.width() * order
+        val y = xg.height() * (depth + 0.5) / nLevels
+        return Vec2d(x, y)
+    }
 
+    override fun drawBackground(xp: XPalette) {
+        val levelHeight = xg.height() / nLevels
+
+        repeat(nLevels) {
+            val centre = Vec2d(xg.width() / 2, (0.5 + it) * levelHeight)
+            xg.draw(
+                XRect(
+                    centre, xg.width(), levelHeight,
+                    dStyle = XStyle(fg = xp.getColor(it), stroke = false)
+                )
+            )
+        }
+    }
+}
 
 
 class TreeDraw : XApp {
@@ -54,12 +82,14 @@ class TreeDraw : XApp {
     }
 
     // record number of nodes at each level of the tree
-    val widthMap = HashMap<Int,Int>()
+    val widthMap = HashMap<Int, Int>()
+
     // val depthMap
-    val drawMap = HashMap<TreeNode,DrawNode>()
+    val drawMap = HashMap<TreeNode, DrawNode>()
     val drawNodes = ArrayList<DrawNode>()
 
     var positioner = Radial()
+    // var positioner = Linear()
 
     fun setup(root: TreeNode): TreeDraw {
         this.root = root
@@ -70,7 +100,7 @@ class TreeDraw : XApp {
         println()
         println("Width profile: ")
         repeat(root.height()) {
-            println("$it \t ->  ${ widthMap[it] }")
+            println("$it \t ->  ${widthMap[it]}")
         }
         return this
     }
@@ -86,7 +116,7 @@ class TreeDraw : XApp {
         widthMap[depth] = 1 + nd
         for (x in node.nextMap.values) {
             // how many nodes have we seen at the current depth?
-            x?.let { count(it,1 + depth) }
+            x?.let { count(it, 1 + depth) }
         }
     }
 
@@ -109,15 +139,15 @@ class TreeDraw : XApp {
         for (dn in drawNodes) {
             val order = widthMap[dn.depth]
             order?.let {
-                dn.s = positioner.place(dn.depth.toDouble(), dn.order.toDouble() / it)
+                dn.s = positioner.place(dn.depth.toDouble(), (dn.order.toDouble() + 0.5) / it)
             }
         }
 
-        // draw lines connect each node with its parent, if it has one
+        // draw lines to connect each node with its parent, if it has one
         for (dn in drawNodes) {
             dn.tn.parent?.let {
                 val to = drawMap[it]
-                to?.let {  xg.draw(XLine(dn.s, to.s)) }
+                to?.let { xg.draw(XLine(dn.s, to.s)) }
             }
         }
 
@@ -125,12 +155,13 @@ class TreeDraw : XApp {
         val levelGap = min(xg.width(), xg.height()) / root.height()
         val size = levelGap / 3
         for (dn in drawNodes) {
-            val style = XStyle(fg = getColor(dn.tn.score))
+            val style = XStyle(fg = getColor(dn.tn.getScore()))
             // if (dn.tn.)
             xg.draw(XEllipse(dn.s, size, size, style))
         }
     }
-    fun getColor(score: Double?) : XColor {
+
+    fun getColor(score: Double?): XColor {
         if (score == null) return XColor.gray
         if (score < 0.0) return XColor.black
         if (score == 0.0) return XColor.yellow
@@ -139,6 +170,6 @@ class TreeDraw : XApp {
     }
 }
 
-class DrawNode (val tn: TreeNode, val depth: Int, val order: Int, var s: Vec2d = Vec2d()) {
+class DrawNode(val tn: TreeNode, val depth: Int, val order: Int, var s: Vec2d = Vec2d()) {
     // draw the data at the required position, then draw a link to each
 }

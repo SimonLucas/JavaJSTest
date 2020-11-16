@@ -9,8 +9,8 @@ enum class CaveActions { Release, Attach }
 
 class CaveGameState : ExtendedAbstractGameState {
     override fun randomInitialState(): AbstractGameState {
-        // TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        println("Not actually randomised")
+        println("Resetting after score of ${score()}")
+        state = CaveGameInternalState(params = state.params)
         return this
     }
 
@@ -26,13 +26,11 @@ class CaveGameState : ExtendedAbstractGameState {
         return totalTicks
     }
 
-
     override fun nTicks(): Int {
         return state.nTicks
     }
 
     var state = CaveGameInternalState()
-
 
     // reward increasing x-position
     // reward a high Y- position
@@ -77,7 +75,6 @@ class CaveGameState : ExtendedAbstractGameState {
             avatar = MovableObject(s, Vec2d())
         }
         return this
-
     }
 
     override fun copy(): AbstractGameState {
@@ -101,7 +98,6 @@ class CaveGameState : ExtendedAbstractGameState {
         // the array of actions is to allow for a multi-player game
         // quick return if game over
         if (isTerminal()) return this
-
 
         with(state) {
 
