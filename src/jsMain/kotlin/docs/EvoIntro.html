@@ -63,8 +63,26 @@
 
     <script>
        new JavaJSTest.sample.XAppLauncher("mazeCanvas", "EvoMaze", 100).run();
-
     </script>
+
+    <h4 id="randString">Rand String Here</h4>
+
+    <script>
+        function randSeq() {
+            var place = document.getElementById("randString");
+            var util = new JavaJSTest.evo.EvoUtil();
+            console.log(util);
+            console.log(util.randSeq())
+            place.innerHTML = util.randSeq();
+            console.log(util.randBin())
+            console.log(util.randBin(20))
+        }
+    </script>
+    <p>
+        <button onclick="randSeq()">Random Binary String</button>
+    </p>
+
+
 
 
     <h3>Contents</h3>

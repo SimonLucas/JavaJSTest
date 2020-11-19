@@ -72,6 +72,7 @@
   var IntRange = Kotlin.kotlin.ranges.IntRange;
   var equals = Kotlin.equals;
   var Exception_init = Kotlin.kotlin.Exception_init_pdl1vj$;
+  var NoSuchElementException_init = Kotlin.kotlin.NoSuchElementException_init;
   var max = Kotlin.kotlin.collections.max_exjks8$;
   var L1 = Kotlin.Long.ONE;
   var L76 = Kotlin.Long.fromInt(76);
@@ -1623,6 +1624,27 @@
   ScoredSolution.prototype.equals = function (other) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.s, other.s) && Kotlin.equals(this.f, other.f)))));
   };
+  function EvoUtil() {
+    this.rand = Random.Default;
+    this.message = 'Hello';
+  }
+  EvoUtil.prototype.randBin_za3lpa$ = function (n) {
+    if (n === void 0)
+      n = 20;
+    var list = ArrayList_init();
+    for (var index = 0; index < n; index++) {
+      list.add_11rb$(this.rand.nextInt_za3lpa$(2));
+    }
+    return list.toString();
+  };
+  EvoUtil.prototype.randSeq = function () {
+    return this.randBin_za3lpa$(10);
+  };
+  EvoUtil.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'EvoUtil',
+    interfaces: []
+  };
   function SimpleEvo(n, m, eval_0, pOne) {
     if (m === void 0)
       m = 2;
@@ -1709,7 +1731,7 @@
     this.itsPerCycle = 10;
     this.n = 0;
     this.evo.reset();
-    this.evo.mutProb = 3.0 / Kotlin.imul(this.nCols, this.nRows);
+    this.evo.mutProb = 5.0 / Kotlin.imul(this.nCols, this.nRows);
   }
   SimpleEvoApp.prototype.paint_vzjx8w$ = function (xg) {
     this.n = this.n + 1 | 0;
@@ -7617,10 +7639,13 @@
     simpleName: 'GameRunner',
     interfaces: []
   };
-  function EasyGraph(x, nCols, nRows) {
+  function EasyGraph(x, nCols, nRows, useFurthest) {
+    if (useFurthest === void 0)
+      useFurthest = true;
     this.x = x;
     this.nCols = nCols;
     this.nRows = nRows;
+    this.useFurthest = useFurthest;
     this.grid = new ArrayAsGrid(this.x, this.nCols, this.nRows);
     this.path = ArrayList_init();
   }
@@ -7630,11 +7655,12 @@
       return 0.0;
     var search = new Searcher(this.grid, to);
     search.search_ligxv$(from, null, 0.0);
-    var cost = search.minCost.get_11rb$(to);
+    var cost = this.useFurthest ? search.getFurthestDistance() : search.minCost.get_11rb$(to);
     if (cost == null)
       return 0.0;
     else {
-      this.path = search.getPath_fuuqxa$(from, to);
+      var target = this.useFurthest ? search.getFurthestNode() : to;
+      this.path = search.getPath_fuuqxa$(from, target);
       return cost;
     }
   };
@@ -7671,6 +7697,48 @@
       cur = this.prevMap.get_11rb$(cur);
     }
     return path;
+  };
+  Searcher.prototype.getFurthestDistance = function () {
+    var iterator = this.minCost.entries.iterator();
+    if (!iterator.hasNext())
+      throw NoSuchElementException_init();
+    var maxValue = iterator.next().value;
+    while (iterator.hasNext()) {
+      var v = iterator.next().value;
+      maxValue = Math_0.max(maxValue, v);
+    }
+    return maxValue;
+  };
+  Searcher.prototype.getFurthestNode = function () {
+    var tmp$;
+    var $receiver_0 = this.minCost.entries;
+    var maxByOrNull$result;
+    maxByOrNull$break: do {
+      var iterator = $receiver_0.iterator();
+      if (!iterator.hasNext()) {
+        maxByOrNull$result = null;
+        break maxByOrNull$break;
+      }var maxElem = iterator.next();
+      if (!iterator.hasNext()) {
+        maxByOrNull$result = maxElem;
+        break maxByOrNull$break;
+      }var maxValue = maxElem.value;
+      do {
+        var e = iterator.next();
+        var v = e.value;
+        if (Kotlin.compareTo(maxValue, v) < 0) {
+          maxElem = e;
+          maxValue = v;
+        }}
+       while (iterator.hasNext());
+      maxByOrNull$result = maxElem;
+    }
+     while (false);
+    var pair = maxByOrNull$result;
+    if (pair == null)
+      return new IntVec2d();
+    else
+      return Kotlin.isType(tmp$ = pair.key, IntVec2d) ? tmp$ : throwCCE();
   };
   Searcher.$metadata$ = {
     kind: Kind_CLASS,
@@ -11079,6 +11147,7 @@
   package$evo.MinSum = MinSum;
   package$evo.MinDiff = MinDiff;
   package$evo.ScoredSolution = ScoredSolution;
+  package$evo.EvoUtil = EvoUtil;
   package$evo.SimpleEvo = SimpleEvo;
   package$evo.PathSource = PathSource;
   package$evo.SimpleEvoApp = SimpleEvoApp;

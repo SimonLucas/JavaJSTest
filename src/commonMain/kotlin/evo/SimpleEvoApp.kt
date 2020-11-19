@@ -26,7 +26,7 @@ class SimpleEvoApp : XApp {
 
     init {
         evo.reset()
-        evo.mutProb = 3.0 / (nCols * nRows)
+        evo.mutProb = 5.0 / (nCols * nRows)
     }
 
     override fun paint(xg: XGraphics) {
@@ -62,9 +62,9 @@ class MazeEval (val nCols: Int, val nRows: Int): SolutionEvaluator {
     // need to keep track of the best score so far
     // to know whether the path needs updating
     override fun fitness(x: Solution): Double {
-        val from = IntVec2d(0,0)
-        val to = IntVec2d(nCols-1, nRows-1)
-        val eg = EasyGraph(x, nCols, nRows)
+        val from = IntVec2d(nCols/2,nRows/2)
+        val to = IntVec2d(nCols/2 - 1, nRows/2-1)
+        val eg = EasyGraph(x, nCols, nRows, useFurthest = false)
         val score = eg.shortestPath(from, to)
         // also save path
         val path = eg.path

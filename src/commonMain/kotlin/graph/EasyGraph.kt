@@ -5,20 +5,27 @@ import games.subgoal.G
 import math.IntVec2d
 import kotlin.math.cos
 
-class EasyGraph(val x: Solution, val nCols: Int, val nRows: Int) {
+class EasyGraph(val x: Solution, val nCols: Int, val nRows: Int, var useFurthest: Boolean = true) {
     val grid = ArrayAsGrid(x, nCols, nRows)
     var path: ArrayList<IntVec2d> = ArrayList()
+
+
 
     fun shortestPath(from: IntVec2d, to: IntVec2d): Double {
         path = ArrayList()
         if (!grid.passable(from)) return 0.0
         val search = Searcher(grid, to)
         search.search(from, null,0.0)
-        val cost = search.minCost[to]
+        // val cost = search.minCost[to]
+        val cost = if (useFurthest) search.getFurthestDistance()
+        else search.minCost[to]
+
         // println("Cost = $cost")
         if (cost == null) return 0.0
         else {
-            path = search.getPath(from, to)
+            val target = if (useFurthest) search.getFurthestNode()
+            else to
+            path = search.getPath(from, target)
             return cost
         }
     }
@@ -61,6 +68,16 @@ class Searcher (val grid: ArrayAsGrid, val to: IntVec2d) {
             cur = prevMap[cur]
         }
         return path
+    }
+
+    fun getFurthestDistance() : Double {
+        return minCost.entries.maxOf { it.value }
+    }
+
+    fun getFurthestNode() : IntVec2d {
+        val pair = minCost.maxByOrNull { it.value }
+        if (pair == null) return IntVec2d()
+        else return pair.key as IntVec2d
     }
 }
 

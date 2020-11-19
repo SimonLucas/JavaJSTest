@@ -79,7 +79,7 @@ class MacroStateProto (val filters: ArrayList<StateFilter>){
 
     val agent = RandomAgent()
 
-    // currently thesee tie the algorithm to the SubGridWorld
+    // currently these tie the algorithm to the SubGridWorld
 
     val tables = HashMap<StateFilter,VisitCount>()
 
@@ -92,6 +92,18 @@ class MacroStateProto (val filters: ArrayList<StateFilter>){
     fun report() {
         for (f in filters) {
             println("Filter: $f: -> ${tables[f]?.size}")
+        }
+    }
+
+    fun gatherStats(state: AbstractGameState, seqLen: Int) {
+        // run this for a rollout length until a termination condition is reached
+        for (i in 0 until seqLen) {
+            // run it forward, updating the filters
+            val prev = state.copy()
+            val action = agent.getAction(state, 0)
+            state.next(intArrayOf(action))
+            updateTables(state)
+            updateTransitionTables(prev, action, state)
         }
     }
 
@@ -108,14 +120,11 @@ class MacroStateProto (val filters: ArrayList<StateFilter>){
         }
     }
 
-    fun gatherStats(state: AbstractGameState, seqLen: Int) {
-        // run this for a rollout length until a termination condition is reached
-        for (i in 0 until seqLen) {
-            // run it forward, updating the filters
-            val action = agent.getAction(state, 0)
-            state.next(intArrayOf(action))
-            updateTables(state)
-        }
+    fun updateTransitionTables(prev: AbstractGameState, action: Int, state: AbstractGameState) {
+
+        // todo: implement HashMaps to store the transition stats for each filter
+        // the updateTables is already nearly there - but that just did noode occupancies
+
     }
 }
 
