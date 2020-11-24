@@ -29,7 +29,7 @@ fun main() {
     // make a hash test of the vectors
     // works fine because it is a data class with
     // only primitive fields
-    val iv1 = IntVec2d(1,2)
+    val iv1 = IntVec2d(1, 2)
     val iv2 = IntVec2d(1, 2)
 
     val set = HashSet<IntVec2d>()
@@ -48,7 +48,6 @@ fun main() {
     val seqLength = 100
 
 
-
     val level = Levels.noSubgoals
     val gridWorld = SubGridWorld(level)
 
@@ -61,7 +60,7 @@ fun main() {
     for (i in 0 until nRolls) {
         val state = SubGridState(gridWorld.startPosition(), gridWorld)
         test.gatherStats(state, seqLength)
-        println("Iteration: ${i+1}")
+        println("Iteration: ${i + 1}")
         test.report()
         println()
     }
@@ -69,33 +68,52 @@ fun main() {
 
 
 interface StateFilter {
-    fun setKey(state: Any)
-    fun cp() : StateFilter
+    // classes implementing state filter set their Hashcodes based on their key
+    // easy way to do this: just declare them as Data classes, then all happens
+    // automatically
+    fun setKey(state: Any): StateFilter
+    fun cp(): StateFilter
 }
 
-typealias VisitCount = HashMap<StateFilter,Int>
-
-class MacroStateProto (val filters: ArrayList<StateFilter>){
+class MacroStateProto(val filters: ArrayList<StateFilter>) {
 
     val agent = RandomAgent()
 
     // currently these tie the algorithm to the SubGridWorld
 
-    val tables = HashMap<StateFilter,VisitCount>()
+    val tables = HashMap<StateFilter, VisitCount>()
 
     fun initTables() {
         tables.clear()
         for (f in filters)
-            tables[f] = HashMap<StateFilter,Int>()
+            tables[f] = HashMap<StateFilter, Int>()
     }
 
     fun report() {
         for (f in filters) {
             println("Filter: $f: -> ${tables[f]?.size}")
+            val visitCount = tables[f]
+            visitCount?.let {
+                for (x in it)
+                    println(x)
+            }
         }
     }
 
     fun gatherStats(state: AbstractGameState, seqLen: Int) {
+        // run this for a rollout length until a termination condition is reached
+
+        for (i in 0 until seqLen) {
+            // run it forward, updating the filters
+            val prev = state.copy()
+            val action = agent.getAction(state, 0)
+            state.next(intArrayOf(action))
+            updateTables(state)
+            // updateTransitionTables(prev, action, state)
+        }
+    }
+
+    fun gatherStatsOld(state: AbstractGameState, seqLen: Int) {
         // run this for a rollout length until a termination condition is reached
         for (i in 0 until seqLen) {
             // run it forward, updating the filters
@@ -103,7 +121,7 @@ class MacroStateProto (val filters: ArrayList<StateFilter>){
             val action = agent.getAction(state, 0)
             state.next(intArrayOf(action))
             updateTables(state)
-            updateTransitionTables(prev, action, state)
+            // updateTransitionTables(prev, action, state)
         }
     }
 
@@ -120,11 +138,27 @@ class MacroStateProto (val filters: ArrayList<StateFilter>){
         }
     }
 
-    fun updateTransitionTables(prev: AbstractGameState, action: Int, state: AbstractGameState) {
+//
+//    fun updateTransitionTables(prev: AbstractGameState, action: Int, state: AbstractGameState) {
+//
+//        // todo: implement HashMaps to store the transition stats for each filter
+//        // the updateTables is already nearly there - but that just did noode occupancies
+//
+//
+//    }
+}
 
-        // todo: implement HashMaps to store the transition stats for each filter
-        // the updateTables is already nearly there - but that just did noode occupancies
+class RewardDistribution() {
+    val dis = HashMap<Double, Int>()
+    fun add(op: Double) {
+        var count = dis.get(op)
+        if (count == null) count = 0
+        count++
+        dis[op] = count
+    }
 
+    override fun toString(): String {
+        return dis.toString()
     }
 }
 
@@ -134,23 +168,29 @@ class MacroStateProto (val filters: ArrayList<StateFilter>){
 // for example, the difference in position between objects
 // or even the differences between features in successive states
 
-data class GridXFilter (var x: Int = 0) : StateFilter {
-    override fun setKey(state: Any) {
+data class GridXFilter(var x: Int = 0) : StateFilter {
+    override fun setKey(state: Any): StateFilter {
         if (state is SubGridState) x = state.s.x
+        return this
     }
-    override fun cp(): StateFilter  = copy()
+
+    override fun cp(): StateFilter = copy()
 }
 
-data class GridYFilter (var y: Int = 0) : StateFilter {
-    override fun setKey(state: Any) {
+data class GridYFilter(var y: Int = 0) : StateFilter {
+    override fun setKey(state: Any): StateFilter {
         if (state is SubGridState) y = state.s.y
+        return this
     }
-    override fun cp(): StateFilter  = copy()
+
+    override fun cp(): StateFilter = copy()
 }
 
-data class GridXYFilter (var s: IntVec2d = IntVec2d()) : StateFilter {
-    override fun setKey(state: Any) {
+data class GridXYFilter(var s: IntVec2d = IntVec2d()) : StateFilter {
+    override fun setKey(state: Any): StateFilter {
         if (state is SubGridState) s = state.s
+        return this
     }
-    override fun cp(): StateFilter  = copy()
+
+    override fun cp(): StateFilter = copy()
 }
