@@ -42,6 +42,24 @@ data class XPalette(
     fun v() = rand.nextDouble(min, max).toFloat()
 }
 
+class XColorHeat {
+    fun getColor(x: Double) : XColor {
+
+        // treat zero a bit specially
+        if (x == 0.0) return XColor.black
+
+        // clamp x to be between zero and one
+        var v = x.toFloat();
+        if (v < 0.0) v = 0f
+        if (v > 1.0) v = 1f
+        val r = max(0f, 2 * (v - 0.5f))
+        val b = max(2*(0.5f - v), 0f)
+        // val g = 0.5f // v/4 // 1f - (r+b)
+        val g = 1f - (r+b)
+        return XColor(r, g, b)
+    }
+}
+
 data class OldXColor(var r: Double = 0.0, var g: Double = 0.0, var b: Double = 0.0, var a: Double = 1.0)
 
 

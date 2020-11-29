@@ -49,6 +49,18 @@ class MinDiff (val s: Solution) : SolutionEvaluator {
 
 data class ScoredSolution(val s: Solution, val f: Double)
 
+class EvoUtil {
+    val rand = Random
+    fun randBin(n: Int=20): String {
+        val list = Solution()
+        repeat(n) { list.add(rand.nextInt(2)) }
+        return list.toString()
+    }
+
+    val message = "Hello"
+    public fun randSeq() = randBin(10)
+}
+
 class SimpleEvo(var n: Int, var m: Int = 2, val eval: SolutionEvaluator, var pOne:Double = 0.0) {
 
     val rand = Random

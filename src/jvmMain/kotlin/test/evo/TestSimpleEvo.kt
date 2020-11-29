@@ -10,12 +10,15 @@ import test.XMouseAdapter
 import utilities.JEasyFrame
 
 fun main() {
+    println(evo.EvoUtil().randBin(10))
+    println(evo.EvoUtil().randSeq())
     val target = arrayListOf<Int>(0, 1, 0, 1, 0, 1, 0, 1, 0, 1)
     val evo = SimpleEvo(target.size, 2, MinDiff(target))
     repeat(10) {
         evo.run(1)
         println("$it\t ${evo.bestYet}")
     }
+    // println(6 / 2 * (1 + 2))
     AppTest().startApp()
 }
 

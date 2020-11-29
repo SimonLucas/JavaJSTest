@@ -11,3 +11,7 @@ build/
 *.orig
 *.kotlin_module
 *.lock
+*.bin
+*.bin
+*.lock
+*.bin

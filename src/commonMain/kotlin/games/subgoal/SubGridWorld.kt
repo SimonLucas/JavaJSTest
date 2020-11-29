@@ -54,6 +54,7 @@ class SubGridState (var s: IntVec2d, val grid: SubGridWorld, var nTicksX:Int=0,
 
     override fun score(): Double {
         var x: Double = if (subgoalReached) subGoalScore else 0.0
+        // if (grid.)
         return x - nTicksX
     }
 
