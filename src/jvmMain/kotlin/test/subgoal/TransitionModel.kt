@@ -1,32 +1,68 @@
 package test.subgoal
 
 import agents.RandomAgent
+import evo.GridDataSource
 import games.subgoal.Levels
 import games.subgoal.SubGridState
 import games.subgoal.SubGridWorld
 import ggi.AbstractGameState
 import ggi.SimplePlayerInterface
+import math.IntVec2d
+import util.Picker
+import kotlin.random.Random
 
 fun main() {
-    val nRolls = 10
-    val seqLength = 20
+
+    val transTest = TransitionModelTest().runModel()
+
+}
+
+class TransitionModelTest(val explore: Boolean = true) {
 
     val level = Levels.noSubgoals
     val gridWorld = SubGridWorld(level)
 
+    var gx = GridXFilter()
+    var gy =  GridYFilter()
+    var gxy = GridXYFilter()
+
+    // might make a filterbank class for convenience
     var filters = arrayListOf<StateFilter>(
-        GridXFilter(), GridYFilter(), GridXYFilter()
+        gx,
+        gy,
+        gxy,
     )
 
-    val test = TransitionModel(filters)
-    // test.initTables()
-    repeat(nRolls) {
-        val state: AbstractGameState = SubGridState(gridWorld.startPosition(), gridWorld)
-        test.gatherStats(state, seqLength)
-        println("Iteration: ${it + 1}")
+    // val test = TransitionModel(filters, explore)
+    val test = GraphLearner(filters)
+
+    fun runModel(nRolls: Int = 10, seqLength: Int = 20): TransitionModelTest {
+        // test.initTables()
+        repeat(nRolls) {
+            val state: AbstractGameState = SubGridState(gridWorld.startPosition(), gridWorld)
+            test.gatherStats(state, seqLength)
+            println("Iteration: ${it + 1}")
+        }
+        test.report()
+        println()
+        return this
     }
-    test.report()
-    println()
+
+    // this code is inflexible and problematic -
+    // editing out various FilterModel options
+    // breaks things further down the line
+    // todo: fix it
+    fun getXYDataSource(): GridDataSource {
+        return XYDataSource(test.models[2], gridWorld.nCols, gridWorld.nRows)
+    }
+
+    fun getXDataSource(): GridDataSource {
+        return XDataSource(test.models[0], gridWorld.nCols)
+    }
+
+    fun getYDataSource(): GridDataSource {
+        return YDataSource(test.models[1], gridWorld.nRows)
+    }
 }
 
 // need to also model (StateFilter,Action) -> (StateFilterDis)
@@ -44,7 +80,6 @@ typealias TransitionMap = HashMap<StateFilter, ActionCounter>
 class StateFilterAgent(val tm: TransitionModel) : SimplePlayerInterface {
     override fun getAction(gameState: AbstractGameState, playerId: Int): Int {
         // decide what to do based on which action seems best
-
         return 0
     }
 
@@ -84,56 +119,30 @@ class ActionCounter {
     fun report() {
         println("  $n actions, ${actionMap.size} distinct")
         for (kv in actionMap)
-            println("    "  +kv)
+            println("    " + kv)
+        for (ac in actionCount) {
+            println(ac)
+        }
     }
 }
 
 class FilterTransitionModel(val filter: StateFilter) {
     val count = VisitCount()
-    val actionCount = ActionCount()
+
+    // val actionCount = ActionCount()
     val transitionMap = TransitionMap()
 
     var cur = filter.cp()
+    var total = 0
 
-//    fun untried(state: AbstractGameState): ArrayList<Any> {
-//        val untried = ArrayList<Any>()
-//        val f = filter.cp().setKey(state)
-//        val tried = transitionMap[f]
-//        val nTried = if (tried != null) tried.size else 0
-//
-//        return untried
-//    }
-
-//    fun tried(key: Any) : HashSet<Any> {
-//        val actedOn = transitionMap[key]
-//        val tried = ArrayList<Any>()
-//        if (actedOn == null) return tried
-//        for (kv in actedOn)
-//            tried.add(kv.key)
-//        return tried
-//    }
-
-    fun scoreActions(state: AbstractGameState): HashMap<Any, ActionScore> {
-        val scores = HashMap<Any, ActionScore>()
-        // in an AbstractGameState actions are indexed 0 .. (n-1)
-        // so let's try all of them
-        repeat(state.nActions()) {
-            // todo: make a coherent way to identify possible actions
-            val f = filter.cp().setKey(state)
-            var nAct = transitionMap[f]
-//            if (nAct == null)
-//            val actionScore =
-//                ActionScore()
-        }
-        return scores
-    }
-
+    fun maxVisits() = count.values.maxOf { it }
 
     fun recordVisit(state: AbstractGameState) {
         cur = filter.cp().setKey(state)
         var n = count[cur]
         if (n == null) n = 0
         count[cur] = n + 1
+        total++
     }
 
     fun recordTransition(action: Any, state: AbstractGameState) {
@@ -151,27 +160,13 @@ class FilterTransitionModel(val filter: StateFilter) {
         }
 
         actionCounter.recordAction(action, next)
-        // now find the visit count hash map far taking this
-        // action in the current state
-        // it counts how many times we transitioned to the next state
-//        var visitCount = actionMap[action]
-//        if (visitCount == null) {
-//            visitCount = VisitCount()
-//            actionMap[action] = visitCount
-//        }
 
-        // finally update the count: increase the count
-        // of sfPrev, action -> sfNext
-//        var count = visitCount[next]
-//        if (count == null) count = 0
-//        visitCount[next] = count + 1
-
-        // now advance the current state
         cur = next
 
     }
 
     fun report() {
+        println("Total visits = $total")
         println("nNodes = ${count.size}")
         for (c in count) {
             println(c)
@@ -179,19 +174,83 @@ class FilterTransitionModel(val filter: StateFilter) {
             if (actionCounter != null)
                 actionCounter.report()
         }
+        println("Max visits to a cell: ${maxVisits()}")
         println()
+    }
+
+    fun leastUsedAction(state: AbstractGameState): Int {
+        val key = filter.cp().setKey(state)
+        val ac = transitionMap[key]
+
+        // add eps random noise to action counts to break ties
+        val eps = 0.1
+
+        // if we've seen no actions then just return a random choice
+        if (ac != null) {
+            // better count the number of times each action has been
+            // selected
+            val picker = Picker<Int>(Picker.MIN_FIRST)
+            repeat(state.nActions()) {
+                var nTries = ac.actionCount[it]
+                if (nTries == null) nTries = 0
+                picker.add(nTries + Random.nextDouble(eps), it)
+            }
+            picker.best?.let{return it}
+        }
+        println("No count, Returning random action in SF: $state")
+        return Random.nextInt(state.nActions())
+    }
+
+    fun leastVisited(states: java.util.ArrayList<AbstractGameState>): AbstractGameState? {
+        val eps = 0.1
+        val picker = Picker<AbstractGameState>(Picker.MIN_FIRST)
+        for (s in states) {
+            val key = filter.cp().setKey(s)
+            var n = count[key]
+            if (n == null) n = 0
+            picker.add(n + Random.nextDouble(eps),  s)
+        }
+        return picker.best
     }
 }
 
-// todo make a new one of these where we model it separately for each filter
-class TransitionModel(val filters: ArrayList<StateFilter>) {
+
+class ActionExplorerAgent(val models: ArrayList<FilterTransitionModel>) : SimplePlayerInterface {
+    // this agent picks a filter model at random and chooses
+    // one of it's least used actions
+
+    override fun getAction(gameState: AbstractGameState, playerId: Int): Int {
+
+        val model = models[Random.nextInt(models.size)]
+        return model.leastUsedAction(gameState)
+
+    }
+
+    override fun reset(): SimplePlayerInterface {
+        TODO("Not yet implemented")
+    }
+
+    override fun getAgentType(): String {
+        return this.toString()
+    }
+
+
+}
+
+// class GraphLearn
+
+
+
+class TransitionModel(val filters: ArrayList<StateFilter>, val explorer: Boolean = true) {
     val models = ArrayList<FilterTransitionModel>()
-    val agent = RandomAgent()
+    var agent: SimplePlayerInterface = RandomAgent()
 
     init {
         for (f in filters) {
             models.add(FilterTransitionModel(f))
         }
+        if (explorer)
+            agent = ActionExplorerAgent(models)
     }
 
     fun gatherStats(state: AbstractGameState, seqLen: Int) {

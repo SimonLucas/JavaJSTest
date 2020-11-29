@@ -34,6 +34,13 @@ class ColHeightDiff : AbstractValueFunction {
         val rand = Random
         val eps = 1e-10
     }
+
+    var heights = ArrayList<Int>()
+    fun getHeights(gameState: AbstractGameState): ArrayList<Int> {
+        value(gameState)
+        return heights
+    }
+
     override fun value(gameState: AbstractGameState): Double {
         val noise = rand.nextDouble() * eps
         if (!(gameState is TetrisGame)) return noise
@@ -47,6 +54,9 @@ class ColHeightDiff : AbstractValueFunction {
                 }
             }
         }
+        // set up the colHeights
+        heights.clear()
+        heights.addAll(colHeights)
         // now sum the differences in heights
         var hScore = 0.0
         for (i in 1 until tm.nCols)

@@ -168,29 +168,4 @@ class RewardDistribution() {
 // for example, the difference in position between objects
 // or even the differences between features in successive states
 
-data class GridXFilter(var x: Int = 0) : StateFilter {
-    override fun setKey(state: Any): StateFilter {
-        if (state is SubGridState) x = state.s.x
-        return this
-    }
 
-    override fun cp(): StateFilter = copy()
-}
-
-data class GridYFilter(var y: Int = 0) : StateFilter {
-    override fun setKey(state: Any): StateFilter {
-        if (state is SubGridState) y = state.s.y
-        return this
-    }
-
-    override fun cp(): StateFilter = copy()
-}
-
-data class GridXYFilter(var s: IntVec2d = IntVec2d()) : StateFilter {
-    override fun setKey(state: Any): StateFilter {
-        if (state is SubGridState) s = state.s
-        return this
-    }
-
-    override fun cp(): StateFilter = copy()
-}

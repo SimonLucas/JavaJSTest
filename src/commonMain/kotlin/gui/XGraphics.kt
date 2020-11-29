@@ -44,23 +44,20 @@ data class XPalette(
 
 class XColorHeat {
     fun getColor(x: Double) : XColor {
+
+        // treat zero a bit specially
+        if (x == 0.0) return XColor.black
+
         // clamp x to be between zero and one
         var v = x.toFloat();
         if (v < 0.0) v = 0f
         if (v > 1.0) v = 1f
         val r = max(0f, 2 * (v - 0.5f))
         val b = max(2*(0.5f - v), 0f)
-        val g = 0.5f // v/4 // 1f - (r+b)
+        // val g = 0.5f // v/4 // 1f - (r+b)
+        val g = 1f - (r+b)
         return XColor(r, g, b)
     }
-    // def rgb(minimum, maximum, value):
-    //    minimum, maximum = float(minimum), float(maximum)
-    //    ratio = 2 * (value-minimum) / (maximum - minimum)
-    //    b = int(max(0, 255*(1 - ratio)))
-    //    r = int(max(0, 255*(ratio - 1)))
-    //    g = 255 - b - r
-    //    return r, g, b
-
 }
 
 data class OldXColor(var r: Double = 0.0, var g: Double = 0.0, var b: Double = 0.0, var a: Double = 1.0)

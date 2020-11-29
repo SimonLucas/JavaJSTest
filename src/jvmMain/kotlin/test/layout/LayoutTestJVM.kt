@@ -6,6 +6,7 @@ import test.EasyComponent
 import test.XGraphicsJVM
 import test.XKeyAdapter
 import test.XMouseAdapter
+import test.launch.AppLauncher
 import utilities.JEasyFrame
 
 fun main() {
@@ -23,25 +24,8 @@ fun main() {
     println(layout.hPartition(200.0, 100.0, 5))
     println()
 
-    startApp()
-}
+    // startApp()
 
-fun startApp() {
-    val ec = EasyComponent(600, 600)
-    val frame = JEasyFrame(ec, "X Graphics Layout Test")
-    val xg = XGraphicsJVM(ec)
-    ec.xg = xg
-    val app = LayoutTest()
-    ec.xApp = app
+    AppLauncher(LayoutTest()).launch()
 
-    frame.addKeyListener(XKeyAdapter(app))
-    ec.addMouseListener(XMouseAdapter(app))
-    ec.addMouseMotionListener(XMouseAdapter(app))
-
-    val frameRate = 25
-    val delay = 1000 / frameRate
-    while (true) {
-        ec.repaint()
-        Thread.sleep(delay.toLong())
-    }
 }
