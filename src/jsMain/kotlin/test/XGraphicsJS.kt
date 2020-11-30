@@ -5,6 +5,7 @@ import gui.layout.LRect
 import math.Vec2d
 import org.w3c.dom.*
 import kotlin.math.PI
+import kotlin.math.min
 
 class XGraphicsJS(var canvas: HTMLCanvasElement) : XGraphics {
 
@@ -23,7 +24,7 @@ class XGraphicsJS(var canvas: HTMLCanvasElement) : XGraphics {
     var translate = Vec2d()
 
     override fun setTranslate(x: Double, y: Double) {
-        translate += Vec2d(x,y)
+        translate += Vec2d(x, y)
     }
 
     override fun releaseBounds() {
@@ -57,6 +58,7 @@ class XGraphicsJS(var canvas: HTMLCanvasElement) : XGraphics {
         context.translate(translate.x, translate.y)
 
         if (toDraw is XRect) drawRect(toDraw)
+        if (toDraw is XRoundedRect) drawRoundedRect(toDraw)
         if (toDraw is XEllipse) drawEllipse(toDraw)
         if (toDraw is XPoly) drawPoly(toDraw)
         if (toDraw is XLine) drawLine(toDraw)
@@ -78,17 +80,87 @@ class XGraphicsJS(var canvas: HTMLCanvasElement) : XGraphics {
                 if (fill) {
                     context.fillStyle = rgba(fg)
 //                    context.fillRect(centre.x - w / 2, centre.y - h / 2, w, h)
-                    context.fillRect(-w / 2,  - h / 2, w, h)
+                    context.fillRect(-w / 2, -h / 2, w, h)
                 }
                 if (stroke) {
                     context.strokeStyle = rgba(lc)
                     context.lineWidth = lineWidth
 //                    context.strokeRect(centre.x - w / 2, centre.y - h / 2, w, h)
-                    context.strokeRect(-w / 2,  - h / 2, w, h)
+                    context.strokeRect(-w / 2, -h / 2, w, h)
 
                 }
                 context.restore()
             }
+        }
+    }
+
+
+    fun drawRoundedRect(rect: XRoundedRect) {
+        val g = canvas
+        with(rect) {
+            with(rect.dStyle) {
+                val context = g.getContext("2d") as CanvasRenderingContext2D
+                context.save()
+                context.globalAlpha = 1.0;
+                context.translate(rect.centre.x, rect.centre.y)
+                context.rotate(rect.rotation)
+
+                val rad =
+                    if (radInPercent) min(w, h) * cornerRad
+                    else cornerRad
+
+                with(context) {
+                    roundRectPath(context, w, h, rad)
+                    if (fill) {
+                        context.fillStyle = rgba(fg)
+                        context.fill()
+                    }
+                    if (stroke) {
+                        context.strokeStyle = rgba(lc)
+                        context.lineWidth = lineWidth
+                        context.stroke()
+                    }
+                    context.restore()
+                }
+            }
+        }
+    }
+
+    fun roundRectPath(context: CanvasRenderingContext2D, w: Double, h: Double, rad: Double) {
+        var r = rad
+        val x = -w / 2
+        val y = -h / 2
+        with(context) {
+            if (w < 2 * r) r = w / 2;
+            if (h < 2 * r) r = h / 2;
+            beginPath();
+            moveTo(x + r, y);
+            arcTo(x + w, y, x + w, y + h, r);
+            arcTo(x + w, y + h, x, y + h, r);
+            arcTo(x, y + h, x, y, r);
+            arcTo(x, y, x + w, y, r);
+            this.closePath();
+        }
+    }
+
+    fun roundRectPathOld(context: CanvasRenderingContext2D, w: Double, h: Double, rad: Double) {
+        var r = rad
+        val x = -w / 2
+        val y = -h / 2
+        with(context) {
+            if (w < 2 * r) r = w / 2;
+            if (h < 2 * r) r = h / 2;
+            beginPath()
+            moveTo(x + r, y)
+            lineTo(x + w - r, y)
+            quadraticCurveTo(x + w, y, x + w, y + r)
+            lineTo(x + w, y + h - r)
+            quadraticCurveTo(x + w, y + h, x + w - r, y + h)
+            lineTo(x + r, y + h)
+            quadraticCurveTo(x, y + h, x, y + h - r)
+            lineTo(x, y + r)
+            quadraticCurveTo(x, y, x + r, y)
+            closePath()
         }
     }
 
@@ -105,7 +177,7 @@ class XGraphicsJS(var canvas: HTMLCanvasElement) : XGraphics {
 
                 // note: must call beginPath before adding the ellipse
                 context.beginPath()
-                context.ellipse(0.0,  0.0, w/2, h/2, 0.0,  0.0, PI * 2, true)
+                context.ellipse(0.0, 0.0, w / 2, h / 2, 0.0, 0.0, PI * 2, true)
 
                 if (fill) {
                     context.fillStyle = rgba(fg)
@@ -154,7 +226,7 @@ class XGraphicsJS(var canvas: HTMLCanvasElement) : XGraphics {
                     // println("Set style: ${rgba(fg)} for ${text.str}")
                     context.textAlign = CanvasTextAlign.CENTER
                     val metrics = context.measureText(str)
-                    context.fillText(str, p.x, p.y + metrics.actualBoundingBoxAscent/2)
+                    context.fillText(str, p.x, p.y + metrics.actualBoundingBoxAscent / 2)
                     context.restore()
                 }
             }

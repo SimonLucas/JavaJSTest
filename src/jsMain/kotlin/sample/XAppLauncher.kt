@@ -20,10 +20,11 @@ class XAppLauncher(val canvasID: String,
     // and ok for now, and avoids need to use reflection
     val appMap = hashMapOf<String, XApp>(
         "HelloXKG" to HelloXKG(),
+        "HelloXKGraphics" to HelloXGraphics(),
         "OXO" to GridGameApp(),
         "TreeRect" to TreeRectApp(),
         "CaveSwing" to CaveSwingApp(),
-        "EvoMaze" to SimpleEvoApp()
+        "EvoMaze" to SimpleEvoApp(),
     )
 
 

@@ -29,9 +29,9 @@
   var math = Kotlin.kotlin.math;
   var Kind_OBJECT = Kotlin.Kind.OBJECT;
   var L10 = Kotlin.Long.fromInt(10);
+  var Kind_INTERFACE = Kotlin.Kind.INTERFACE;
   var Enum = Kotlin.kotlin.Enum;
   var throwISE = Kotlin.throwISE;
-  var Kind_INTERFACE = Kotlin.Kind.INTERFACE;
   var sum = Kotlin.kotlin.collections.sum_plj8ka$;
   var abs = Kotlin.kotlin.math.abs_za3lpa$;
   var ArrayList = Kotlin.kotlin.collections.ArrayList;
@@ -70,6 +70,7 @@
   var HashSet_init = Kotlin.kotlin.collections.HashSet_init_287e2$;
   var lines = Kotlin.kotlin.text.lines_gw00vp$;
   var IntRange = Kotlin.kotlin.ranges.IntRange;
+  var addAll = Kotlin.kotlin.collections.addAll_ye1y7v$;
   var equals = Kotlin.equals;
   var Exception_init = Kotlin.kotlin.Exception_init_pdl1vj$;
   var NoSuchElementException_init = Kotlin.kotlin.NoSuchElementException_init;
@@ -1484,6 +1485,69 @@
     simpleName: 'DrawNode',
     interfaces: []
   };
+  function GridDataSource() {
+  }
+  GridDataSource.$metadata$ = {
+    kind: Kind_INTERFACE,
+    simpleName: 'GridDataSource',
+    interfaces: []
+  };
+  function GridDataView(gd) {
+    this.gd = gd;
+    this.cellSize = 0.0;
+    this.colors = [XColor$Companion_getInstance().yellow, XColor$Companion_getInstance().gray];
+    this.message = null;
+  }
+  GridDataView.prototype.paint_vzjx8w$ = function (xg) {
+    this.calcCellSize_vzjx8w$(xg);
+    this.drawBackground_vzjx8w$(xg);
+    this.drawCells_vzjx8w$(xg);
+    this.drawMessage_0(xg);
+  };
+  GridDataView.prototype.drawMessage_0 = function (xg) {
+    var tmp$;
+    var textStyle = new TStyle(XColor$Companion_getInstance().black, void 0, this.cellSize);
+    if ((tmp$ = this.message) != null) {
+      xg.draw_dvdmun$(new XText(tmp$, new Vec2d(xg.width() / 2, this.cellSize), textStyle));
+    }};
+  GridDataView.prototype.drawBackground_vzjx8w$ = function (xg) {
+    var rect = new XRect(xg.centre(), xg.width(), xg.height());
+    xg.draw_dvdmun$(rect);
+  };
+  GridDataView.prototype.drawCells_vzjx8w$ = function (xg) {
+    var tmp$, tmp$_0;
+    var style = new XStyle();
+    var rect = new XRect(xg.centre(), this.cellSize, this.cellSize, style);
+    var max = this.gd.maxVisits();
+    tmp$ = this.gd.nCols();
+    for (var i = 0; i < tmp$; i++) {
+      tmp$_0 = this.gd.nRows();
+      for (var j = 0; j < tmp$_0; j++) {
+        var iv = new IntVec2d(i, j);
+        var heat = this.gd.nVisits_vux9f0$(i, j) / max;
+        style.fg = (new XColorHeat()).getColor_14dthe$(heat);
+        style.stroke = true;
+        style.lc = XColor$Companion_getInstance().red;
+        rect.centre = new Vec2d((i + 0.5) * this.cellSize, (j + 0.5) * this.cellSize);
+        xg.draw_dvdmun$(rect);
+        var tStyle = new TStyle(XColor$Companion_getInstance().black, void 0, this.cellSize / 2);
+        xg.draw_dvdmun$(new XText(this.gd.nVisits_vux9f0$(i, j).toString(), rect.centre, tStyle));
+      }
+    }
+  };
+  GridDataView.prototype.getVec_2j9h0j$ = function (iv) {
+    return new Vec2d((iv.x + 0.5) * this.cellSize, (iv.y + 0.5) * this.cellSize);
+  };
+  GridDataView.prototype.calcCellSize_vzjx8w$ = function (xg) {
+    var colSize = xg.width() / this.gd.nCols();
+    var rowSize = xg.height() / this.gd.nRows();
+    this.cellSize = Math_0.min(colSize, rowSize);
+  };
+  GridDataView.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'GridDataView',
+    interfaces: [XApp]
+  };
   function Aim(name, ordinal) {
     Enum.call(this);
     this.name$ = name;
@@ -1798,9 +1862,9 @@
     this.best = new SolutionPath();
   }
   MazeEval.prototype.fitness_e5jm6p$ = function (x) {
-    var from = new IntVec2d(0, 0);
-    var to = new IntVec2d(this.nCols - 1 | 0, this.nRows - 1 | 0);
-    var eg = new EasyGraph(x, this.nCols, this.nRows);
+    var from = new IntVec2d(this.nCols / 2 | 0, this.nRows / 2 | 0);
+    var to = new IntVec2d((this.nCols / 2 | 0) - 1 | 0, (this.nRows / 2 | 0) - 1 | 0);
+    var eg = new EasyGraph(x, this.nCols, this.nRows, false);
     var score = eg.shortestPath_fuuqxa$(from, to);
     var path = eg.path;
     if (score >= this.best.score) {
@@ -4302,11 +4366,12 @@
     interfaces: []
   };
   function LetterTile() {
+    this.size = 0.9;
   }
   LetterTile.prototype.draw_pxm805$ = function (xg, centre, cellSize, ch) {
     var style = new XStyle();
-    var rect = new XRect(centre, cellSize, cellSize, style);
-    var tStyle = new TStyle(void 0, void 0, cellSize);
+    var rect = new XRoundedRect(centre, cellSize * this.size, cellSize * this.size, 0.5, void 0, style);
+    var tStyle = new TStyle(void 0, void 0, cellSize * this.size);
     var text = new XText(' ', centre, tStyle, style);
     style.fg = XColor$Companion_getInstance().red;
     style.stroke = true;
@@ -6829,6 +6894,7 @@
   };
   function ColHeightDiff() {
     ColHeightDiff$Companion_getInstance();
+    this.heights = ArrayList_init();
   }
   function ColHeightDiff$Companion() {
     ColHeightDiff$Companion_instance = this;
@@ -6846,6 +6912,10 @@
       new ColHeightDiff$Companion();
     }return ColHeightDiff$Companion_instance;
   }
+  ColHeightDiff.prototype.getHeights_tsk8so$ = function (gameState) {
+    this.value_tsk8so$(gameState);
+    return this.heights;
+  };
   ColHeightDiff.prototype.value_tsk8so$ = function (gameState) {
     var tmp$, tmp$_0, tmp$_1, tmp$_2;
     var noise = ColHeightDiff$Companion_getInstance().rand.nextDouble() * ColHeightDiff$Companion_getInstance().eps;
@@ -6869,6 +6939,8 @@
           colHeights[i_0] = Math_0.min(a_0, j);
         }}
     }
+    this.heights.clear();
+    addAll(this.heights, colHeights);
     var hScore = 0.0;
     tmp$_2 = tm.nCols;
     for (var i_1 = 1; i_1 < tmp$_2; i_1++)
@@ -7812,6 +7884,26 @@
     simpleName: 'ShortestPath',
     interfaces: []
   };
+  function ColorGradientApp() {
+  }
+  ColorGradientApp.prototype.paint_vzjx8w$ = function (xg) {
+    var n = 16;
+    var n2 = Kotlin.imul(n, n);
+    var cw = xg.width() / n;
+    var ch = xg.height() / n;
+    var style = new XStyle(void 0, void 0, void 0, false);
+    for (var index = 0; index < n2; index++) {
+      var cx = (index % n + 0.5) * cw;
+      var cy = ((index / n | 0) + 0.5) * ch;
+      style.fg = (new XColorHeat()).getColor_14dthe$(index / (n2 - 1 | 0));
+      xg.draw_dvdmun$(new XRect(new Vec2d(cx, cy), cw, ch, style));
+    }
+  };
+  ColorGradientApp.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'ColorGradientApp',
+    interfaces: [XApp]
+  };
   function EasyGraphPlot(seed) {
     if (seed === void 0)
       seed = 1;
@@ -7912,7 +8004,9 @@
     $receiver.lineWidth = 5.0;
     $receiver.fill = this.fillHex;
     xg.draw_dvdmun$(poly);
-    var text = new XText('Hello KXGraph', centre, new TStyle(XColor$Companion_getInstance().black), new XStyle());
+    var roundedRect = new XRoundedRect(new Vec2d(xg.width() / 8, xg.height() / 8), xg.width() / 4, xg.height() / 4, 50.0, false, void 0, this.hexAngle);
+    xg.draw_dvdmun$(roundedRect);
+    var text = new XText('Hello XKG', centre, new TStyle(XColor$Companion_getInstance().black), new XStyle());
     xg.draw_dvdmun$(text);
   };
   HelloXGraphics.prototype.handleMouseEvent_x4hb96$ = function (e) {
@@ -8377,6 +8471,28 @@
   };
   XPalette.prototype.equals = function (other) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.nColors, other.nColors) && Kotlin.equals(this.min, other.min) && Kotlin.equals(this.max, other.max) && Kotlin.equals(this.seed, other.seed) && Kotlin.equals(this.alpha, other.alpha)))));
+  };
+  function XColorHeat() {
+  }
+  XColorHeat.prototype.getColor_14dthe$ = function (x) {
+    if (x === 0.0)
+      return XColor$Companion_getInstance().black;
+    var v = x;
+    if (v < 0.0)
+      v = 0.0;
+    if (v > 1.0)
+      v = 1.0;
+    var b = 2 * (v - 0.5);
+    var r = Math_0.max(0.0, b);
+    var a = 2 * (0.5 - v);
+    var b_0 = Math_0.max(a, 0.0);
+    var g = 1.0 - (r + b_0);
+    return new XColor(r, g, b_0);
+  };
+  XColorHeat.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'XColorHeat',
+    interfaces: []
   };
   function OldXColor(r, g, b, a) {
     if (r === void 0)
@@ -8868,6 +8984,109 @@
   XRect.prototype.equals = function (other) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.centre, other.centre) && Kotlin.equals(this.w, other.w) && Kotlin.equals(this.h, other.h) && Kotlin.equals(this.dStyle, other.dStyle) && Kotlin.equals(this.rotation, other.rotation)))));
   };
+  function XRoundedRect(centre, w, h, cornerRad, radInPercent, dStyle, rotation) {
+    if (cornerRad === void 0)
+      cornerRad = 0.025;
+    if (radInPercent === void 0)
+      radInPercent = true;
+    if (dStyle === void 0)
+      dStyle = new XStyle();
+    if (rotation === void 0)
+      rotation = 0.0;
+    this.centre_n5k1nh$_0 = centre;
+    this.w = w;
+    this.h = h;
+    this.cornerRad = cornerRad;
+    this.radInPercent = radInPercent;
+    this.dStyle_teiytn$_0 = dStyle;
+    this.rotation_8n9l0a$_0 = rotation;
+  }
+  Object.defineProperty(XRoundedRect.prototype, 'centre', {
+    get: function () {
+      return this.centre_n5k1nh$_0;
+    },
+    set: function (centre) {
+      this.centre_n5k1nh$_0 = centre;
+    }
+  });
+  Object.defineProperty(XRoundedRect.prototype, 'dStyle', {
+    get: function () {
+      return this.dStyle_teiytn$_0;
+    },
+    set: function (dStyle) {
+      this.dStyle_teiytn$_0 = dStyle;
+    }
+  });
+  Object.defineProperty(XRoundedRect.prototype, 'rotation', {
+    get: function () {
+      return this.rotation_8n9l0a$_0;
+    },
+    set: function (rotation) {
+      this.rotation_8n9l0a$_0 = rotation;
+    }
+  });
+  XRoundedRect.prototype.contains_vi8533$ = function (p) {
+    if (p == null)
+      return false;
+    var tp = p.minus_5lk9kw$(this.centre).rotatedBy_14dthe$(-this.rotation);
+    var x = tp.x;
+    var tmp$ = Math_0.abs(x) <= this.w / 2;
+    if (tmp$) {
+      var x_0 = tp.y;
+      tmp$ = Math_0.abs(x_0) <= this.h / 2;
+    }return tmp$;
+  };
+  XRoundedRect.prototype.radius = function () {
+    var a = this.w / 2;
+    var b = this.h / 2;
+    return Math_0.max(a, b);
+  };
+  XRoundedRect.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'XRoundedRect',
+    interfaces: [GeomDrawable]
+  };
+  XRoundedRect.prototype.component1 = function () {
+    return this.centre;
+  };
+  XRoundedRect.prototype.component2 = function () {
+    return this.w;
+  };
+  XRoundedRect.prototype.component3 = function () {
+    return this.h;
+  };
+  XRoundedRect.prototype.component4 = function () {
+    return this.cornerRad;
+  };
+  XRoundedRect.prototype.component5 = function () {
+    return this.radInPercent;
+  };
+  XRoundedRect.prototype.component6 = function () {
+    return this.dStyle;
+  };
+  XRoundedRect.prototype.component7 = function () {
+    return this.rotation;
+  };
+  XRoundedRect.prototype.copy_734bzb$ = function (centre, w, h, cornerRad, radInPercent, dStyle, rotation) {
+    return new XRoundedRect(centre === void 0 ? this.centre : centre, w === void 0 ? this.w : w, h === void 0 ? this.h : h, cornerRad === void 0 ? this.cornerRad : cornerRad, radInPercent === void 0 ? this.radInPercent : radInPercent, dStyle === void 0 ? this.dStyle : dStyle, rotation === void 0 ? this.rotation : rotation);
+  };
+  XRoundedRect.prototype.toString = function () {
+    return 'XRoundedRect(centre=' + Kotlin.toString(this.centre) + (', w=' + Kotlin.toString(this.w)) + (', h=' + Kotlin.toString(this.h)) + (', cornerRad=' + Kotlin.toString(this.cornerRad)) + (', radInPercent=' + Kotlin.toString(this.radInPercent)) + (', dStyle=' + Kotlin.toString(this.dStyle)) + (', rotation=' + Kotlin.toString(this.rotation)) + ')';
+  };
+  XRoundedRect.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.centre) | 0;
+    result = result * 31 + Kotlin.hashCode(this.w) | 0;
+    result = result * 31 + Kotlin.hashCode(this.h) | 0;
+    result = result * 31 + Kotlin.hashCode(this.cornerRad) | 0;
+    result = result * 31 + Kotlin.hashCode(this.radInPercent) | 0;
+    result = result * 31 + Kotlin.hashCode(this.dStyle) | 0;
+    result = result * 31 + Kotlin.hashCode(this.rotation) | 0;
+    return result;
+  };
+  XRoundedRect.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.centre, other.centre) && Kotlin.equals(this.w, other.w) && Kotlin.equals(this.h, other.h) && Kotlin.equals(this.cornerRad, other.cornerRad) && Kotlin.equals(this.radInPercent, other.radInPercent) && Kotlin.equals(this.dStyle, other.dStyle) && Kotlin.equals(this.rotation, other.rotation)))));
+  };
   function XEllipse(centre, w, h, dStyle, rotation) {
     if (dStyle === void 0)
       dStyle = new XStyle();
@@ -9265,6 +9484,48 @@
     kind: Kind_CLASS,
     simpleName: 'Poly',
     interfaces: []
+  };
+  function GridXYFilterLayout(gd, gx, gy) {
+    if (gx === void 0)
+      gx = null;
+    if (gy === void 0)
+      gy = null;
+    this.gd = gd;
+    this.gx = gx;
+    this.gy = gy;
+  }
+  GridXYFilterLayout.prototype.paint_vzjx8w$ = function (xg) {
+    var tmp$, tmp$_0, tmp$_1, tmp$_2;
+    var layout = new Layout(0.025);
+    var colWidth = 1.0 / (1 + this.gd.nCols() | 0);
+    var rowHeight = 1.0 / (1 + this.gd.nRows() | 0);
+    var hSpans = layout.getSpans_oxrv8x$(xg.width(), 2, arrayListOf([1.0 - colWidth, colWidth]));
+    var vSpans = layout.getSpans_oxrv8x$(xg.height(), 2, arrayListOf([1.0 - rowHeight, rowHeight]));
+    var panes = layout.expand_tiq6ww$(hSpans, vSpans);
+    var xp = new XPalette();
+    var cIndex = 0;
+    var bgRect = new XRect(xg.centre(), xg.width(), xg.height(), new XStyle(xp.colors.get_za3lpa$((tmp$ = cIndex, cIndex = tmp$ + 1 | 0, tmp$))));
+    xg.draw_dvdmun$(bgRect);
+    panes.get_za3lpa$(0).app = new GridDataView(this.gd);
+    if (this.gx != null)
+      panes.get_za3lpa$(1).app = new GridDataView(this.gx);
+    if (this.gy != null)
+      panes.get_za3lpa$(2).app = new GridDataView(this.gy);
+    tmp$_0 = panes.iterator();
+    while (tmp$_0.hasNext()) {
+      var pane = tmp$_0.next();
+      var xRext = pane.XRect_gibxdg$(new XStyle(xp.colors.get_za3lpa$((tmp$_1 = cIndex, cIndex = tmp$_1 + 1 | 0, tmp$_1))));
+      xg.draw_dvdmun$(xRext);
+      if ((tmp$_2 = pane.app) != null) {
+        xg.setBounds_z39lsx$(pane);
+        tmp$_2.paint_vzjx8w$(xg);
+        xg.releaseBounds();
+      }}
+  };
+  GridXYFilterLayout.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'GridXYFilterLayout',
+    interfaces: [XApp]
   };
   function Horizontal(name, ordinal) {
     Enum.call(this);
@@ -10837,7 +11098,7 @@
     this.canvasID = canvasID;
     this.appName = appName;
     this.intervalTime = intervalTime;
-    this.appMap = hashMapOf([to('HelloXKG', new HelloXKG()), to('OXO', new GridGameApp()), to('TreeRect', new TreeRectApp()), to('CaveSwing', new CaveSwingApp()), to('EvoMaze', new SimpleEvoApp())]);
+    this.appMap = hashMapOf([to('HelloXKG', new HelloXKG()), to('HelloXKGraphics', new HelloXGraphics()), to('OXO', new GridGameApp()), to('TreeRect', new TreeRectApp()), to('CaveSwing', new CaveSwingApp()), to('EvoMaze', new SimpleEvoApp())]);
     this.app = new HelloXKG();
     this.canvas1 = null;
     var tmp$;
@@ -10963,6 +11224,8 @@
     }context.translate(this.translate.x, this.translate.y);
     if (Kotlin.isType(toDraw, XRect))
       this.drawRect_ax8lih$(toDraw);
+    if (Kotlin.isType(toDraw, XRoundedRect))
+      this.drawRoundedRect_o1693g$(toDraw);
     if (Kotlin.isType(toDraw, XEllipse))
       this.drawEllipse_lu1dfr$(toDraw);
     if (Kotlin.isType(toDraw, XPoly))
@@ -10990,6 +11253,69 @@
       context.lineWidth = receiver.lineWidth;
       context.strokeRect(-rect.w / 2, -rect.h / 2, rect.w, rect.h);
     }context.restore();
+  };
+  XGraphicsJS.prototype.drawRoundedRect_o1693g$ = function (rect) {
+    var g = this.canvas;
+    var receiver = rect.dStyle;
+    var tmp$;
+    var context = Kotlin.isType(tmp$ = g.getContext('2d'), CanvasRenderingContext2D) ? tmp$ : throwCCE();
+    context.save();
+    context.globalAlpha = 1.0;
+    context.translate(rect.centre.x, rect.centre.y);
+    context.rotate(rect.rotation);
+    var tmp$_0;
+    if (rect.radInPercent) {
+      var a = rect.w;
+      var b = rect.h;
+      tmp$_0 = Math_0.min(a, b) * rect.cornerRad;
+    } else
+      tmp$_0 = rect.cornerRad;
+    var rad = tmp$_0;
+    this.roundRectPath_3tq200$(context, rect.w, rect.h, rad);
+    if (receiver.fill) {
+      context.fillStyle = this.rgba_gr83cy$(receiver.fg);
+      context.fill();
+    }if (receiver.stroke) {
+      context.strokeStyle = this.rgba_gr83cy$(receiver.lc);
+      context.lineWidth = context.lineWidth;
+      context.stroke();
+    }context.restore();
+  };
+  XGraphicsJS.prototype.roundRectPath_3tq200$ = function (context, w, h, rad) {
+    var r = {v: rad};
+    var x = -w / 2;
+    var y = -h / 2;
+    if (w < 2 * r.v)
+      r.v = w / 2;
+    if (h < 2 * r.v)
+      r.v = h / 2;
+    context.beginPath();
+    context.moveTo(x + r.v, y);
+    context.arcTo(x + w, y, x + w, y + h, r.v);
+    context.arcTo(x + w, y + h, x, y + h, r.v);
+    context.arcTo(x, y + h, x, y, r.v);
+    context.arcTo(x, y, x + w, y, r.v);
+    context.closePath();
+  };
+  XGraphicsJS.prototype.roundRectPathOld_3tq200$ = function (context, w, h, rad) {
+    var r = {v: rad};
+    var x = -w / 2;
+    var y = -h / 2;
+    if (w < 2 * r.v)
+      r.v = w / 2;
+    if (h < 2 * r.v)
+      r.v = h / 2;
+    context.beginPath();
+    context.moveTo(x + r.v, y);
+    context.lineTo(x + w - r.v, y);
+    context.quadraticCurveTo(x + w, y, x + w, y + r.v);
+    context.lineTo(x + w, y + h - r.v);
+    context.quadraticCurveTo(x + w, y + h, x + w - r.v, y + h);
+    context.lineTo(x + r.v, y + h);
+    context.quadraticCurveTo(x, y + h, x, y + h - r.v);
+    context.lineTo(x, y + r.v);
+    context.quadraticCurveTo(x, y, x + r.v, y);
+    context.closePath();
   };
   XGraphicsJS.prototype.drawEllipse_lu1dfr$ = function (ellipse) {
     var g = this.canvas;
@@ -11134,13 +11460,15 @@
   });
   package$draw.TreeDraw = TreeDraw;
   package$draw.DrawNode = DrawNode;
+  var package$evo = _.evo || (_.evo = {});
+  package$evo.GridDataSource = GridDataSource;
+  package$evo.GridDataView = GridDataView;
   Object.defineProperty(Aim, 'Minimise', {
     get: Aim$Minimise_getInstance
   });
   Object.defineProperty(Aim, 'Maximise', {
     get: Aim$Maximise_getInstance
   });
-  var package$evo = _.evo || (_.evo = {});
   package$evo.Aim = Aim;
   package$evo.SolutionEvaluator = SolutionEvaluator;
   package$evo.MaxSum = MaxSum;
@@ -11508,6 +11836,7 @@
   package$graph.ArrayAsGrid = ArrayAsGrid;
   package$graph.ShortestPath = ShortestPath;
   var package$gui = _.gui || (_.gui = {});
+  package$gui.ColorGradientApp = ColorGradientApp;
   package$gui.EasyGraphPlot = EasyGraphPlot;
   package$gui.HelloXGraphics = HelloXGraphics;
   package$gui.HelloXKG = HelloXKG;
@@ -11531,6 +11860,7 @@
   });
   package$gui.XColor = XColor;
   package$gui.XPalette = XPalette;
+  package$gui.XColorHeat = XColorHeat;
   package$gui.OldXColor = OldXColor;
   package$gui.XGraphics = XGraphics;
   package$gui.XStyle = XStyle;
@@ -11574,6 +11904,7 @@
   package$gui.Drawable = Drawable;
   package$gui.GeomDrawable = GeomDrawable;
   package$gui.XRect = XRect;
+  package$gui.XRoundedRect = XRoundedRect;
   package$gui.XEllipse = XEllipse;
   package$gui.XLine = XLine;
   package$gui.XText = XText;
@@ -11582,6 +11913,8 @@
   var package$geometry = package$gui.geometry || (package$gui.geometry = {});
   package$geometry.ContainsTestApp = ContainsTestApp;
   package$geometry.Poly = Poly;
+  var package$layout = package$gui.layout || (package$gui.layout = {});
+  package$layout.GridXYFilterLayout = GridXYFilterLayout;
   Object.defineProperty(Horizontal, 'Left', {
     get: Horizontal$Left_getInstance
   });
@@ -11594,7 +11927,6 @@
   Object.defineProperty(Horizontal, 'Any', {
     get: Horizontal$Any_getInstance
   });
-  var package$layout = package$gui.layout || (package$gui.layout = {});
   package$layout.Horizontal = Horizontal;
   Object.defineProperty(Vertical, 'Top', {
     get: Vertical$Top_getInstance
@@ -11683,21 +12015,27 @@
   package$test.XGraphicsJS = XGraphicsJS;
   TreeDraw.prototype.handleMouseEvent_x4hb96$ = XApp.prototype.handleMouseEvent_x4hb96$;
   TreeDraw.prototype.handleKeyEvent_wtf8cg$ = XApp.prototype.handleKeyEvent_wtf8cg$;
+  GridDataView.prototype.handleMouseEvent_x4hb96$ = XApp.prototype.handleMouseEvent_x4hb96$;
+  GridDataView.prototype.handleKeyEvent_wtf8cg$ = XApp.prototype.handleKeyEvent_wtf8cg$;
   MaxSum.prototype.select_1zogng$ = SolutionEvaluator.prototype.select_1zogng$;
   MinSum.prototype.select_1zogng$ = SolutionEvaluator.prototype.select_1zogng$;
   MinDiff.prototype.select_1zogng$ = SolutionEvaluator.prototype.select_1zogng$;
-  SimpleEvoApp.prototype.handleKeyEvent_wtf8cg$ = XApp.prototype.handleKeyEvent_wtf8cg$;
   SimpleEvoApp.prototype.handleMouseEvent_x4hb96$ = XApp.prototype.handleMouseEvent_x4hb96$;
+  SimpleEvoApp.prototype.handleKeyEvent_wtf8cg$ = XApp.prototype.handleKeyEvent_wtf8cg$;
   MazeEval.prototype.select_1zogng$ = SolutionEvaluator.prototype.select_1zogng$;
   CaveSwingApp.prototype.handleMouseEvent_x4hb96$ = XApp.prototype.handleMouseEvent_x4hb96$;
   CaveSwingApp.prototype.handleKeyEvent_wtf8cg$ = XApp.prototype.handleKeyEvent_wtf8cg$;
   TicTacToe.prototype.resetTotalTicks = ExtendedAbstractGameStateMulti.prototype.resetTotalTicks;
   GridGameApp.prototype.handleKeyEvent_wtf8cg$ = XApp.prototype.handleKeyEvent_wtf8cg$;
   DefaultDemoControl.prototype.useDoorways = SubgoalDemoControl.prototype.useDoorways;
+  ColorGradientApp.prototype.handleMouseEvent_x4hb96$ = XApp.prototype.handleMouseEvent_x4hb96$;
+  ColorGradientApp.prototype.handleKeyEvent_wtf8cg$ = XApp.prototype.handleKeyEvent_wtf8cg$;
   HelloXKG.prototype.handleKeyEvent_wtf8cg$ = XApp.prototype.handleKeyEvent_wtf8cg$;
+  GridXYFilterLayout.prototype.handleMouseEvent_x4hb96$ = XApp.prototype.handleMouseEvent_x4hb96$;
+  GridXYFilterLayout.prototype.handleKeyEvent_wtf8cg$ = XApp.prototype.handleKeyEvent_wtf8cg$;
   XGraphicsJS.prototype.centre = XGraphics.prototype.centre;
-  XGraphicsJS.prototype.saveTransform = XGraphics.prototype.saveTransform;
   XGraphicsJS.prototype.restoreTransform = XGraphics.prototype.restoreTransform;
+  XGraphicsJS.prototype.saveTransform = XGraphics.prototype.saveTransform;
   random = Random.Default;
   nodeCount = 0;
   rockHit = rockHit$lambda;

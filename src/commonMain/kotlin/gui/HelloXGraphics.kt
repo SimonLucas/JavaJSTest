@@ -39,8 +39,13 @@ class HelloXGraphics : XApp {
         }
         xg.draw(poly)
 
+        val roundedRect = XRoundedRect(Vec2d(xg.width()/8, xg.height()/8),
+            xg.width()/4, xg.height()/4, cornerRad = 50.0, radInPercent = false,
+        rotation = hexAngle)
+        xg.draw(roundedRect)
+
         // val message = Character
-        val text = XText("Hello KXGraph", centre, TStyle(fg=XColor.black), XStyle())
+        val text = XText("Hello XKG", centre, TStyle(fg=XColor.black), XStyle())
         xg.draw(text)
 
     }

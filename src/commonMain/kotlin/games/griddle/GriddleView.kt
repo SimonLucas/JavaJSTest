@@ -142,12 +142,13 @@ class GriddleView(val nCols: Int, val nRows: Int) {
 }
 
 class LetterTile {
+    var size = 0.9
     fun draw(xg: XGraphics, centre: Vec2d, cellSize: Double, ch: Char) {
         val style = XStyle()
-        val rect = XRect(centre, cellSize, cellSize, style)
+        val rect = XRoundedRect(centre, cellSize*size, cellSize*size, cornerRad = 0.5, dStyle = style)
 
         // println("cellSize = $cellSize")
-        val tStyle = TStyle(size = cellSize)
+        val tStyle = TStyle(size = cellSize * size)
         val text = XText(" ", centre, tStyle, style)
 
         style.fg = XColor.red  // colors[a[i][j]]

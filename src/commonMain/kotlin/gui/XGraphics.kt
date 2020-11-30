@@ -160,6 +160,27 @@ data class XRect(
     override fun radius()= max(w/2,h/2)
 }
 
+data class XRoundedRect(
+    override var centre: Vec2d, var w: Double, var h: Double,
+    var cornerRad:Double = 0.025,
+    var radInPercent: Boolean = true,  // specifies whether percent or pixels
+    override var dStyle: XStyle = XStyle(), override var rotation: Double = 0.0
+) : GeomDrawable {
+
+    // the contains method is not accurate yet -
+    // currently it is just for a standard Rectangle, not a rounded one
+    override fun contains(p: Vec2d?): Boolean {
+        if (p == null) return false
+        // also need to cope with rotation
+        // - so transform the point first, then counter-rotate it
+
+        val tp = (p-centre).rotatedBy(-rotation)
+        return abs(tp.x) <= w/2 && abs(tp.y) <= h/2
+    }
+
+    override fun radius()= max(w/2,h/2)
+}
+
 
 data class XEllipse(
     override var centre: Vec2d, var w: Double, var h:

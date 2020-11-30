@@ -8,11 +8,9 @@ import java.awt.event.KeyAdapter
 import java.awt.event.KeyEvent
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
-import java.awt.geom.Ellipse2D
-import java.awt.geom.Line2D
-import java.awt.geom.Path2D
-import java.awt.geom.Rectangle2D
+import java.awt.geom.*
 import javax.swing.JComponent
+import kotlin.math.min
 
 class EasyComponent(val prefWidth: Int = 600, val prefHeight: Int = 400) : JComponent() {
     override fun getPreferredSize() = Dimension(prefWidth, prefHeight)
@@ -118,7 +116,7 @@ class XGraphicsJVM(val jc: JComponent) : XGraphics {
     }
 
     override fun setTranslate(x: Double, y: Double) {
-        graphics2D?.let { it.translate(x,y) }
+        graphics2D?.let { it.translate(x, y) }
     }
 
     override fun width(): Double {
@@ -145,6 +143,7 @@ class XGraphicsJVM(val jc: JComponent) : XGraphics {
             }
 
             if (toDraw is XRect) drawRect(toDraw)
+            if (toDraw is XRoundedRect) drawRoundedRect(toDraw)
             if (toDraw is XEllipse) drawEllipse(toDraw)
             if (toDraw is XPoly) drawPoly(toDraw)
             if (toDraw is XLine) drawLine(toDraw)
@@ -170,7 +169,34 @@ class XGraphicsJVM(val jc: JComponent) : XGraphics {
                 val at = g.transform
                 g.translate(centre.x, centre.y)
                 g.rotate(rotation)
-                val r2d = Rectangle2D.Double(-w / 2, - h / 2, w, h)
+                val r2d = Rectangle2D.Double(-w / 2, -h / 2, w, h)
+                with(rect.dStyle) {
+                    if (fill) {
+                        g.color = getColor(fg)
+                        g.fill(r2d)
+                    }
+                    if (stroke) {
+                        g.color = getColor(lc) // Color(lc.r.toFloat(), lc.g.toFloat(), lc.b.toFloat())
+                        g.stroke = BasicStroke(lineWidth.toFloat())
+                        g.draw(r2d)
+                    }
+                }
+                g.transform = at
+            }
+        }
+    }
+
+    fun drawRoundedRect(rect: XRoundedRect) {
+        val g = graphics2D
+        if (g != null) {
+            with(rect) {
+                val at = g.transform
+                g.translate(centre.x, centre.y)
+                g.rotate(rotation)
+                val arc =
+                    if (rect.radInPercent) min(w, h) * cornerRad
+                    else cornerRad
+                val r2d = RoundRectangle2D.Double(-w / 2, -h / 2, w, h, arc, arc)
                 with(rect.dStyle) {
                     if (fill) {
                         g.color = getColor(fg)
@@ -194,7 +220,7 @@ class XGraphicsJVM(val jc: JComponent) : XGraphics {
                 val at = g.transform
                 g.translate(centre.x, centre.y)
                 g.rotate(rotation)
-                val r2d = Ellipse2D.Double(-w / 2, - h / 2, w, h)
+                val r2d = Ellipse2D.Double(-w / 2, -h / 2, w, h)
                 with(ellipse.dStyle) {
                     if (fill) {
                         g.color = getColor(fg)
