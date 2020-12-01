@@ -18,6 +18,12 @@ repositories {
     jcenter()
 }
 
+repositories {
+    maven {
+        url  "https://dl.bintray.com/kotlin/kotlinx.html"
+    }
+}
+
 group 'com.example'
 version '0.0.1'
 
@@ -62,6 +68,8 @@ kotlin {
         jvmMain {
             dependencies {
                 implementation kotlin('stdlib-jdk8')
+                implementation("org.jetbrains.kotlinx:kotlinx-html-js:0.7.1")
+
             }
         }
         jvmTest {
@@ -74,6 +82,9 @@ kotlin {
             dependencies {
                 implementation kotlin('stdlib-js')
                 implementation("org.jetbrains.kotlinx:kotlinx-html-js:0.7.1")
+
+
+
                 // implementation("org.jetbrains.kotlinx")
 
             }

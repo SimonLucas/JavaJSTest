@@ -10633,6 +10633,43 @@
     simpleName: 'AsteroidsTest',
     interfaces: []
   };
+  function FormCreateTest() {
+    var tmp$, tmp$_0;
+    try {
+      var button = Kotlin.isType(tmp$ = document.getElementById('addText'), HTMLButtonElement) ? tmp$ : throwCCE();
+      println('Button element: ' + button);
+      var para = Kotlin.isType(tmp$_0 = document.getElementById('testPara'), HTMLParagraphElement) ? tmp$_0 : throwCCE();
+      button.onclick = FormCreateTest_init$lambda(para, this);
+      this.addText_0('default', para);
+    } catch (e) {
+      if (Kotlin.isType(e, Exception)) {
+        println(e);
+      } else
+        throw e;
+    }
+  }
+  FormCreateTest.prototype.addText_0 = function (message, para) {
+    if (message === void 0)
+      message = 'Hello';
+    println('Called addText: ' + message + ' ,  ' + para);
+    for (var index = 0; index < 10; index++) {
+      var el = document.createElement('h2');
+      println(el);
+      el.innerHTML = index.toString() + ' ';
+      para.appendChild(el);
+    }
+  };
+  function FormCreateTest_init$lambda(closure$para, this$FormCreateTest) {
+    return function (it) {
+      this$FormCreateTest.addText_0('clicked', closure$para);
+      return Unit;
+    };
+  }
+  FormCreateTest.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'FormCreateTest',
+    interfaces: []
+  };
   function PolyTest() {
     var tmp$;
     this.context = Kotlin.isType(tmp$ = canvas.getContext('2d'), CanvasRenderingContext2D) ? tmp$ : throwCCE();
@@ -11986,6 +12023,7 @@
   package$util.URLUtil = URLUtil;
   package$sample.ArticleMultiCanvas = ArticleMultiCanvas;
   package$sample.AsteroidsTest = AsteroidsTest;
+  package$sample.FormCreateTest = FormCreateTest;
   package$sample.PolyTest = PolyTest;
   package$sample.Sample = Sample;
   Object.defineProperty(package$sample, 'Platform', {
