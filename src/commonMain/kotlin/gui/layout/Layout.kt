@@ -1,9 +1,7 @@
 package gui.layout
 
-import games.arcade.ArcadeTestApp
 import gui.*
 import math.Vec2d
-import kotlin.math.exp
 
 
 enum class Horizontal { Left, Center, Right, Any }

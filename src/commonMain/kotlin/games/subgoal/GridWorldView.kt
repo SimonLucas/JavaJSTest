@@ -7,11 +7,8 @@ import gui.XColor.Companion.gray
 import gui.XColor.Companion.green
 import gui.XColor.Companion.magenta
 import gui.XColor.Companion.red
-import gui.geometry.Poly
 import math.IntVec2d
 import math.Vec2d
-import math.iv
-import kotlin.math.PI
 import kotlin.math.min
 
 //

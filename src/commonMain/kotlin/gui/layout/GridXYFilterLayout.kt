@@ -1,14 +1,7 @@
 package gui.layout
 
-import agents.MctsAgent
-import agents.PolicyEvoAgent
-import agents.RandomAgent
-import agents.SimpleEvoAgent
 import evo.GridDataSource
 import evo.GridDataView
-import evo.SimpleGridView
-import games.arcade.ArcadeTestApp
-import games.arcade.SpriteEngineApp
 import gui.*
 
 class GridXYFilterLayout(

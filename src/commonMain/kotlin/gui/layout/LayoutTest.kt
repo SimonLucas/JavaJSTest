@@ -1,10 +1,6 @@
 package gui.layout
 
-import agents.MctsAgent
 import agents.PolicyEvoAgent
-import agents.RandomAgent
-import agents.SimpleEvoAgent
-import games.arcade.ArcadeTestApp
 import games.arcade.SpriteEngineApp
 import gui.*
 

@@ -1,7 +1,6 @@
 package gui
 
 import math.Vec2d
-import kotlin.math.PI
 import kotlin.random.Random
 
 // fun t() {}

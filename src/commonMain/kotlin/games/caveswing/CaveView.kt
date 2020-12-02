@@ -1,10 +1,10 @@
 package games.caveswing
 
-import agents.random
 import games.caveswing.CaveView.Companion.rand
 import gui.*
 import math.Vec2d
 import util.Picker
+import kotlin.math.PI
 import kotlin.math.sin
 import kotlin.random.Random
 
@@ -90,16 +90,22 @@ class CaveView () {
             xg.setTranslate(-xScroll, 0.0)
         }
         // have to paint the score last so that it is not obscured by any game objects
-        // paintScore(xg)
+        paintScore(xg)
         nPaints++
     }
 
     private fun placeStars(xg: XGraphics) {
         val nStars = 100
         stars.clear()
-        repeat(nStars) {
-            val star = Star(Vec2d(rand.nextDouble(xg.width()), rand.nextDouble(xg.height())))
-            stars.add( star )
+        params?.let {
+            val w = it.width.toDouble()
+            val h = it.height.toDouble()
+            repeat(nStars) {
+                val s = Vec2d(rand.nextDouble(w), rand.nextDouble(h))
+                val star = Star(s)
+                stars.add(star)
+            }
+            // println("Placed $nStars stars")
         }
     }
 
@@ -131,12 +137,14 @@ class CaveView () {
         }
     }
 
-//    private fun paintScore(g: Graphics2D) {
-//        g.setColor(java.awt.Color.white)
-//        val score = gameState!!.score().toInt()
-//        val message: String = String.format("%d", score)
-//        scoreDraw.centreString(g, message, getWidth() / 2, scoreFontSize)
-//    }
+    private fun paintScore(xg: XGraphics) {
+        gameState?.let {
+            val str = "Score: ${it.score().toInt()}"
+            val style = TStyle(fg = XColor.white, size = xg.height()/20)
+            val xText = XText(str, Vec2d(xg.centre().x, xg.height() / 10), tStyle = style)
+            xg.draw(xText)
+        }
+    }
 
 //    private fun drawPlayouts(g: Graphics2D) {
 //        try {
@@ -172,6 +180,20 @@ class CaveView () {
     }
 
     private fun paintZones(xg: XGraphics) {
+
+        params?.let {
+            val deadStyle = XStyle(fg= deadZone, stroke = false)
+            val deadZoneRect = XRect(Vec2d(-zoneWidth/2.0, xg.height()/2 ),
+                zoneWidth.toDouble(), xg.height(),
+                deadStyle
+            )
+            xg.draw(deadZoneRect)
+            val topRect = XRect(Vec2d(it.width/2.0, borderRatio * it.height / 2),
+                it.width.toDouble(), it.height * borderRatio, deadStyle
+            )
+            xg.draw(topRect)
+        }
+
 //        val (_, _, _, _, width, _, _, _, _, _, _, _, _, _, sandpit1) = internalState!!.params
 //        g.setColor(deadZone)
 //        g.fillRect(-zoneWidth, 0, zoneWidth, getHeight())
@@ -187,27 +209,28 @@ class CaveView () {
 //            val pitWidth = ((1 - sandpit1) * width).toInt()
 //            g.fillRect(xPit, getHeight() - getHeight() / borderRatio, pitWidth, getHeight() / borderRatio)
 //        }
+
     }
 
 
     companion object {
         var ropeColor = XColor(0.6f, 0.12f, 0.12f)
         var ropeStyle = XStyle(fg = ropeColor, lineWidth = 4.0)
-        var zoneWidth = 200
+        var zoneWidth = 400
         var goalRatio = 10
-        var borderRatio = 20
+        var borderRatio = 0.05
         var rand = Random(1)
     }
 }
 
 class Star (val s: Vec2d){
     val inc = 0.05 * (1.0 + rand.nextDouble() * 0.5)
-    var shine = rand.nextDouble()
+    var shine = rand.nextDouble(2 * PI)
     fun draw(xg: XGraphics) {
         shine += inc
         val bright = (1 + sin(shine)).toFloat() / 2
-        val grey = XColor(bright, 1 - bright, bright)
-        val rect = XEllipse(s, 2.0, 2.0, XStyle(fg = grey))
+        val col = XColor(bright, 1 - bright, bright)
+        val rect = XEllipse(s, 3.0, 3.0, XStyle(fg = col, stroke = false))
         xg.draw(rect)
     }
 }

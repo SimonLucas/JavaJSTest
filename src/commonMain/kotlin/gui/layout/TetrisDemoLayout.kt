@@ -1,8 +1,6 @@
 package gui.layout
 
 import agents.PolicyEvoAgent
-import agents.SimpleEvoAgent
-import games.arcade.ArcadeTestApp
 import games.tetris.TetrisController
 import games.tetris.TetrisModel
 import gui.*
