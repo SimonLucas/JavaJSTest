@@ -180,18 +180,27 @@ class CaveView () {
     }
 
     private fun paintZones(xg: XGraphics) {
-
         params?.let {
+            val h = xg.height()
             val deadStyle = XStyle(fg= deadZone, stroke = false)
-            val deadZoneRect = XRect(Vec2d(-zoneWidth/2.0, xg.height()/2 ),
-                zoneWidth.toDouble(), xg.height(),
+            val deadZoneRect = XRect(Vec2d(-zoneWidth/2.0, h/2 ),
+                zoneWidth.toDouble(), h,
                 deadStyle
             )
             xg.draw(deadZoneRect)
-            val topRect = XRect(Vec2d(it.width/2.0, borderRatio * it.height / 2),
-                it.width.toDouble(), it.height * borderRatio, deadStyle
+            val topRect = XRect(Vec2d(it.width/2.0, borderRatio * h / 2),
+                it.width.toDouble(), h * borderRatio, deadStyle
             )
             xg.draw(topRect)
+            val bottomRect = XRect(Vec2d(it.width/2.0, h - borderRatio * h / 2),
+                it.width.toDouble(), h * borderRatio, deadStyle
+            )
+            xg.draw(bottomRect)
+            deadStyle.fg = finishZone
+            val finishRect = XRect(Vec2d(it.width + zoneWidth/2.0, h/2),
+                zoneWidth.toDouble(), xg.height(), deadStyle
+            )
+            xg.draw(finishRect)
         }
 
 //        val (_, _, _, _, width, _, _, _, _, _, _, _, _, _, sandpit1) = internalState!!.params
