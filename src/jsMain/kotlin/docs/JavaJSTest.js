@@ -3848,16 +3848,22 @@
     this.paintItems_0(xg);
     if (this.scrollView) {
       xg.setTranslate_lu1900$(-xScroll, 0.0);
-    }this.nPaints = this.nPaints + 1 | 0;
+    }this.paintScore_0(xg);
+    this.nPaints = this.nPaints + 1 | 0;
   };
   CaveView.prototype.placeStars_0 = function (xg) {
+    var tmp$;
     var nStars = 100;
     this.stars.clear();
-    for (var index = 0; index < nStars; index++) {
-      var star = new Star(new Vec2d(CaveView$Companion_getInstance().rand.nextDouble_14dthe$(xg.width()), CaveView$Companion_getInstance().rand.nextDouble_14dthe$(xg.height())));
-      this.stars.add_11rb$(star);
-    }
-  };
+    if ((tmp$ = this.params) != null) {
+      var w = tmp$.width;
+      var h = tmp$.height;
+      for (var index = 0; index < nStars; index++) {
+        var s = new Vec2d(CaveView$Companion_getInstance().rand.nextDouble_14dthe$(w), CaveView$Companion_getInstance().rand.nextDouble_14dthe$(h));
+        var star = new Star(s);
+        this.stars.add_11rb$(star);
+      }
+    }};
   CaveView.prototype.paintAnchors_0 = function (xg, avatar, anchors) {
     var picker = new Picker(Picker$Companion_getInstance().MIN_FIRST);
     var tmp$;
@@ -3884,6 +3890,14 @@
     if (anchor != null) {
       xg.draw_dvdmun$(new XLine(s, anchor, CaveView$Companion_getInstance().ropeStyle));
     }};
+  CaveView.prototype.paintScore_0 = function (xg) {
+    var tmp$;
+    if ((tmp$ = this.gameState) != null) {
+      var str = 'Score: ' + numberToInt(tmp$.score());
+      var style = new TStyle(XColor$Companion_getInstance().white, void 0, xg.height() / 20);
+      var xText = new XText(str, new Vec2d(xg.centre().x, xg.height() / 10), style);
+      xg.draw_dvdmun$(xText);
+    }};
   CaveView.prototype.paintStars_0 = function (xg) {
     var tmp$;
     tmp$ = this.stars.iterator();
@@ -3893,14 +3907,27 @@
     }
   };
   CaveView.prototype.paintZones_0 = function (xg) {
-  };
+    var tmp$;
+    if ((tmp$ = this.params) != null) {
+      var h = xg.height();
+      var deadStyle = new XStyle(this.deadZone, void 0, void 0, false);
+      var deadZoneRect = new XRect(new Vec2d((-CaveView$Companion_getInstance().zoneWidth | 0) / 2.0, h / 2), CaveView$Companion_getInstance().zoneWidth, h, deadStyle);
+      xg.draw_dvdmun$(deadZoneRect);
+      var topRect = new XRect(new Vec2d(tmp$.width / 2.0, CaveView$Companion_getInstance().borderRatio * h / 2), tmp$.width, h * CaveView$Companion_getInstance().borderRatio, deadStyle);
+      xg.draw_dvdmun$(topRect);
+      var bottomRect = new XRect(new Vec2d(tmp$.width / 2.0, h - CaveView$Companion_getInstance().borderRatio * h / 2), tmp$.width, h * CaveView$Companion_getInstance().borderRatio, deadStyle);
+      xg.draw_dvdmun$(bottomRect);
+      deadStyle.fg = this.finishZone;
+      var finishRect = new XRect(new Vec2d(tmp$.width + CaveView$Companion_getInstance().zoneWidth / 2.0, h / 2), CaveView$Companion_getInstance().zoneWidth, xg.height(), deadStyle);
+      xg.draw_dvdmun$(finishRect);
+    }};
   function CaveView$Companion() {
     CaveView$Companion_instance = this;
     this.ropeColor = new XColor(0.6, 0.12, 0.12);
     this.ropeStyle = new XStyle(this.ropeColor, void 0, void 0, void 0, void 0, 4.0);
-    this.zoneWidth = 200;
+    this.zoneWidth = 400;
     this.goalRatio = 10;
-    this.borderRatio = 20;
+    this.borderRatio = 0.05;
     this.rand = Random_0(1);
   }
   CaveView$Companion.$metadata$ = {
@@ -3922,14 +3949,14 @@
   function Star(s) {
     this.s = s;
     this.inc = 0.05 * (1.0 + CaveView$Companion_getInstance().rand.nextDouble() * 0.5);
-    this.shine = CaveView$Companion_getInstance().rand.nextDouble();
+    this.shine = CaveView$Companion_getInstance().rand.nextDouble_14dthe$(2 * math.PI);
   }
   Star.prototype.draw_vzjx8w$ = function (xg) {
     this.shine += this.inc;
     var x = this.shine;
     var bright = (1 + Math_0.sin(x)) / 2;
-    var grey = new XColor(bright, 1 - bright, bright);
-    var rect = new XEllipse(this.s, 2.0, 2.0, new XStyle(grey));
+    var col = new XColor(bright, 1 - bright, bright);
+    var rect = new XEllipse(this.s, 3.0, 3.0, new XStyle(col, void 0, void 0, false));
     xg.draw_dvdmun$(rect);
   };
   Star.$metadata$ = {
@@ -4370,7 +4397,7 @@
   }
   LetterTile.prototype.draw_pxm805$ = function (xg, centre, cellSize, ch) {
     var style = new XStyle();
-    var rect = new XRoundedRect(centre, cellSize * this.size, cellSize * this.size, 0.5, void 0, style);
+    var rect = new XRoundedRect(centre, cellSize * this.size, cellSize * this.size, 0.1, void 0, style);
     var tStyle = new TStyle(void 0, void 0, cellSize * this.size);
     var text = new XText(' ', centre, tStyle, style);
     style.fg = XColor$Companion_getInstance().red;
@@ -6097,6 +6124,16 @@
   }
   SubGridState.prototype.toString = function () {
     return (new SubGridSnap(this.s, this.score(), this.subgoalReached)).toString();
+  };
+  SubGridState.prototype.equals = function (other) {
+    var tmp$;
+    if (Kotlin.isType(other, SubGridState))
+      return (tmp$ = this.s) != null ? tmp$.equals(other.s) : null;
+    else
+      return false;
+  };
+  SubGridState.prototype.hashCode = function () {
+    return this.s.hashCode();
   };
   SubGridState.prototype.next_q5rwfd$ = function (actions) {
     this.next_za3lpa$(actions[0]);
@@ -12069,8 +12106,8 @@
   ColorGradientApp.prototype.handleMouseEvent_x4hb96$ = XApp.prototype.handleMouseEvent_x4hb96$;
   ColorGradientApp.prototype.handleKeyEvent_wtf8cg$ = XApp.prototype.handleKeyEvent_wtf8cg$;
   HelloXKG.prototype.handleKeyEvent_wtf8cg$ = XApp.prototype.handleKeyEvent_wtf8cg$;
-  GridXYFilterLayout.prototype.handleMouseEvent_x4hb96$ = XApp.prototype.handleMouseEvent_x4hb96$;
   GridXYFilterLayout.prototype.handleKeyEvent_wtf8cg$ = XApp.prototype.handleKeyEvent_wtf8cg$;
+  GridXYFilterLayout.prototype.handleMouseEvent_x4hb96$ = XApp.prototype.handleMouseEvent_x4hb96$;
   XGraphicsJS.prototype.centre = XGraphics.prototype.centre;
   XGraphicsJS.prototype.restoreTransform = XGraphics.prototype.restoreTransform;
   XGraphicsJS.prototype.saveTransform = XGraphics.prototype.saveTransform;

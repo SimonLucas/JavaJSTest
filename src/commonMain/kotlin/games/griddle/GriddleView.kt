@@ -145,7 +145,7 @@ class LetterTile {
     var size = 0.9
     fun draw(xg: XGraphics, centre: Vec2d, cellSize: Double, ch: Char) {
         val style = XStyle()
-        val rect = XRoundedRect(centre, cellSize*size, cellSize*size, cornerRad = 0.5, dStyle = style)
+        val rect = XRoundedRect(centre, cellSize*size, cellSize*size, cornerRad = 0.1, dStyle = style)
 
         // println("cellSize = $cellSize")
         val tStyle = TStyle(size = cellSize * size)
