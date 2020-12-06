@@ -5,13 +5,15 @@ import ggi.AbstractGameState
 import ggi.SimplePlayerInterface
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.HashSet
 import kotlin.random.Random
 
 
 
 class GraphLearner(val filters: ArrayList<StateFilter>) {
     val models = ArrayList<FilterTransitionModel>()
-    val agent = ActionExplorerAgent(models)
+    // val agent = ActionExplorerAgent(models)
+    val agent = RandomAgent()
 
     init {
         for (f in filters) {
@@ -19,7 +21,9 @@ class GraphLearner(val filters: ArrayList<StateFilter>) {
         }
     }
 
-    val states = ArrayList<AbstractGameState>()
+    // val states = ArrayList<AbstractGameState>()
+
+    val states = HashSet<AbstractGameState>()
 
     fun gatherStats(state: AbstractGameState, seqLen: Int) {
         recordVisit(state)
@@ -44,8 +48,11 @@ class GraphLearner(val filters: ArrayList<StateFilter>) {
         // so do it separately for each filter model
         // and for now choose one at random
 
+        // todo: make the experimental setup easier to select the various models
+
+
         var ix =  Random.nextInt(2) // Random.nextInt(models.size)
-        ix = Random.nextInt(models.size)
+        // ix = Random.nextInt(models.size)
         val model = models[ix]
         return model.leastVisited(states)
 //        val rand = Random.nextInt(states.size)

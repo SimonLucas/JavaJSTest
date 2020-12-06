@@ -15,6 +15,16 @@ class SubGridState (var s: IntVec2d, val grid: SubGridWorld, var nTicksX:Int=0,
         return SubGridSnap(s, score(), subgoalReached ).toString()
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (other is SubGridState)
+            return s == other.s
+        else return false
+    }
+
+    override fun hashCode(): Int {
+        return s.hashCode()
+    }
+
     override fun next(actions: IntArray): AbstractGameState {
         next(actions[0])
         return this

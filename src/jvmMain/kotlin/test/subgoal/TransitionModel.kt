@@ -17,20 +17,33 @@ fun main() {
 
 }
 
+data class GridDemoControl(
+    var useXFilter: Boolean = true,
+    var useYFilter: Boolean = true,
+    var useXYFilter: Boolean = true,
+    var useRFilter: Boolean = true,
+    var useThetaFilter: Boolean = true,
+    var useRTHetaFilter: Boolean = true,
+    var useComboFilter: Boolean = true,
+    var useHashSet: Boolean = true,
+)
+
 class TransitionModelTest(val explore: Boolean = true) {
 
     val level = Levels.noSubgoals
     val gridWorld = SubGridWorld(level)
 
     var gx = GridXFilter()
-    var gy =  GridYFilter()
+    var gy = GridYFilter()
     var gxy = GridXYFilter()
+    var gr = GridRFilter()
 
-    // might make a filterbank class for convenience
+    // might make a Filterbank class for convenience
     var filters = arrayListOf<StateFilter>(
         gx,
         gy,
         gxy,
+        gr,
     )
 
     // val test = TransitionModel(filters, explore)
@@ -195,21 +208,36 @@ class FilterTransitionModel(val filter: StateFilter) {
                 if (nTries == null) nTries = 0
                 picker.add(nTries + Random.nextDouble(eps), it)
             }
-            picker.best?.let{return it}
+            picker.best?.let { return it }
         }
         println("No count, Returning random action in SF: $state")
         return Random.nextInt(state.nActions())
     }
 
-    fun leastVisited(states: java.util.ArrayList<AbstractGameState>): AbstractGameState? {
-        val eps = 0.1
+//    fun leastVisited(states: ArrayList<AbstractGameState>): AbstractGameState? {
+//        val eps = 0.1
+//        val picker = Picker<AbstractGameState>(Picker.MIN_FIRST)
+//        for (s in states) {
+//            val key = filter.cp().setKey(s)
+//            var n = count[key]
+//            if (n == null) n = 0
+//            picker.add(n + Random.nextDouble(eps),  s)
+//        }
+//        return picker.best
+//    }
+
+    fun leastVisited(states: Iterable<AbstractGameState>): AbstractGameState? {
+        val eps = 1e5
         val picker = Picker<AbstractGameState>(Picker.MIN_FIRST)
+        var size = 0
         for (s in states) {
+            size++
             val key = filter.cp().setKey(s)
             var n = count[key]
             if (n == null) n = 0
-            picker.add(n + Random.nextDouble(eps),  s)
+            picker.add(n + Random.nextDouble(eps), s)
         }
+        println("Considered $size states")
         return picker.best
     }
 }
@@ -238,7 +266,6 @@ class ActionExplorerAgent(val models: ArrayList<FilterTransitionModel>) : Simple
 }
 
 // class GraphLearn
-
 
 
 class TransitionModel(val filters: ArrayList<StateFilter>, val explorer: Boolean = true) {

@@ -3,6 +3,18 @@ package test.subgoal
 import evo.GridDataSource
 import games.subgoal.SubGridState
 import math.IntVec2d
+import math.Vec2d
+
+data class GridRFilter(var r: Double = 0.0) : StateFilter {
+    // pick an arbitrary point, but not on a grid line
+    val origin = Vec2d(0.1, 0.2)
+    override fun setKey(state: Any): StateFilter {
+        if (state is SubGridState) r = origin.distanceTo(state.s.toVec())
+        return this
+    }
+
+    override fun cp(): StateFilter = copy()
+}
 
 data class GridXFilter(var x: Int = 0) : StateFilter {
     override fun setKey(state: Any): StateFilter {
