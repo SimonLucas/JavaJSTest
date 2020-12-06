@@ -12,7 +12,9 @@ fun main() {
 }
 
 
-class TetrisTransitionModelTest {
+class TetrisTransitionModelTest (
+    var control: GridDemoControl = GridDemoControl()
+        ){
 
     fun runModel(nRolls: Int = 10, seqLength: Int = 100): TransitionModel {
 
@@ -22,7 +24,7 @@ class TetrisTransitionModelTest {
             // TetrisWallFilter(),
         )
 
-        val test = TransitionModel(filters)
+        val test = TransitionModel(filters, control)
         val state = TetrisGame()
 
         repeat(nRolls) {

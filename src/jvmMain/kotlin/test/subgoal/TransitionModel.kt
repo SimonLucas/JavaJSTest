@@ -7,7 +7,6 @@ import games.subgoal.SubGridState
 import games.subgoal.SubGridWorld
 import ggi.AbstractGameState
 import ggi.SimplePlayerInterface
-import math.IntVec2d
 import util.Picker
 import kotlin.random.Random
 
@@ -26,9 +25,14 @@ data class GridDemoControl(
     var useRTHetaFilter: Boolean = true,
     var useComboFilter: Boolean = true,
     var useHashSet: Boolean = true,
+    var exploringAgent: Boolean = true,
+    var epsilon: Double = 1e-5,
+
 )
 
-class TransitionModelTest(val explore: Boolean = true) {
+class TransitionModelTest(
+    var control: GridDemoControl = GridDemoControl()
+) {
 
     val level = Levels.noSubgoals
     val gridWorld = SubGridWorld(level)
@@ -47,7 +51,7 @@ class TransitionModelTest(val explore: Boolean = true) {
     )
 
     // val test = TransitionModel(filters, explore)
-    val test = GraphLearner(filters)
+    val test = GraphLearner(filters, control)
 
     fun runModel(nRolls: Int = 10, seqLength: Int = 20): TransitionModelTest {
         // test.initTables()
@@ -139,7 +143,7 @@ class ActionCounter {
     }
 }
 
-class FilterTransitionModel(val filter: StateFilter) {
+class FilterTransitionModel(val filter: StateFilter, val control: GridDemoControl) {
     val count = VisitCount()
 
     // val actionCount = ActionCount()
@@ -227,7 +231,7 @@ class FilterTransitionModel(val filter: StateFilter) {
 //    }
 
     fun leastVisited(states: Iterable<AbstractGameState>): AbstractGameState? {
-        val eps = 1e5
+        val eps = control.epsilon
         val picker = Picker<AbstractGameState>(Picker.MIN_FIRST)
         var size = 0
         for (s in states) {
@@ -237,7 +241,7 @@ class FilterTransitionModel(val filter: StateFilter) {
             if (n == null) n = 0
             picker.add(n + Random.nextDouble(eps), s)
         }
-        println("Considered $size states")
+        // println("Considered $size states, found: ${picker.best} with ${picker.bestScore}")
         return picker.best
     }
 }
@@ -268,15 +272,15 @@ class ActionExplorerAgent(val models: ArrayList<FilterTransitionModel>) : Simple
 // class GraphLearn
 
 
-class TransitionModel(val filters: ArrayList<StateFilter>, val explorer: Boolean = true) {
+class TransitionModel(val filters: ArrayList<StateFilter>, val control: GridDemoControl) {
     val models = ArrayList<FilterTransitionModel>()
     var agent: SimplePlayerInterface = RandomAgent()
 
     init {
         for (f in filters) {
-            models.add(FilterTransitionModel(f))
+            models.add(FilterTransitionModel(f, control))
         }
-        if (explorer)
+        if (control.exploringAgent)
             agent = ActionExplorerAgent(models)
     }
 

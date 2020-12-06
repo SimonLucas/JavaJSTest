@@ -3,27 +3,33 @@ package test.subgoal
 import agents.RandomAgent
 import ggi.AbstractGameState
 import ggi.SimplePlayerInterface
-import java.util.*
+import javax.naming.ldap.Control
 import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 import kotlin.random.Random
 
 
 
-class GraphLearner(val filters: ArrayList<StateFilter>) {
+class GraphLearner(val filters: ArrayList<StateFilter>, var control: GridDemoControl) {
     val models = ArrayList<FilterTransitionModel>()
-    // val agent = ActionExplorerAgent(models)
-    val agent = RandomAgent()
+    var agent: SimplePlayerInterface = RandomAgent()
+
+    var states: MutableCollection<AbstractGameState> = ArrayList()
 
     init {
         for (f in filters) {
-            models.add(FilterTransitionModel(f))
+            models.add(FilterTransitionModel(f, control))
         }
+        if (control.exploringAgent) {
+            agent = ActionExplorerAgent(models)
+            println(agent)
+        }
+        if (control.useHashSet) {
+            states = HashSet()
+        }
+        println("States collection: $states  is Hashset? ${states is HashSet}")
     }
 
-    // val states = ArrayList<AbstractGameState>()
-
-    val states = HashSet<AbstractGameState>()
 
     fun gatherStats(state: AbstractGameState, seqLen: Int) {
         recordVisit(state)
@@ -51,9 +57,11 @@ class GraphLearner(val filters: ArrayList<StateFilter>) {
         // todo: make the experimental setup easier to select the various models
 
 
+
         var ix =  Random.nextInt(2) // Random.nextInt(models.size)
         // ix = Random.nextInt(models.size)
-        val model = models[ix]
+        var model = models[ix]
+        // model = models[0]
         return model.leastVisited(states)
 //        val rand = Random.nextInt(states.size)
 //        println("Selecting state: $rand: ${states[rand]}")

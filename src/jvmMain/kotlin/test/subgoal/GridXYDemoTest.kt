@@ -4,12 +4,16 @@ import gui.layout.GridXYFilterLayout
 import test.launch.AppLauncher
 
 fun main() {
-    val control = GridDemoControl()
-    val transTest = TransitionModelTest(explore = false).runModel(10, 200)
+
+    // todo: record the path from the current state to each
+    // position in the graph...
+
+    val control = GridDemoControl(useHashSet = true)
+
+    val transTest = TransitionModelTest(control).runModel(20, 100)
     AppLauncher(GridXYFilterLayout(
         transTest.getXYDataSource(),
         transTest.getXDataSource(),
         transTest.getYDataSource()
     )).launch()
-
 }
