@@ -1,5 +1,7 @@
 *.iml
 .idea/
+.gradle/
+
 out/
 build/
 
@@ -10,8 +12,5 @@ build/
 !experiments/**/*.csv
 *.orig
 *.kotlin_module
-*.lock
-*.bin
-*.bin
 *.lock
 *.bin
