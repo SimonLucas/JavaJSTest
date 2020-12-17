@@ -1,17 +1,8 @@
-import {highlightCollisions} from "./chessboard_utils.js";
+import {highlightCollisions, example_positions} from "./chessboard_utils.js";
 
 let board = Chessboard('board-letsplay', {
     draggable: true,
-    position: {
-        a1: "bQ",
-        b2: "bQ",
-        c3: "bQ",
-        d4: "bQ",
-        e5: "bQ",
-        f6: "bQ",
-        g7: "bQ",
-        h8: "bQ",
-    },
+    position: example_positions[0],
     onDrop: onDrop
 });
 

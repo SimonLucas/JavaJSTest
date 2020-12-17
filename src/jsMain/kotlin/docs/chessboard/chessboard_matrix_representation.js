@@ -1,18 +1,9 @@
-import {squareClass, position_to_binary_board, field_to_index, index_to_field} from "./chessboard_utils.js";
+import {squareClass, position_to_binary_board, field_to_index, index_to_field, example_positions} from "./chessboard_utils.js";
 
 // setup board
 let board = Chessboard('board-for-matrix-representation', {
     draggable: false,
-    position: {
-        a1: "bQ",
-        b2: "bQ",
-        c3: "bQ",
-        d4: "bQ",
-        e5: "bQ",
-        f6: "bQ",
-        g7: "bQ",
-        h8: "bQ",
-    },
+    position: example_positions[0],
 });
 let $board = $('#board-for-matrix-representation');
 

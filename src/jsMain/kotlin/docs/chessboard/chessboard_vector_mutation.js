@@ -1,9 +1,9 @@
 import {position_to_column_vector, field_to_index, index_to_field, example_positions} from "./chessboard_utils.js";
 
 initializeBoards([
-    ["board-vector-example-1", "#board-vector-1"],
-    ["board-vector-example-2", "#board-vector-2"],
-    ["board-vector-example-3", "#board-vector-3"]
+    ["board-vector-mutation-1", "#vector-mutation-1"],
+    ["board-vector-mutation-2", "#vector-mutation-2"],
+    ["board-vector-mutation-3", "#vector-mutation-3"]
 ]);
 
 function initializeBoards(boardContainers){

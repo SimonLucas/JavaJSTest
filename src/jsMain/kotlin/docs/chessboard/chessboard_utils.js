@@ -187,3 +187,47 @@ export function index_to_field(index){
     let col = index_to_col_name[index%8];
     return col+row;
 }
+
+/**
+ *
+ * @returns {[]}
+ */
+export function random_vector(){
+    let x = [];
+    for (let i = 0; i < 8; i++){
+        x[i] = Math.floor(Math.random() * 8);
+    }
+    return x;
+}
+
+export const example_positions = [
+    {
+        a1: "bQ",
+        b2: "bQ",
+        c3: "bQ",
+        d4: "bQ",
+        e5: "bQ",
+        f6: "bQ",
+        g7: "bQ",
+        h8: "bQ"
+    },
+    {
+        a4: "bQ",
+        b4: "bQ",
+        c4: "bQ",
+        d4: "bQ",
+        e5: "bQ",
+        f5: "bQ",
+        g5: "bQ",
+        h5: "bQ"},
+    {
+        a6: "bQ",
+        b2: "bQ",
+        c8: "bQ",
+        d4: "bQ",
+        e5: "bQ",
+        f1: "bQ",
+        g7: "bQ",
+        h5: "bQ"
+    },
+];
