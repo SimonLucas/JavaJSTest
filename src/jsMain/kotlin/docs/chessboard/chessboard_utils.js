@@ -104,6 +104,23 @@ export function position_to_column_vector(position){
 }
 
 /**
+ * column vector in which each cell indicates the queens row of the column with the same index is
+ * mapped to board position provided by chessboard.js
+ * @param column_vector:
+ * @returns position json object provided by chessboard.js {[]}
+ */
+export function column_vector_to_position(column_vector){
+    let position = {};
+
+    for(let i=0; i<8; i++){
+        let board_index = index_to_col_name[i] + (8-column_vector[i]);
+        position[board_index] = "bQ";
+    }
+    return position;
+}
+
+
+/**
  *
  * @param position
  * @returns {[][]}
@@ -231,3 +248,22 @@ export const example_positions = [
         h5: "bQ"
     },
 ];
+
+
+export function createVector(tableData, target) {
+    let table = document.createElement('table');
+    let tableBody = document.createElement('tbody');
+
+    let i = 0;
+    tableData.forEach(function(rowData) {
+        let cell = document.createElement('div');
+        cell.appendChild(document.createTextNode(rowData));
+        cell.setAttribute("childIndex", i);
+        tableBody.appendChild(cell);
+        i = i+1;
+    });
+
+    table.appendChild(tableBody);
+    $(target)[0].appendChild(table);
+    return table;
+}
