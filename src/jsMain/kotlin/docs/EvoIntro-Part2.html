@@ -395,9 +395,19 @@
 
     <h2>Crossover</h2>
     <p>
-        Crossover combines the information of two vectors.
+        The crossover is an evolutionary operator that uses two or more candidate solutions to create a new one.
+        The original candidate solutions will be called parents and the resulting individuals will be called childrens respectively.
+        Similar to the mutation operator, a crossover needs to fit the underlying representation of an individual.
+        So far, we have learned about matrix and vector representations and here we will learn some common crossover techniques.
     </p>
 
+    <p>
+        One point Crossover matrix
+    </p>
+
+    <p>
+        The one-point crossover vector
+    </p>
     <div>
         <div style="overflow: hidden; margin: auto auto; width: fit-content">
             <div style="width: fit-content; float:left; margin-left:5px">
@@ -425,8 +435,55 @@
                 <div id="board-vector-crossover-3" style="width: 160px; margin-bottom:5px"></div>
             </div>
         </div>
+        <div class="caption">
+            Move the slider to shift the cutoff point. See how the child changes according to the crossover of its parents.
+        </div>
     </div>
     <script type="module" src="chessboard/chessboard_vector_1point_crossover.js"></script>
+
+    <p>
+        The uniform crossover
+    </p>
+
+    <div>
+        <div style="overflow: hidden; margin: auto auto; width: fit-content">
+            <div style="width: fit-content; float:left; margin-left:5px">
+                <div id="board-uniform-crossover-1" style="width: 160px; margin-bottom:5px"></div>
+
+                <div id="uniform-crossover-1" class="matrixsmall redopac active" style="width: 152px; margin-bottom:5px;  margin-left:2px; margin-right:20px"></div>
+            </div>
+            <div style="width: fit-content; float:left" >
+                <div id="board-uniform-crossover-2" style="width: 160px; margin-bottom:5px; margin-left:20px; margin-right:2px"></div>
+
+                <div id="uniform-crossover-2" class="matrixsmall blueopac active" style="width: 152px; margin-bottom:5px;  margin-left:20px; margin-right:2px"></div>
+            </div>
+        </div>
+        <div style="width: fit-content; margin: auto auto">
+            <div style="overflow: visible;  margin-top: 20px; margin-right:5px">
+                <div id="uniform-crossover-1b" class="matrixsmall redopac" style="width: 152px; margin-bottom:5px;"></div>
+                <div id="uniform-crossover-2b" class="matrixsmall blueopac" style="width: 152px; margin-bottom:5px;"></div>
+            </div>
+        </div>
+        <div style="overflow: hidden; margin: auto auto; width: fit-content; margin-top:20px">
+            <div style="width:fit-content; float:left; margin-right:5px; margin-left:5px">
+                <div id="uniform-crossover-3" class="matrixsmall" style="width: 152px; margin-bottom:5px; margin-left:2px; margin-right: 2px"></div>
+
+                <div id="board-uniform-crossover-3" style="width: 160px; margin-bottom:5px"></div>
+            </div>
+        </div>
+        <div class="caption">
+            Click on the parents in the middle to choose which number should be inherited by the child.
+            See how the child changes according to the crossover of its parents.
+        </div>
+    </div>
+    <script type="module" src="chessboard/chessboard_vector_uniform_crossover.js"></script>
+
+
+    <p>
+        Cycle Crossover
+    </p>
+
+
 
     <dt-cite key="gregor2015draw"></dt-cite>
 
