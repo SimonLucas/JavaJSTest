@@ -56,7 +56,7 @@ function updateVectors(value, divsParent1, divsParent2){
 
         divsChild[i].innerHTML = 8-newVector[i];
     }
-    console.log(newVector, column_vector_to_position(newVector));
+    //console.log(newVector, column_vector_to_position(newVector));
 
     boards[2].position(column_vector_to_position(newVector));
 }
@@ -67,9 +67,9 @@ function initializeBoards(boardContainers){
         let boardContainer = boardContainers[i][0];
         let vectorContainer = boardContainers[i][1];
         let randomPosition = random_vector();
-        console.log(randomPosition)
+        //console.log(randomPosition)
 
-        console.log(boardContainer);
+        //console.log(boardContainer);
         let board = Chessboard(boardContainer, {
             draggable: false,
             position: column_vector_to_position(randomPosition),

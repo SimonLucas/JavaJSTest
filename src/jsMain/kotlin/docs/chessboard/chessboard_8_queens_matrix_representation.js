@@ -1,19 +1,19 @@
-import {squareClass, position_to_binary_board, field_to_index, index_to_field, example_positions} from "./chessboard_utils.js";
+import {squareClass, position_to_binary_board, field_to_index, index_to_field, example_positions,
+    highlightCollisions} from "./chessboard_utils.js";
 
 // setup board
-let board = Chessboard('board-for-matrix-representation', {
-    draggable: false,
+let board = Chessboard('board-8-queens-matrix', {
+    draggable: true,
     position: example_positions[0],
+    onDrop: onDrop,
+    onSnapbackEnd: onSnapback
 });
-let $board = $('#board-for-matrix-representation');
-
-// add on click event to toggle queens on a field
-$board.find('.' + squareClass).click(function(){ toggleQueenOnBoard(board, this, "#board-matrix-representation"); });
+let $board = $('#board-8-queens-matrix');
 
 // create matrix representation
-let matrix = createMatrix(position_to_binary_board(board.position())[0], "#board-matrix-representation");
-$("div", matrix).click(function(){ toggleQueenOnMatrix(this, board);});
-
+let matrix = createMatrix(position_to_binary_board(board.position())[0], "#board-8-queens-matrix-representation");
+let matrixdivs = $(matrix).find("div");
+//highlightCollisions($board, board.position());
 
 /**
  *
@@ -21,45 +21,26 @@ $("div", matrix).click(function(){ toggleQueenOnMatrix(this, board);});
  * @param chessfield
  * @param linkedmatrix
  */
-function toggleQueenOnBoard(board, chessfield, linkedmatrix){
-    const field = chessfield.getAttribute("data-square");
-    const position = board.position();
-    let divIndex = field_to_index(field);
+function onDrop(source, target, piece, newPos, oldPos, orientation){
+    if (target in oldPos || target === "offboard"){
+        return 'snapback';
+    }
 
-    if (field in position)
-    {
-        delete position[field]; // update board
-        $(linkedmatrix).find("div")[divIndex].innerHTML = 0; // update matrix
-    }
-    else
-    {
-        position[field] = "bQ"; // update board
-        $(linkedmatrix).find("div")[divIndex].innerHTML = 1; // update matrix
-    }
+    const fieldTarget = field_to_index(target);
+    const fieldSource = field_to_index(source);
+    const position = board.position();
+
+    delete position[source];
+    position[target] = "bQ";
+    matrixdivs[fieldSource].innerHTML = 0; // update matrix
+    matrixdivs[fieldTarget].innerHTML = 1; // update matrix
+
     board.position(position);
+    //highlightCollisions($board, board.position())
 }
 
-/**
- *
- * @param diffield
- * @param board
- */
-function toggleQueenOnMatrix(diffield, board) {
-    const index = diffield.getAttribute("childindex");
-    const position = board.position();
-    let field = index_to_field(index);
-
-    if (field in position)
-    {
-        delete position[field]; // update board
-        diffield.innerHTML = 0; // update matrix
-    }
-    else
-    {
-        position[field] = "bQ"; // update board
-        diffield.innerHTML = 1; // update matrix
-    }
-    board.position(position);
+function onSnapback(a, b, newPos, d){
+    //highlightCollisions($board, newPos);
 }
 
 /**
