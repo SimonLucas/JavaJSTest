@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XKG Article</title>
+    <script src="https://distill.pub/template.v1.js"></script>
+    <!--<script src="./bundle.js"></script>-->
+    <!--<script type="text/javascript" src="./kotlin.js"></script>-->
+
+    <link rel="stylesheet" href="chessboard.css">
+    <script type="text/javascript" src="jquery-3.5.1.js"></script>
+    <script type="text/javascript" src="chessboard.js"></script>
+
+    <script type="text/front-matter">
+  title: "Choosing Representation, Mutation, and Crossover in Evolutionary Algorithms"
+  description: "Learn how the choice of representation affects your evolutionary algorithm."
+  authors:
+  - Alexander Dockhorn: https://adockhorn.github.io/
+  - Simon Lucas: https://github.com/SimonLucas/
+  affiliations:
+  - Queen Mary University of London: https://www.qmul.ac.uk/
+  - Queen Mary University of London: https://www.qmul.ac.uk/
+    </script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+    <!--<script type="text/javascript" src="./JavaJSTest.js"></script>-->
+
+    <style>
+        h2 { background-color: lightgray; }
+    </style>
+
+</head>
+<!-- <script type="text/javascript" src="./jquery.js"></script> -->
+<body>
+<dt-article>
+    <h1>Choosing Representation, Mutation, and Crossover in Evolutionary Algorithms</h1>
+    <h4>Learn how the choice of representation affects your evolutionary algorithm.</h4>
+    <h3>Contents</h3>
+    <p></p>
+    <ul id="toc">
+    </ul>
+    <p></p>
+
+    <script language="JavaScript">
+        window.addEventListener('load', function() {
+            //console.log('All assets are loaded here');
+
+            // this loop iteration works fine
+            var tocItems = document.getElementsByTagName("H2");
+            var toc = document.getElementById("toc");
+            //console.log("nToCEntries: " + tocItems.length);
+            var i;
+            for (i = 0; i < tocItems.length; i++) {
+                var item = tocItems[i];
+                //item.style.backgroundColor = "#EEEEEE";
+                var entry = document.createElement("li");
+                var link = document.createElement("a");
+                // console.log(item.innerHTML);
+                //console.log(item.innerText);
+                link.innerText = item.innerText;
+                link.href = "#" + item.innerText;
+                item.id = item.innerText;
+                entry.appendChild(link);
+                toc.appendChild(entry);
+            }
+        })
+    </script>
+
+    <h2>Introduction</h2>
+    <p>
+        Evolutionary algorithms (EAs) can be used to solve plenty of tasks using the power of evolutionary optimization.
+        One of the key tasks in the algorithm design process, is the choice of representation for a candidate solution.
+        While the phenotype describes a solution that is directly applicable to the task, the genotype is its
+        computational counter-part which is used during the optimization.
+        Given the task of optimizing a car for speed, the phenotype is represented by the actual car on the road, while
+        the genotype represents the cars configuration, e.g. the type of motor and the tires used.
+        During optimization, the computer will modify a candidates genotype.
+        The phenotype will be built according to the genotypes description for evaluation.
+    </p>
+
+    <p>
+        The mapping between genotype and phenotype plays an important part in the algorithm design process.
+        In this article, we will present EA design concepts based on a discussion of the 8-Queens problem.
+        This seemingly simple puzzle requires you to place eight queens on an 8x8 chessboard so
+        that no two queens threaten each other. Thus, no two queens share the same row, column or diagonal.
+        Do you think you are up to the task? Go ahead and try it yourself:
+    </p>
+    <div class="l-body" style="margin-bottom: 20px">
+        <div id="board-letsplay" style="width: 320px; margin: auto auto; margin-bottom: 10px"></div>
+        <div class="caption">Drag and drop queens to change their position. Try to position all queens
+        such that no two queens share the same row, column or diagonal. Queens that threaten each other
+        will be highlighted in red. In case you found a solution all queens will be highlighted in green.</div>
+    </div>
+    <script type="module" src="./chessboard/chessboard_lets_play.js"></script>
+
+
+    <h2>Representation</h2>
+
+    <p> An individual somehow needs to represents the solution that can be applied to our problem.
+        Here, we need to encode the position of queens on a chessboard. Lets first think, about the basic properties of
+        our task and its likely solutions:
+    </p>
+    <ol>
+        <li>a chessboard offers 64 fields arranged in an 8x8 grid</li>
+        <li>the solution consists of exactly 8 queens</li>
+        <li>each row can include only one queen, otherwise they would threaten each other</li>
+        <li>each column can include only one queen, otherwise they would threaten each other</li>
+        <li>each diagonal can include only one queen, otherwise they would threaten each other</li>
+    </ol>
+
+    <p>
+        Based on these requirements, we are ready to start defining our first representation.
+        Just considering the first requirement may spawn some ideas already.
+        Lets consider a chessboard to be an 8x8 binary matrix in which a 0 encodes an empty field and a 1 a field
+        with a queen on it.
+        Test how this encoding works by by clicking on either a field of the chessboard or the cells of the matrix
+        to remove or add a queen at the clicked position.
+    </p>
+    <div>
+        <div style="overflow: hidden; width:600px; margin: auto auto">
+            <div id="board-for-matrix-representation" style="width: 280px; float: left; margin: auto auto"></div>
+
+            <div id="board-matrix-representation" class="matrix" style="width: 280px; float: right; margin: auto auto; margin-right:10px; margin-bottom: 10px"></div>
+            <script type="module" src="./chessboard/chessboard_matrix_representation.js"></script>
+        </div>
+        <div class="caption">Click on any field of the chessboard or cell in the matrix to toggle a queen.
+            See how the chessboard changes when clicking on the matrix and vice versa.</div>
+    </div>
+
+    <p>
+        This encoding can produce any possible queen placement of 0 to 64 queens on a regular chessboard.
+        Hence, the solution to this puzzle will be included in the set of encodable phenotypes.
+        Sadly, it also lets us create many candidates that violate the other requirements.
+        Using this representation, we can produce quite a lot different candidates. In total there are:
+        $$2^{64} = 18\,446\,744\,073\,709\,551\,616$$
+    </p>
+
+    <p>
+        Honestly, this might be a bit much to find one of the 92 solutions.
+        But we can easily improve on this by adding the second requirement to our encoding, namely no solution can have more or less than 8 queens.
+        Therefore, we need to limit the number of queens in our matrix to exactly 8.
+        If you tried to find a solution yourself, you have already used a similar encoding above.
+        Once again, lets try out the drag on drop approach for moving queens and see how it influences our encoding.
+    </p>
+    <div class="l-body" style="margin-bottom: 20px">
+        <div style="overflow: hidden; width:600px; margin: auto auto">
+            <div id="board-8-queens-matrix" style="width: 280px; float: left; margin: auto auto; margin-bottom: 10px"></div>
+
+            <div id="board-8-queens-matrix-representation" class="matrix" style="width: 280px; float: right; margin: auto auto; margin-right:10px; margin-bottom: 10px"></div>
+            <script type="module" src="./chessboard/chessboard_8_queens_matrix_representation.js"></script>
+        </div>
+        <div class="caption">
+            Drag and drop queens to change their position. See how the matrix changes according to the changes on the board.
+        </div>
+    </div>
+
+    <p>
+        This seems to be a small but intuitive change.
+        Nevertheless, it has a massive impact on the number of possible solutions.
+        Instead of \(2^{64}\) it can produce only:
+        $$\binom{64}{8} = 4\,426\,165\,368$$
+    </p>
+
+    <p>
+        So far, we have incorporated the first two requirements in our encoding.
+        We can do even better by adding the constraints on rows, columns, and diagonals to it.
+        Lets consider an even more condensed representation using requirement 3.
+        Since each row can contain only a single queen, we can use a vector of size 8 to encode the column each queen is placed at.
+        Lets try how this works:
+    </p>
+    <div>
+        <div style="overflow: hidden; margin: auto auto; width: fit-content">
+            <div style="width: 200px; float:left; margin: 5px 5px">
+                <div id="board-row-vector-1" class="matrixsmall" style="width: 19px; height:152px; margin-bottom:5px; margin-left:2px; margin-right:10px; float: left"></div>
+                <div id="board-row-vector-example-1" style="width: 160px; margin-bottom:5px; float: left"></div>
+            </div>
+            <div style="width: 200px; float:left; margin: 5px 5px">
+                <div id="board-row-vector-2" class="matrixsmall" style="width: 19px; height:152px; margin-bottom:5px; margin-left:2px; margin-right:10px; float: left"></div>
+                <div id="board-row-vector-example-2" style="width: 160px; margin-bottom:5px; float: left"></div>
+            </div>
+            <div style="width: 200px; float:left; margin: 5px 5px; margin-right: 0px">
+                <div id="board-row-vector-3" class="matrixsmall" style="width: 19px; height:152px; margin-bottom:5px; margin-left:2px; margin-right:10px; float: left"></div>
+                <div id="board-row-vector-example-3" style="width: 160px; margin-bottom:5px; float: left"></div>
+            </div>
+        </div>
+        <div class="caption">Click on any cell of the vector to randomly move the respective queen to a new column.
+            You can also drag and drop queens on the board, but only place a queen on another column of the same row.
+        </div>
+        <script type="module" src="chessboard/chessboard_row_vector_representation.js"></script>
+    </div>
+    <p>
+        This might reduce the usability a bit, but the computer will probably have less problems with this issue.
+        In fact, the reduction to even less candidate solutions can drastically speed-up the time until a solution is found.
+        Implementing a row-vector encoding results in even less candidate solutions:
+        $$8^8 = 16\,777\,216$$
+    </p>
+
+    <p>
+        An interesting details of the 8-Queens problem is its symmetry.
+        This means a valid solution may be mirrored and rotated to produce new solutions.
+        The same symmetry can be found in the two requirements 3 and 4.
+        Hence, we could have implemented a column-vector encoding instead of a row-vector.
+        Go ahead and see how the column-vector representation works:
+    </p>
+
+    <div>
+        <div style="overflow: hidden; margin: auto auto; width: fit-content">
+            <div style="width: 180px; float:left; margin: 5px 5px">
+                <div id="board-vector-example-1" style="width: 160px; margin-bottom:5px"></div>
+
+                <div id="board-vector-1" class="matrixsmall" style="width: 152px; margin-bottom:5px; margin-left:2px"></div>
+            </div>
+            <div style="width: 180px; float:left; margin: 5px 5px" >
+                <div id="board-vector-example-2" style="width: 160px; margin-bottom:5px"></div>
+
+                <div id="board-vector-2" class="matrixsmall" style="width: 152px; margin-bottom:5px; margin-left:2px"></div>
+            </div>
+            <div style="width: 180px; float:left; margin: 5px 5px">
+                <div id="board-vector-example-3" style="width: 160px; margin-bottom:5px"></div>
+
+                <div id="board-vector-3" class="matrixsmall" style="width: 152px; margin-bottom:5px; margin-left:2px"></div>
+            </div>
+        </div>
+        <div class="caption">Click on any cell of the vector to randomly move the respective queen to a new row.
+            You can also drag and drop queens on the board, but only place a queen on another row of the same column.
+        </div>
+        <script type="module" src="chessboard/chessboard_column_vector_representation.js"></script>
+    </div>
+
+    <p>
+        Until now, we have either added requirement 3 or 4.
+        Including both of them at the same time, makes the representation just slightly more complicated,
+        but once again helps us to reduce the number of candidate solutions.
+        In terms of a column-vector, this would mean each row index can only be included once.
+        Hence, each column vector is effectively a permutation of row indices.
+        This results in the small number of
+        $$8! = 40320$$
+        candidate solutions. The same can be done for a row-vector, which would include the letters from a to h.
+        Lets try out the permutation vector encoding:
+    </p>
+
+    <div>
+        <div style="overflow: hidden; margin: auto auto; width: fit-content">
+            <div style="width: 180px; float:left; margin: 5px 5px">
+                <div id="board-permutation-example-1" style="width: 160px; margin-bottom:5px"></div>
+
+                <div id="board-permutation-1" class="matrixsmall" style="width: 152px; margin-bottom:5px; margin-left:2px"></div>
+            </div>
+            <div style="width: 180px; float:left; margin: 5px 5px" >
+                <div id="board-permutation-example-2" style="width: 160px; margin-bottom:5px"></div>
+
+                <div id="board-permutation-2" class="matrixsmall" style="width: 152px; margin-bottom:5px; margin-left:2px"></div>
+            </div>
+            <div style="width: 180px; float:left; margin: 5px 5px">
+                <div id="board-permutation-example-3" style="width: 160px; margin-bottom:5px"></div>
+
+                <div id="board-permutation-3" class="matrixsmall" style="width: 152px; margin-bottom:5px; margin-left:2px"></div>
+            </div>
+        </div>
+        <div class="caption">
+            Click on two queens or their respective vector cells to swap their position.
+        </div>
+        <script type="module" src="chessboard/chessboard_permutation_representation.js"></script>
+    </div>
+
+    <h3>
+        Comparison
+    </h3>
+    <p>
+        Now, we have introduced five representations for the 8-queens problem.
+        Before, we discuss their respective mutation and crossover operators, we will
+        shortly summarize what we have learned so far.
+    </p>
+
+    <p>
+        As we have seen above, the representation defines the search space of our optimization problem.
+        By including a larger number of requirements in our representation, we can reduce the search space
+        to a feasible size, and therefore, speed up the optimization process.
+        So far, we have only used representations that can produce all solutions to our problem.
+        It is also possible to use more restrictive search-spaces, but this can come at the cost of solutions
+        becoming impossible to be found.
+        Below is an overview of the proposed representations, their individual size, and their search spaces.
+    </p>
+    <div>
+        <table style="margin: auto auto">
+            <tr>
+                <th style="width: 150px">Representation</th>
+                <th style="width: 200px">Size of an Individual</th>
+                <th style="width: 250px">Size of the Search Space</th>
+            </tr>
+            <tr>
+                <td>Unrestricted Matrix</td>
+                <td style="text-align:center">\(8 \times 8 = 64\)</td>
+                <td style="text-align:center">\(2^{64} = 18\,446\,744\,073\,709\,551\,616\)</td>
+            </tr>
+            <tr>
+                <td>Restricted Matrix</td>
+                <td style="text-align:center">\(8\times 8\)</td>
+                <td style="text-align:center">\(\binom{64}{8} = 4\,426\,165\,368\)</td>
+            </tr>
+            <tr>
+                <td>Row Vector</td>
+                <td style="text-align:center">\(8\)</td>
+                <td style="text-align:center">\(8^8 = 16\,777\,216\)</td>
+            </tr>
+            <tr>
+                <td>Column Vector</td>
+                <td style="text-align:center">\(8\)</td>
+                <td style="text-align:center">\(8^8 = 16\,777\,216\)</td>
+            </tr>
+            <tr>
+                <td>Permutation</td>
+                <td style="text-align:center">\(8\)</td>
+                <td style="text-align:center">\(8! = 40320\)</td>
+            </tr>
+        </table>
+    </div>
+
+    <p>
+        We have already seen the different representations in action.
+        Below, we see a comparison of representations and the individuals they can encode.
+    </p>
+
+    <div>
+        <div style="overflow: hidden; margin: auto auto; width: 650px">
+            <div style="transform: rotate(-90deg); float: left;
+                transform-origin: right; margin-top: 75px;
+                margin-right: 10px; font-size: 17px">Row Vector</div>
+            <div style="float:left; width: fit-content; margin-top: 57px; margin-left: 10px">
+                <div id="board-comparison-row" class="matrixsmall" style="width: 19px; height:152px; margin-bottom:5px; margin-left:2px; margin-right:10px; float: left"></div>
+            </div>
+            <div style="width: 160px; float:left; margin: 5px 5px">
+                <div style="width: 152px; text-align: center; font-size: 17px">Permutation Vector</div>
+                <div id="board-comparison-permutation" class="matrixsmall" style="width: 152px; margin-bottom:5px; margin-left:2px"></div>
+
+                <div id="board-comparison-board" style="width: 160px; margin-bottom:5px"></div>
+
+                <div id="board-comparison-column" class="matrixsmall" style="width: 152px; margin-bottom:5px; margin-left:2px"></div>
+                <div style="width: 152px; text-align: center; font-size: 17px">Column Vector</div>
+            </div>
+            <div style="float: left; margin-top: 55px">
+                <div id="board-comparison-8-queens" class="matrixsmall" style="width: 152px; height: 152px; float: left; margin: auto 10px; margin-bottom: 10px"></div>
+            </div>
+            <div style="transform: rotate(-90deg); float: left;
+                transform-origin: left; margin-top: 185px;
+                margin-left: 10px; font-size: 17px">Restricted Matrix</div>
+        </div>
+        <div class="caption">
+            Drag and drop queens on the board and see how the representations change.
+            In case the current board position cannot be represented using a vector representation,
+            the vector will turn red and be marked with an x.
+        </div>
+        <script type="module" src="chessboard/chessboard_comparison.js"></script>
+    </div>
+
+    <p>
+        Now after trying out all representations, please let us know which representation you prefer in terms of usability.
+        <div style="overflow: hidden">
+            <iframe width="620" height="590" src="https://strawpoll.com/embed/o5auuyxco" style="width: 100%; height: 590px; overflow-y: hidden; " frameborder="0" scrolling="no"></iframe>
+        </div>
+    </p>
+
+
+    <h2>Mutation</h2>
+    <p>
+        Mutation is the first evolutionary operator to modify individuals of our population.
+        Given the vector notation introduced above, we want to modify a randomized change for creating
+        a new individual from an existing one. Click on a any element of the vector to randomly
+        change the position of the encoded queen.
+    </p>
+
+    <div>
+        <div style="overflow: hidden; margin: auto auto; width: fit-content">
+            <div style="width: 180px; float:left; margin-left:5px">
+                <div id="board-vector-mutation-1" style="width: 160px; margin-bottom:5px"></div>
+
+                <div id="vector-mutation-1" class="matrixsmall" style="width: 152px; margin-bottom:5px; margin-left:2px"></div>
+            </div>
+            <div style="width: 180px; float:left" >
+                <div id="board-vector-mutation-2" style="width: 160px; margin-bottom:5px"></div>
+
+                <div id="vector-mutation-2" class="matrixsmall" style="width: 152px; margin-bottom:5px; margin-left:2px"></div>
+            </div>
+            <div style="width: 180px; float:left; margin-right:5px">
+                <div id="board-vector-mutation-3" style="width: 160px; margin-bottom:5px"></div>
+
+                <div id="vector-mutation-3" class="matrixsmall" style="width: 152px; margin-bottom:5px; margin-left:2px"></div>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="./chessboard/chessboard_vector_mutation.js"></script>
+
+
+    <h2>Crossover</h2>
+    <p>
+        Crossover combines the information of two vectors.
+    </p>
+
+    <div>
+        <div style="overflow: hidden; margin: auto auto; width: fit-content">
+            <div style="width: fit-content; float:left; margin-left:5px">
+                <div id="board-vector-crossover-1" style="width: 160px; margin-bottom:5px"></div>
+
+                <div id="vector-crossover-1" class="matrixsmall redopac active" style="width: 152px; margin-bottom:5px;  margin-left:2px; margin-right:20px"></div>
+            </div>
+            <div style="width: fit-content; float:left" >
+                <div id="board-vector-crossover-2" style="width: 160px; margin-bottom:5px; margin-left:20px; margin-right:2px"></div>
+
+                <div id="vector-crossover-2" class="matrixsmall blueopac active" style="width: 152px; margin-bottom:5px;  margin-left:20px; margin-right:2px"></div>
+            </div>
+        </div>
+        <div style="width: fit-content; margin: auto auto">
+            <div style="overflow: visible;  margin-top: 20px; margin-left: 15px; margin-right:5px">
+                <div id="vector-crossover-1b" class="matrixsmall redopac" style="width: 152px; margin-bottom:5px;"></div>
+                <div id="vector-crossover-2b" class="matrixsmall blueopac" style="width: 152px; margin-bottom:5px;"></div>
+                <input type="range" min="0" max="8" value="4" class="slider" id="myRange" style="width: 171px; margin-left: -10px">
+            </div>
+        </div>
+        <div style="overflow: hidden; margin: auto auto; width: fit-content; margin-top:20px">
+            <div style="width:fit-content; float:left; margin-right:5px; margin-left:5px">
+                <div id="vector-crossover-3" class="matrixsmall" style="width: 152px; margin-bottom:5px; margin-left:2px; margin-right: 2px"></div>
+
+                <div id="board-vector-crossover-3" style="width: 160px; margin-bottom:5px"></div>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="chessboard/chessboard_vector_1point_crossover.js"></script>
+
+    <dt-cite key="gregor2015draw"></dt-cite>
+
+</dt-article>
+
+<dt-appendix>
+</dt-appendix>
+
+<script type="text/bibliography">
+  @article{gregor2015draw,
+    title={DRAW: A recurrent neural network for image generation},
+    author={Gregor, Karol and Danihelka, Ivo and Graves, Alex and Rezende, Danilo Jimenez and Wierstra, Daan},
+    journal={arXivreprint arXiv:1502.04623},
+    year={2015},
+    url={https://arxiv.org/pdf/1502.04623.pdf}
+  }
+</script>
+</body>
+</html>

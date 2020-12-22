@@ -12,9 +12,9 @@ function initializeBoards(boardContainers){
         let boardContainer = boardContainers[i][0];
         let vectorContainer = boardContainers[i][1];
         let randomPosition = random_vector();
-        console.log(randomPosition)
+        //console.log(randomPosition)
 
-        console.log(boardContainer);
+        //console.log(boardContainer);
         let board = Chessboard(boardContainer, {
             draggable: false,
             position: column_vector_to_position(randomPosition),

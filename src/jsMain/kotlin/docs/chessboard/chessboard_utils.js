@@ -84,7 +84,7 @@ export function isSafe(binary_board, row, col){
 
 /**
  * gets the board position provided by chessboard.js and returns a column vector in which each cell indicates the
- * queens row of the column with the same index
+ * queen's row of the column with the same index
  * @param position: position json object provided by chessboard.js
  * @returns {[]}
  */
@@ -92,11 +92,32 @@ export function position_to_column_vector(position){
     let binary_board = position_to_binary_board(position)[0];
     let vector_board = [];
     for(let i=0; i<8; i++){
-        vector_board[i] = 0;
+        vector_board[i] = -1;
         for(let j=0; j<8; j++){
             if (binary_board[j][i]===1)
             {
                 vector_board[i] = 8-j;
+            }
+        }
+    }
+    return vector_board;
+}
+
+/**
+ * gets the board position provided by chessboard.js and returns a row vector in which each cell indicates the
+ * queen's column of the row with the same index
+ * @param position: position json object provided by chessboard.js
+ * @returns {[]}
+ */
+export function position_to_row_vector(position){
+    let binary_board = position_to_binary_board(position)[0];
+    let vector_board = [];
+    for(let i=0; i<8; i++){
+        vector_board[i] = "z";
+        for(let j=0; j<8; j++){
+            if (binary_board[i][j]===1)
+            {
+                vector_board[i] = index_to_col_name[j];
             }
         }
     }
@@ -178,8 +199,11 @@ export function highlightCollisions($board, position, threatcssclass="highlight-
     for (let pos in unsafe_positions){
         $board.find('.' + squareClass+".square-"+unsafe_positions[pos]).addClass(threatcssclass)
     }
-    for (let pos in safe_positions){
-        $board.find('.' + squareClass+".square-"+safe_positions[pos]).addClass(safecssclass)
+    if (safe_positions.length === 8)
+    {
+        for (let pos in safe_positions){
+            $board.find('.' + squareClass+".square-"+safe_positions[pos]).addClass(safecssclass)
+        }
     }
 }
 
@@ -236,7 +260,8 @@ export const example_positions = [
         e5: "bQ",
         f5: "bQ",
         g5: "bQ",
-        h5: "bQ"},
+        h5: "bQ"
+    },
     {
         a6: "bQ",
         b2: "bQ",
@@ -245,7 +270,37 @@ export const example_positions = [
         e5: "bQ",
         f1: "bQ",
         g7: "bQ",
+        h3: "bQ"
+    },
+    {
+        d8: "bQ",
+        d7: "bQ",
+        d6: "bQ",
+        d5: "bQ",
+        e4: "bQ",
+        e3: "bQ",
+        e2: "bQ",
+        e1: "bQ"
+    },
+    {
+        a6: "bQ",
+        b7: "bQ",
+        c4: "bQ",
+        d2: "bQ",
+        e1: "bQ",
+        f8: "bQ",
+        g3: "bQ",
         h5: "bQ"
+    },
+    {
+        d8: "bQ",
+        d1: "bQ",
+        d7: "bQ",
+        d2: "bQ",
+        e6: "bQ",
+        e3: "bQ",
+        e5: "bQ",
+        e4: "bQ"
     },
 ];
 
@@ -259,6 +314,8 @@ export function createVector(tableData, target) {
         let cell = document.createElement('div');
         cell.appendChild(document.createTextNode(rowData));
         cell.setAttribute("childIndex", i);
+        if ($(target).hasClass("active"))
+            cell.classList.add("active");
         tableBody.appendChild(cell);
         i = i+1;
     });
