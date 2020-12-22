@@ -48,7 +48,7 @@ function selectCell(field, board, pieces){
         //select element
         board.selected = column + row;
         board.selectedField = field;
-        $(field).toggleClass("active");
+        $(field).toggleClass("selected");
 
         for (let i = 0; i < 64; i++){
             if (pieces[i].getAttribute("data-square") === board.selected){
@@ -83,7 +83,7 @@ function selectCell(field, board, pieces){
         board.position(pos);
         field.innerHTML = b2[1];
         board.selectedField.innerHTML = b1[1];
-        $(board.selectedField).toggleClass("active");
+        $(board.selectedField).toggleClass("selected");
 
         board.selected = null;
         board.selectedField = null;

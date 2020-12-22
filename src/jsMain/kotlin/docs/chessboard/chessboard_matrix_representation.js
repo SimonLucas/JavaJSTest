@@ -1,4 +1,4 @@
-import {squareClass, position_to_binary_board, field_to_index, index_to_field, example_positions} from "./chessboard_utils.js";
+import {squareClass, position_to_binary_board, field_to_index, index_to_field, example_positions, createMatrix} from "./chessboard_utils.js";
 
 // setup board
 let board = Chessboard('board-for-matrix-representation', {
@@ -60,33 +60,5 @@ function toggleQueenOnMatrix(diffield, board) {
         diffield.innerHTML = 1; // update matrix
     }
     board.position(position);
-}
-
-/**
- *
- * @param tableData
- * @param tableContainer
- * @returns {HTMLTableElement}
- */
-function createMatrix(tableData, tableContainer) {
-    var matrix = document.createElement('table');
-    var tableBody = document.createElement('tbody');
-
-    let i = 0;
-    tableData.forEach(function(rowData) {
-        rowData.forEach(function(cellData) {
-            var cell = document.createElement('div');
-            cell.appendChild(document.createTextNode(cellData));
-            cell.setAttribute("childIndex", i);
-            tableBody.appendChild(cell);
-            i = i+1;
-        });
-
-        //tableBody.appendChild(row);
-    });
-
-    matrix.appendChild(tableBody);
-    $(tableContainer)[0].appendChild(matrix);
-    return matrix;
 }
 

@@ -324,3 +324,34 @@ export function createVector(tableData, target) {
     $(target)[0].appendChild(table);
     return table;
 }
+
+
+/**
+ *
+ * @param tableData
+ * @param tableContainer
+ * @returns {HTMLTableElement}
+ */
+export function createMatrix(tableData, tableContainer) {
+    var matrix = document.createElement('table');
+    var tableBody = document.createElement('tbody');
+
+    let i = 0;
+    tableData.forEach(function(rowData) {
+        rowData.forEach(function(cellData) {
+            var cell = document.createElement('div');
+            cell.appendChild(document.createTextNode(cellData));
+            cell.setAttribute("childIndex", i);
+            if ($(tableContainer).hasClass("active"))
+                cell.classList.add("active");
+            tableBody.appendChild(cell);
+            i = i+1;
+        });
+
+        //tableBody.appendChild(row);
+    });
+
+    matrix.appendChild(tableBody);
+    $(tableContainer)[0].appendChild(matrix);
+    return matrix;
+}

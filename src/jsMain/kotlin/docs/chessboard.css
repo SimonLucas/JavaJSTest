@@ -148,7 +148,7 @@
     right: -6px;
     border-left: 0px;
 }
-.matrixsmall  div {
+.matrixsmall div {
     float: left;
     width: 19px;
     height: 19px;
@@ -162,18 +162,18 @@
 }
 
 
-.matrixsmall div:nth-child(-2n+8),
-.matrixsmall div:nth-child(8) ~ div:nth-child(-2n+15),
-.matrixsmall div:nth-child(16) ~ div:nth-child(-2n+24),
-.matrixsmall div:nth-child(24) ~ div:nth-child(-2n+31),
-.matrixsmall div:nth-child(32) ~ div:nth-child(-2n+40),
-.matrixsmall div:nth-child(40) ~ div:nth-child(-2n+47),
-.matrixsmall div:nth-child(48) ~ div:nth-child(-2n+56),
-.matrixsmall div:nth-child(56) ~ div:nth-child(-2n+63) {
+.greyopac div:nth-child(-2n+8),
+.greyopac div:nth-child(8) ~ div:nth-child(-2n+15),
+.greyopac div:nth-child(16) ~ div:nth-child(-2n+24),
+.greyopac div:nth-child(24) ~ div:nth-child(-2n+31),
+.greyopac div:nth-child(32) ~ div:nth-child(-2n+40),
+.greyopac div:nth-child(40) ~ div:nth-child(-2n+47),
+.greyopac div:nth-child(48) ~ div:nth-child(-2n+56),
+.greyopac div:nth-child(56) ~ div:nth-child(-2n+63) {
     background-color: #bbbbbb;
 }
 
-.matrixsmall div.active {
+.matrixsmall div.selected {
     background-color: yellow;
 }
 
@@ -200,7 +200,7 @@
 
 
 
-.redopac div.active{
+.redopac div{
     background-color: mistyrose;
 }
 
@@ -212,10 +212,11 @@
 .redopac div.active:nth-child(40) ~ div.active:nth-child(-2n+47),
 .redopac div.active:nth-child(48) ~ div.active:nth-child(-2n+56),
 .redopac div.active:nth-child(56) ~ div.active:nth-child(-2n+63) {
-    background-color: #bb8391;
+    background-color: #e2aebb;
 }
 
-.redopac div.inactive{
+
+.redopac div.inactive:nth-child(n){
     background-color: #ffffff;
     color: lightgray;
 }
