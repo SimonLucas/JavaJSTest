@@ -12,6 +12,10 @@
     <script type="text/javascript" src="jquery-3.5.1.js"></script>
     <script type="text/javascript" src="chessboard.js"></script>
 
+    <link rel="stylesheet" href="jquery-ui-1.12.1.custom/jquery-ui.min.css">
+    <script src="jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+
+
     <script type="text/front-matter">
   title: "Choosing Representation, Mutation, and Crossover in Evolutionary Algorithms"
   description: "Learn how the choice of representation affects your evolutionary algorithm."
@@ -420,6 +424,19 @@
         Here, you can try out the transposition mutation once more.
     </p>
 
+    <div class="l-body" style="margin-bottom: 20px">
+        <div style="overflow: hidden; width:fit-content; margin: auto auto">
+            <div style="text-align: center">Constrained Matrix Representation</div>
+            <div id="board-8-queens-matrix2" style="width: 160px; float: left; margin: auto auto; margin-bottom: 10px; margin-right: 10px"></div>
+
+            <div id="board-8-queens-matrix-representation2" class="matrixsmall" style="width: 152px; float: right; margin: auto auto; margin-left:10px; margin-right:10px; margin-bottom: 10px"></div>
+            <script type="module" src="./chessboard/chessboard_8_queens_matrix_representation2.js"></script>
+        </div>
+        <div class="caption">
+            Drag and drop queens to change their position. See how the matrix changes according to the changes on the board.
+        </div>
+    </div>
+
     <p>
         Leaving the realm of binary operators, the same concepts can be applied to other number ranges.
         For this purpose, we need to select a sampling method for the mutation.
@@ -449,15 +466,6 @@
         Both can be tested below:
     </p>
 
-
-    <p>
-
-    </p>
-
-
-    <p>
-    </p>
-
     <div>
         <div style="overflow: hidden; margin: auto auto; width: fit-content">
             <div style="width: 200px; float:left; margin: 5px 5px; margin-right: 20px">
@@ -478,6 +486,49 @@
         Click on any cell of the vector to mutate its value and see how the board changes accordingly.
     </div>
     <script type="module" src="./chessboard/chessboard_vector_mutation.js"></script>
+
+    <p>
+        Once again, the requirements for the mutation of permutations are a bit special.
+        Since each value can only appear once, we cannot simply replace a value with a random new one.
+        However, swap mutations are still applicable.
+    </p>
+
+    <p>
+        More interesting alternatives are the inversion and shuffle mutations.
+        Each operate on a subsequence of the original permutation vector.
+        Similar to the swap mutation, they just reposition existing values but cannot introduce new values to the vector.
+        An inversion mutation inverts the values of the subsequence without moving the subsequence.
+        Finally, the mutations shuffles the values of the subsequence, but keeps the remainder of the permutation as it is.
+    </p>
+
+    <div>
+        <div id="slider-range"></div>
+    </div>
+
+    <script>
+        $( function() {
+            $( "#slider-range" ).slider({
+                range: true,
+                min: 1,
+                max: 8,
+                values: [ 3, 5 ],
+                slide: function( event, ui ) {
+                    if(ui.values[0] == ui.values[1])
+                        return false;
+                    //$( "#amount" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
+                }
+            });
+            $( "#amount" ).val( "$" + $( "#slider-range" ).slider( "values", 0 ) +
+                " - $" + $( "#slider-range" ).slider( "values", 1 ) );
+        } );
+    </script>
+
+
+    <p>
+        Repair Mechanisms
+    </p>
+
+
 
 
     <h2>Crossover</h2>

@@ -43,7 +43,6 @@ update_child(currentVector, divsParent1, divsParent2, divsParent3, divsChild);
 
 function update_child(currentVector, divsParent1, divsParent2, divsParent3, divsChild){
     let newVector = [];
-    console.log("currentVector", currentVector);
     for (let i = 0; i < 8; i++){
         if (currentVector[i] === 0){
             // read value
