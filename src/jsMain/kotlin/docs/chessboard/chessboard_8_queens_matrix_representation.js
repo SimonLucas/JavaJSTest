@@ -15,6 +15,21 @@ let matrix = createMatrix(position_to_binary_board(board.position())[0], "#board
 let matrixdivs = $(matrix).find("div");
 //highlightCollisions($board, board.position());
 
+updateStyle();
+function updateStyle(){
+    $("div", matrix).each(function(){
+        if (parseInt(this.innerHTML) === 1){
+            this.style.backgroundColor = "#000000";
+            this.style.color = "#ffffff";
+
+        } else {
+            this.style.backgroundColor = null;
+            this.style.color = null;
+        }
+    })
+}
+
+
 /**
  *
  * @param board
@@ -37,6 +52,8 @@ function onDrop(source, target, piece, newPos, oldPos, orientation){
 
     board.position(position);
     //highlightCollisions($board, board.position())
+    updateStyle();
+
 }
 
 function onSnapback(a, b, newPos, d){

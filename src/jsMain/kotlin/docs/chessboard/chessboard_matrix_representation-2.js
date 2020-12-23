@@ -1,19 +1,20 @@
 import {squareClass, position_to_binary_board, field_to_index, index_to_field, example_positions, createMatrix} from "./chessboard_utils.js";
 
 // setup board
-let board = Chessboard('board-for-matrix-representation', {
+let board = Chessboard('board-for-matrix-representation-2', {
     draggable: false,
     position: example_positions[0],
 });
-let $board = $('#board-for-matrix-representation');
+let $board = $('#board-for-matrix-representation-2');
 
 // add on click event to toggle queens on a field
-$board.find('.' + squareClass).click(function(){ toggleQueenOnBoard(board, this, "#board-matrix-representation"); });
+$board.find('.' + squareClass).click(function(){ toggleQueenOnBoard(board, this, "#board-matrix-representation-2"); });
 
 // create matrix representation
-let matrix = createMatrix(position_to_binary_board(board.position())[0], "#board-matrix-representation");
+let matrix = createMatrix(position_to_binary_board(board.position())[0], "#board-matrix-representation-2");
 $("div", matrix).click(function(){ toggleQueenOnMatrix(this, board);});
 updateStyle();
+
 function updateStyle(){
     $("div", matrix).each(function(){
         if (parseInt(this.innerHTML) === 1){
@@ -26,6 +27,7 @@ function updateStyle(){
         }
     })
 }
+
 
 /**
  *
@@ -50,7 +52,6 @@ function toggleQueenOnBoard(board, chessfield, linkedmatrix){
     }
     board.position(position);
     updateStyle();
-
 }
 
 /**

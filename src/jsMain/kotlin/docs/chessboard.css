@@ -106,19 +106,18 @@
     vertical-align: middle;
 }
 
-
-.matrix div:nth-child(-2n+8),
-.matrix div:nth-child(8) ~ div:nth-child(-2n+15),
-.matrix div:nth-child(16) ~ div:nth-child(-2n+24),
-.matrix div:nth-child(24) ~ div:nth-child(-2n+31),
-.matrix div:nth-child(32) ~ div:nth-child(-2n+40),
-.matrix div:nth-child(40) ~ div:nth-child(-2n+47),
-.matrix div:nth-child(48) ~ div:nth-child(-2n+56),
-.matrix div:nth-child(56) ~ div:nth-child(-2n+63) {
-    background-color: #bbbbbb;
+.numeric-fc462 {
+    margin-top: -7px;
+    top: 0px;
+    left: 0px;
+    pointer-events: none;
 }
 
-
+.alpha-d2270 {
+    right: 3px;
+    top: -3px;
+    pointer-events: none;
+}
 
 .matrixsmall {
     position: relative;
@@ -220,6 +219,29 @@
     background-color: #ffffff;
     color: lightgray;
 }
+
+
+.yellowopac div.active{
+    background-color: #ffe29f;
+    color: black;
+}
+
+.yellowopac div.active:nth-child(-2n+8),
+.yellowopac div.active:nth-child(8) ~ div.active:nth-child(-2n+15),
+.yellowopac div.active:nth-child(16) ~ div.active:nth-child(-2n+24),
+.yellowopac div.active:nth-child(24) ~ div.active:nth-child(-2n+31),
+.yellowopac div.active:nth-child(32) ~ div.active:nth-child(-2n+40),
+.yellowopac div.active:nth-child(40) ~ div.active:nth-child(-2n+47),
+.yellowopac div.active:nth-child(48) ~ div.active:nth-child(-2n+56),
+.yellowopac div.active:nth-child(56) ~ div.active:nth-child(-2n+63) {
+    background-color: #ffbc00;
+}
+
+.yellowopac div.inactive{
+    background-color: #ffffff;
+    color: lightgray;
+}
+
 
 .caption {
     text-align: center;

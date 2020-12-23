@@ -119,10 +119,12 @@
         to remove or add a queen at the clicked position.
     </p>
     <div>
-        <div style="overflow: hidden; width:600px; margin: auto auto">
-            <div id="board-for-matrix-representation" style="width: 280px; float: left; margin: auto auto"></div>
+        <div style="overflow: hidden; width:fit-content; margin: auto auto">
+            <div style="text-align: center">Matrix Representation</div>
 
-            <div id="board-matrix-representation" class="matrix" style="width: 280px; float: right; margin: auto auto; margin-right:10px; margin-bottom: 10px"></div>
+            <div id="board-for-matrix-representation" style="width: 160px; float: left; margin: auto auto; margin-right: 10px"></div>
+
+            <div id="board-matrix-representation" class="matrixsmall" style="width: 152px; float: right; margin: auto auto; margin-left:10px; margin-right:10px; margin-bottom: 10px"></div>
             <script type="module" src="./chessboard/chessboard_matrix_representation.js"></script>
         </div>
         <div class="caption">Click on any field of the chessboard or cell in the matrix to toggle a queen.
@@ -145,10 +147,11 @@
         Once again, lets try out the drag on drop approach for moving queens and see how it influences our encoding.
     </p>
     <div class="l-body" style="margin-bottom: 20px">
-        <div style="overflow: hidden; width:600px; margin: auto auto">
-            <div id="board-8-queens-matrix" style="width: 280px; float: left; margin: auto auto; margin-bottom: 10px"></div>
+        <div style="overflow: hidden; width:fit-content; margin: auto auto">
+            <div style="text-align: center">Constrained Matrix Representation</div>
+            <div id="board-8-queens-matrix" style="width: 160px; float: left; margin: auto auto; margin-bottom: 10px; margin-right: 10px"></div>
 
-            <div id="board-8-queens-matrix-representation" class="matrix" style="width: 280px; float: right; margin: auto auto; margin-right:10px; margin-bottom: 10px"></div>
+            <div id="board-8-queens-matrix-representation" class="matrixsmall" style="width: 152px; float: right; margin: auto auto; margin-left:10px; margin-right:10px; margin-bottom: 10px"></div>
             <script type="module" src="./chessboard/chessboard_8_queens_matrix_representation.js"></script>
         </div>
         <div class="caption">
@@ -172,6 +175,7 @@
     </p>
     <div>
         <div style="overflow: hidden; margin: auto auto; width: fit-content">
+            <div style="text-align: center">Row Vector Representation</div>
             <div style="width: 200px; float:left; margin: 5px 5px">
                 <div id="board-row-vector-1" class="matrixsmall greyopac" style="width: 19px; height:152px; margin-bottom:5px; margin-left:2px; margin-right:10px; float: left"></div>
                 <div id="board-row-vector-example-1" style="width: 160px; margin-bottom:5px; float: left"></div>
@@ -207,6 +211,7 @@
 
     <div>
         <div style="overflow: hidden; margin: auto auto; width: fit-content">
+            <div style="text-align: center">Column Vector Representation</div>
             <div style="width: 180px; float:left; margin: 5px 5px">
                 <div id="board-vector-example-1" style="width: 160px; margin-bottom:5px"></div>
 
@@ -243,6 +248,7 @@
 
     <div>
         <div style="overflow: hidden; margin: auto auto; width: fit-content">
+            <div style="text-align: center">Permutation Vector Representation</div>
             <div style="width: 180px; float:left; margin: 5px 5px">
                 <div id="board-permutation-example-1" style="width: 160px; margin-bottom:5px"></div>
 
@@ -291,12 +297,12 @@
                 <th style="width: 250px">Size of the Search Space</th>
             </tr>
             <tr>
-                <td>Unrestricted Matrix</td>
+                <td>Binary Matrix</td>
                 <td style="text-align:center">\(8 \times 8 = 64\)</td>
                 <td style="text-align:center">\(2^{64} = 18\,446\,744\,073\,709\,551\,616\)</td>
             </tr>
             <tr>
-                <td>Restricted Matrix</td>
+                <td>Constrained Matrix</td>
                 <td style="text-align:center">\(8\times 8 = 64\)</td>
                 <td style="text-align:center">\(\binom{64}{8} = 4\,426\,165\,368\)</td>
             </tr>
@@ -341,11 +347,11 @@
                 <div style="width: 152px; text-align: center; font-size: 17px">Column Vector</div>
             </div>
             <div style="float: left; margin-top: 55px">
-                <div id="board-comparison-8-queens" class="matrixsmall greyopac" style="width: 152px; height: 152px; float: left; margin: auto 10px; margin-bottom: 10px"></div>
+                <div id="board-comparison-8-queens" class="matrixsmall" style="width: 152px; height: 152px; float: left; margin: auto 10px; margin-bottom: 10px"></div>
             </div>
             <div style="transform: rotate(-90deg); float: left;
-                transform-origin: left; margin-top: 185px;
-                margin-left: 10px; font-size: 17px">Restricted Matrix</div>
+                transform-origin: left; margin-top: 190px;
+                margin-left: 10px; font-size: 17px">Constrained Matrix</div>
         </div>
         <div class="caption">
             Drag and drop queens on the board and see how the representations change.
@@ -374,43 +380,102 @@
     <p>
         A simple mutation operator is the <em>bit mutation</em>.
         For any individual that is represented by a collection of bits, we randomly flip one of them,
-        that is turning a 1 to a 0 and vice versa.
+        that is turning a 1 to a 0 or vice versa.
+    </p>
+    <div>
+        <div style="overflow: hidden; margin: auto auto; width: fit-content">
+            <div style="width: 190px; float:left; margin-left:10px;  margin-right:10px">
+                <div id="simple-bit-mutation" class="matrixsmall" style="width: 190px; margin-bottom:5px; margin-left:2px"></div>
+            </div>
+        </div>
+    </div>
+    <div class="caption">
+        Click on any cell of the vector to flip its value.
+    </div>
+
+    <script type="module" src="./chessboard/bit_mutation.js"></script>
+
+    <p>
         The same operator has been used before, when introducing the matrix representation.
         Here, you can try it out once more:
     </p>
+    <div>
+        <div style="overflow: hidden; width:fit-content; margin: auto auto">
+            <div id="board-for-matrix-representation-2" style="width: 160px; float: left; margin: auto auto; margin-right: 10px"></div>
+
+            <div id="board-matrix-representation-2" class="matrixsmall" style="width: 152px; float: right; margin: auto auto; margin-right:10px; margin-bottom: 10px; margin-left: 10px"></div>
+            <script type="module" src="./chessboard/chessboard_matrix_representation-2.js"></script>
+        </div>
+        <div class="caption">Click on any field of the chessboard or cell in the matrix to toggle a queen.
+            See how the chessboard changes when clicking on the matrix and vice versa.</div>
+    </div>
 
     <p>
         Sadly, this mutation operator does not work for the 8-queens representation.
-        A single bit-flip would either add another 1 or remove one of the many 0.
+        A single bit-flip would either add another 1 or remove one of the many zeros.
         Thus, violating the requirement to have exactly 8 queens on the board.
         Therefore, we introduce a second class of mutation operators, the <em>transposition or swap mutation</em>.
-
+        Instead of choosing a single position to be flipped, we need to choose two positions to be swapped.
+        Once again, this matches the interaction we offered above.
+        Here, you can try out the transposition mutation once more.
     </p>
 
     <p>
+        Leaving the realm of binary operators, the same concepts can be applied to other number ranges.
+        For this purpose, we need to select a sampling method for the mutation.
+        The simplest choice is a uniform distribution which randomly selects one among all the possible values.
+        See below some examples for various sample spaces.
     </p>
+    <div>
+        <div style="overflow: hidden; margin: auto auto; width: fit-content">
+            <div style="width: 190px; float:left; margin-left:10px;  margin-right:30px">
+                <div style="text-align: center">Digits</div>
+                <div id="simple-value-mutation-numbers" class="matrixsmall" style="width: 190px; margin-bottom:5px; margin-left:2px"></div>
+            </div>
+            <div style="width: 190px; float:left; margin-left:30px;  margin-right:10px">
+                <div style="text-align: center">Characters</div>
+                <div id="simple-value-mutation-characters" class="matrixsmall" style="width: 190px; margin-bottom:5px; margin-left:2px"></div>
+            </div>
+            <script type="module" src="./chessboard/value_mutation.js"></script>
+        </div>
+    </div>
+    <div class="caption">
+        Click on any cell of the vector to mutate its value.
+    </div>
+
+    <p>
+        We can use the same concept for row and column-vectors. A row vector's value space consists of the column names \([a, \dots, h]\)
+        and a column vector's values represent the row numbers \([1, \dots, 8]\).
+        Both can be tested below:
+    </p>
+
+
+    <p>
+
+    </p>
+
 
     <p>
     </p>
 
     <div>
         <div style="overflow: hidden; margin: auto auto; width: fit-content">
-            <div style="width: 180px; float:left; margin-left:5px">
+            <div style="width: 200px; float:left; margin: 5px 5px; margin-right: 20px">
+                <div style="width: 100%; text-align: center; margin-left: 10px">Row Vector</div>
+                <div id="vector-mutation-2" class="matrixsmall greyopac" style="width: 19px; height:152px; margin-bottom:5px; margin-left:2px; margin-right:10px; float: left"></div>
+                <div id="board-vector-mutation-2" style="width: 160px; margin-bottom:5px; float: left"></div>
+            </div>
+
+            <div style="width: 180px; float:left; margin-left: 20px">
+                <div style="width: 160px; text-align: center; margin-top: 5px">Column Vector</div>
                 <div id="board-vector-mutation-1" style="width: 160px; margin-bottom:5px"></div>
 
                 <div id="vector-mutation-1" class="matrixsmall greyopac" style="width: 152px; margin-bottom:5px; margin-left:2px"></div>
             </div>
-            <div style="width: 180px; float:left" >
-                <div id="board-vector-mutation-2" style="width: 160px; margin-bottom:5px"></div>
-
-                <div id="vector-mutation-2" class="matrixsmall greyopac" style="width: 152px; margin-bottom:5px; margin-left:2px"></div>
-            </div>
-            <div style="width: 180px; float:left; margin-right:5px">
-                <div id="board-vector-mutation-3" style="width: 160px; margin-bottom:5px"></div>
-
-                <div id="vector-mutation-3" class="matrixsmall greyopac" style="width: 152px; margin-bottom:5px; margin-left:2px"></div>
-            </div>
         </div>
+    </div>
+    <div class="caption">
+        Click on any cell of the vector to mutate its value and see how the board changes accordingly.
     </div>
     <script type="module" src="./chessboard/chessboard_vector_mutation.js"></script>
 
@@ -427,33 +492,41 @@
         One point Crossover matrix
     </p>
 
-    <div style="width: 510px; margin: auto auto">
-        <div style="overflow: hidden">
-            <div style="">
-                <div  id="board-matrix-crossover-1" style="width: 160px; margin-bottom:5px; float: left;"></div>
-                <div class=" matrixsmall redopac active" id="matrix-crossover-1" style="width: 152px;  float: left; margin-bottom:5px;  margin-left:20px; margin-right:20px"></div>
+    <div>
+        <div style="width: 510px; margin: auto auto">
+            <div style="overflow: hidden">
+                <div style="">
+                    <div  id="board-matrix-crossover-1" style="width: 160px; margin-bottom:5px; float: left;"></div>
+                    <div class=" matrixsmall redopac active" id="matrix-crossover-1" style="width: 152px;  float: left; margin-bottom:5px;  margin-left:20px; margin-right:20px"></div>
+                </div>
             </div>
-        </div>
-        <div style="overflow: hidden;">
-            <div style="">
-                <div  id="board-matrix-crossover-2" style="width: 160px; margin-bottom:5px; float: right;"></div>
-                <div class=" matrixsmall blueopac active" id="matrix-crossover-2" style="width: 152px;  float: right; margin-bottom:5px;  margin-left:20px; margin-right:20px"></div>
+            <div style="overflow: hidden;">
+                <div style="">
+                    <div  id="board-matrix-crossover-2" style="width: 160px; margin-bottom:5px; float: right;"></div>
+                    <div class=" matrixsmall blueopac active" id="matrix-crossover-2" style="width: 152px;  float: right; margin-bottom:5px;  margin-left:20px; margin-right:20px"></div>
+                </div>
             </div>
-        </div>
-        <div style="overflow: hidden; margin: auto auto; width: fit-content">
-            <div style="margin: auto auto">
-                <input type="range" min="0" max="8" value="4" class="slider" id="myRangeMatrix" style="width: 171px; margin-left: 5px; margin-right: 5px">
+            <div style="overflow: hidden; margin: auto auto; width: fit-content">
+                <div style="margin: auto auto">
+                    <input type="range" min="0" max="8" value="4" class="slider" id="myRangeMatrix" style="width: 171px; margin-left: 5px; margin-right: 5px">
+                </div>
             </div>
-        </div>
-        <div style="overflow: hidden; margin: auto auto; width: fit-content; margin-top:5px">
-            <div style="width:fit-content; float:left; margin-right:5px; margin-left:5px">
-                <div id="matrix-crossover-3" class="matrixsmall" style="width: 152px; margin-bottom:5px; margin-left:2px; margin-right: 2px"></div>
+            <div style="overflow: hidden">
+                <div style="">
+                    <div  id="board-matrix-crossover-3" style="width: 160px; margin-bottom:5px; float: left;"></div>
+                    <div class=" matrixsmall redopac active" id="matrix-crossover-3" style="width: 152px;  float: left; margin-bottom:5px;  margin-left:20px; margin-right:20px"></div>
+                </div>
+            </div>
+            <!--
+            <div style="overflow: hidden; margin: auto auto; width: fit-content; margin-top:5px">
+                <div style="width:fit-content; float:left; margin-right:5px; margin-left:5px">
+                    <div id="matrix-crossover-3" class="matrixsmall" style="width: 152px; margin-bottom:5px; margin-left:2px; margin-right: 2px"></div>
 
-                <div id="board-matrix-crossover-3" style="width: 160px; margin-bottom:5px"></div>
-            </div>
+                    <div id="board-matrix-crossover-3" style="width: 160px; margin-bottom:5px"></div>
+                </div>
+            </div>-->
         </div>
     </div>
-
     <script type="module" src="chessboard/chessboard_matrix_1point_crossover.js"></script>
 
 
@@ -463,11 +536,13 @@
     <div>
         <div style="overflow: hidden; margin: auto auto; width: fit-content">
             <div style="width: fit-content; float:left; margin-left:5px">
+                <div style="text-align: center;  margin-left:2px; margin-right:20px">Parent 1</div>
                 <div id="board-vector-crossover-1" style="width: 160px; margin-bottom:5px"></div>
 
                 <div id="vector-crossover-1" class="matrixsmall redopac active" style="width: 152px; margin-bottom:5px;  margin-left:2px; margin-right:20px"></div>
             </div>
             <div style="width: fit-content; float:left" >
+                <div style="text-align: center;  margin-left:20px; margin-right:2px">Parent 2</div>
                 <div id="board-vector-crossover-2" style="width: 160px; margin-bottom:5px; margin-left:20px; margin-right:2px"></div>
 
                 <div id="vector-crossover-2" class="matrixsmall blueopac active" style="width: 152px; margin-bottom:5px;  margin-left:20px; margin-right:2px"></div>
@@ -485,6 +560,7 @@
                 <div id="vector-crossover-3" class="matrixsmall" style="width: 152px; margin-bottom:5px; margin-left:2px; margin-right: 2px"></div>
 
                 <div id="board-vector-crossover-3" style="width: 160px; margin-bottom:5px"></div>
+                <div style="text-align: center">Child</div>
             </div>
         </div>
         <div class="caption">
@@ -497,14 +573,17 @@
         The uniform crossover
     </p>
 
+
     <div>
         <div style="overflow: hidden; margin: auto auto; width: fit-content">
             <div style="width: fit-content; float:left; margin-left:5px">
+                <div style="text-align: center;  margin-left:2px; margin-right:20px">Parent 1</div>
                 <div id="board-uniform-crossover-1" style="width: 160px; margin-bottom:5px"></div>
 
                 <div id="uniform-crossover-1" class="matrixsmall redopac active" style="width: 152px; margin-bottom:5px;  margin-left:2px; margin-right:20px"></div>
             </div>
             <div style="width: fit-content; float:left" >
+                <div style="text-align: center; margin-left:20px; margin-right:2px">Parent 2</div>
                 <div id="board-uniform-crossover-2" style="width: 160px; margin-bottom:5px; margin-left:20px; margin-right:2px"></div>
 
                 <div id="uniform-crossover-2" class="matrixsmall blueopac active" style="width: 152px; margin-bottom:5px;  margin-left:20px; margin-right:2px"></div>
@@ -521,6 +600,7 @@
                 <div id="uniform-crossover-3" class="matrixsmall" style="width: 152px; margin-bottom:5px; margin-left:2px; margin-right: 2px"></div>
 
                 <div id="board-uniform-crossover-3" style="width: 160px; margin-bottom:5px"></div>
+                <div style="text-align: center">Child</div>
             </div>
         </div>
         <div class="caption">
@@ -532,8 +612,60 @@
 
 
     <p>
+        Multi Parent uniform Crossover
+    </p>
+
+
+    <div>
+        <div style="overflow: hidden; margin: auto auto; width: fit-content">
+            <div style="width: fit-content; float:left; margin-left:5px">
+                <div style="text-align: center;  margin-left:2px; margin-right:20px">Parent 1</div>
+                <div id="board-multi-uniform-crossover-1" style="width: 160px; margin-bottom:5px;  margin-left:2px; margin-right:20px"></div>
+
+                <div id="multi-uniform-crossover-1" class="matrixsmall redopac active" style="width: 152px; margin-bottom:5px;  margin-left:2px; margin-right:20px"></div>
+            </div>
+            <div style="width: fit-content; float:left" >
+                <div style="text-align: center;  margin-left:20px; margin-right:20px">Parent 2</div>
+                <div id="board-multi-uniform-crossover-2" style="width: 160px; margin-bottom:5px;  margin-left:20px; margin-right:20px"></div>
+
+                <div id="multi-uniform-crossover-2" class="matrixsmall blueopac active" style="width: 152px; margin-bottom:5px;  margin-left:20px; margin-right:20px"></div>
+            </div>
+            <div style="width: fit-content; float:left" >
+                <div style="text-align: center; margin-left:20px; margin-right:2px">Parent 3</div>
+                <div id="board-multi-uniform-crossover-3" style="width: 160px; margin-bottom:5px; margin-left:20px; margin-right:2px"></div>
+
+                <div id="multi-uniform-crossover-3" class="matrixsmall yellowopac active" style="width: 152px; margin-bottom:5px;  margin-left:20px; margin-right:2px"></div>
+            </div>
+        </div>
+        <div style="width: fit-content; margin: auto auto">
+            <div style="overflow: visible;  margin-top: 20px; margin-right:5px">
+                <div id="multi-uniform-crossover-1b" class="matrixsmall redopac" style="width: 152px; margin-bottom:5px;"></div>
+                <div id="multi-uniform-crossover-2b" class="matrixsmall blueopac" style="width: 152px; margin-bottom:5px;"></div>
+                <div id="multi-uniform-crossover-3b" class="matrixsmall yellowopac" style="width: 152px; margin-bottom:5px;"></div>
+            </div>
+        </div>
+        <div style="overflow: hidden; margin: auto auto; width: fit-content; margin-top:20px">
+            <div style="width:fit-content; float:left; margin-right:5px; margin-left:5px">
+                <div id="multi-uniform-crossover-4" class="matrixsmall" style="width: 152px; margin-bottom:5px; margin-left:2px; margin-right: 2px"></div>
+
+                <div id="board-multi-uniform-crossover-4" style="width: 160px; margin-bottom:5px"></div>
+                <div style="text-align: center">Child</div>
+            </div>
+        </div>
+        <div class="caption">
+            Click on the parents in the middle to choose which number should be inherited by the child.
+            See how the child changes according to the crossover of its parents.
+        </div>
+    </div>
+    <script type="module" src="chessboard/chessboard_vector_multi_parent_uniform_crossover.js"></script>
+
+
+
+    <p>
         Cycle Crossover
     </p>
+
+
 
 
     <dt-cite key="gregor2015draw"></dt-cite>

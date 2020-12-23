@@ -20,7 +20,20 @@ let matrixdivs = $(matrix).find("div");
 let tableRow = createVector(position_to_row_vector(board.position()), "#board-comparison-row");
 let tableColumn = createVector(position_to_column_vector(board.position()), "#board-comparison-column");
 let tablePermutation = createVector(position_to_column_vector(board.position()), "#board-comparison-permutation");
+updateStyle();
 
+function updateStyle(){
+    $("div", matrix).each(function(){
+        if (parseInt(this.innerHTML) === 1){
+            this.style.backgroundColor = "#000000";
+            this.style.color = "#ffffff";
+
+        } else {
+            this.style.backgroundColor = null;
+            this.style.color = null;
+        }
+    })
+}
 
 
 
@@ -48,6 +61,7 @@ function onDrop(source, target, piece, newPos, oldPos, orientation){
     updateColumnVector(newPos);
     updateRowVector(newPos);
     updatePermutationVector(newPos);
+    updateStyle();
 }
 
 function updateMatrix(fieldSource, fieldTarget){
