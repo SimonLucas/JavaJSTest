@@ -1,6 +1,6 @@
 import {position_to_column_vector, field_to_index, index_to_field, example_positions, column_vector_to_position,
     random_vector, createVector, index_to_col_name, createMatrix} from "./chessboard_utils.js";
-import {position_to_binary_board} from "./chessboard_utils.js";
+import {position_to_binary_board, binary_board_to_position} from "./chessboard_utils.js";
 
 let boards = initializeBoards([
     ["board-matrix-crossover-1", "#matrix-crossover-1"],
@@ -10,65 +10,76 @@ let boards = initializeBoards([
 
 
 // initialize crossover result
-let matrix1 = createMatrix(position_to_binary_board(boards[0].position())[0], "#matrix-crossover-1b");
-let matrix2 = createMatrix(position_to_binary_board(boards[1].position())[0], "#matrix-crossover-2b");
-let divsOriginal1 = $(boards[0].table).find("div");
-let divsOriginal2 = $(boards[1].table).find("div");
-let divsParent1 = $(matrix1).find("div");
-let divsParent2 = $(matrix2).find("div");
+//let matrix1 = createMatrix(position_to_binary_board(boards[0].position())[0], "#matrix-crossover-1b");
+//let matrix2 = createMatrix(position_to_binary_board(boards[1].position())[0], "#matrix-crossover-2b");
+//let divsOriginal1 = $(boards[0].table).find("div");
+//let divsOriginal2 = $(boards[1].table).find("div");
+let divsParent1 = $(boards[0].table).find("div");
+let divsParent2 = $(boards[1].table).find("div");
 let divsChild = $("#matrix-crossover-3").find("div");
 
 var rangeInput = document.getElementById("myRangeMatrix");
-updateMatrices(rangeInput.getAttribute("value"), divsParent1, divsParent2, divsOriginal1, divsOriginal2);
+updateMatrices(rangeInput.getAttribute("value"), divsParent1, divsParent2);
 
 
 rangeInput.addEventListener("input", function(e) {
-    updateMatrices(e.target.value, divsParent1, divsParent2,divsOriginal1, divsOriginal2);
+    updateMatrices(e.target.value, divsParent1, divsParent2);
 }, false);
 
 
-function updateMatrices(value, divsParent1, divsParent2, divsOriginal1, divsOriginal2){
+function updateMatrices(value, divsParent1, divsParent2){
     //retrieve the x first elements
+    let inactiveBackgroundColor = "#ffffff";
+    let inactiveColor = "lightgray";
+
     let binary_board = [];
     for (let i = 0; i < 8; i++){
         let current_row = [];
         if (i < value){
             //newVector[i] = $(vector2).find("div")[i].style.backgroundColor = "#ffffff";
             for (let j = 0; j < 8; j++){
-                divsParent2[i+j*8].classList.add("inactive");
-                divsParent2[i+j*8].classList.remove("active");
-
-                divsParent1[i+j*8].classList.add("active");
-                divsParent1[i+j*8].classList.remove("inactive");
-
-                let style = getComputedStyle(divsOriginal1[i+j*8]);
-                divsChild[i+j*8].style.backgroundColor = style["background-color"];
+                // style active parent
+                let style = getComputedStyle(divsParent1[i+j*8]);
+                divsParent1[i+j*8].style.backgroundColor = null;
+                divsParent1[i+j*8].style.color = null;
                 divsParent1[i+j*8].style.backgroundColor = style["background-color"];
+
+                // style inactive parent
+                divsParent2[i+j*8].style.backgroundColor = inactiveBackgroundColor;
+                divsParent2[i+j*8].style.color = inactiveColor;
+
+                // style child
+                divsChild[i+j*8].style.backgroundColor = style["background-color"];
                 divsChild[i+j*8].innerHTML = divsParent1[i+j*8].innerHTML;
+
+                // set value
                 current_row[j] = divsParent1[i+j*8].innerHTML
             }
-
         } else {
             for (let j = 0; j < 8; j++) {
+                // style active parent
+                let style = getComputedStyle(divsParent2[i+j*8]);
+                divsParent2[i+j*8].style.backgroundColor = null;
+                divsParent2[i+j*8].style.color = null;
+                divsParent2[i+j*8].style.backgroundColor = style["background-color"];
 
-                divsParent2[i+j*8].classList.add("active");
-                divsParent2[i+j*8].classList.remove("inactive");
+                // style inactive parent
+                divsParent1[i+j*8].style.backgroundColor = inactiveBackgroundColor;
+                divsParent1[i+j*8].style.color = inactiveColor;
 
-                divsParent1[i+j*8].classList.add("inactive");
-                divsParent1[i+j*8].classList.remove("active");
-
-                let style = getComputedStyle(divsOriginal2[i+j*8]);
+                // style child
                 divsChild[i+j*8].style.backgroundColor = style["background-color"];
-                divsParent1[i+j*8].style.backgroundColor =  null;
                 divsChild[i+j*8].innerHTML = divsParent2[i+j*8].innerHTML;
-                current_row[j] = divsParent2[i+j*8].innerHTML;
+
+                // set value
+                current_row[j] = divsParent2[i+j*8].innerHTML
             }
         }
         binary_board[i] = current_row;
     }
     //console.log(newVector, column_vector_to_position(newVector));
-    console.log(binary_board);
-    //boards[2].position(binary_board_to_position());
+    let pos = binary_board_to_position(binary_board);
+    boards[2].position(pos);
 }
 
 function initializeBoards(boardContainers){

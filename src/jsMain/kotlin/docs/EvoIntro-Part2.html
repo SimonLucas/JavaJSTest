@@ -356,7 +356,7 @@
     </div>
 
     <p>
-        Now after trying out all representations, please let us know which representation you prefer in terms of usability.
+        After having tried out all representations, please let us know which representation you prefer in terms of usability.
         <div style="overflow: hidden">
             <iframe width="620" height="590" src="https://strawpoll.com/embed/o5auuyxco" style="width: 100%; height: 590px; overflow-y: hidden; " frameborder="0" scrolling="no"></iframe>
         </div>
@@ -365,10 +365,32 @@
 
     <h2>Mutation</h2>
     <p>
-        Mutation is the first evolutionary operator to modify individuals of our population.
-        Given the vector notation introduced above, we want to modify a randomized change for creating
-        a new individual from an existing one. Click on a any element of the vector to randomly
-        change the position of the encoded queen.
+        Mutation is an evolutionary operator that modifies a single individual of our population.
+        It is often used to for a local search in the search space to further exploit a promising solution.
+        This is achieved by adding small changes to a candidate solution, such that the resulting individual
+        is similar to its parent.
+    </p>
+
+    <p>
+        A simple mutation operator is the <em>bit mutation</em>.
+        For any individual that is represented by a collection of bits, we randomly flip one of them,
+        that is turning a 1 to a 0 and vice versa.
+        The same operator has been used before, when introducing the matrix representation.
+        Here, you can try it out once more:
+    </p>
+
+    <p>
+        Sadly, this mutation operator does not work for the 8-queens representation.
+        A single bit-flip would either add another 1 or remove one of the many 0.
+        Thus, violating the requirement to have exactly 8 queens on the board.
+        Therefore, we introduce a second class of mutation operators, the <em>transposition or swap mutation</em>.
+
+    </p>
+
+    <p>
+    </p>
+
+    <p>
     </p>
 
     <div>
@@ -405,39 +427,33 @@
         One point Crossover matrix
     </p>
 
-    <div>
+    <div style="width: 510px; margin: auto auto">
+        <div style="overflow: hidden">
+            <div style="">
+                <div  id="board-matrix-crossover-1" style="width: 160px; margin-bottom:5px; float: left;"></div>
+                <div class=" matrixsmall redopac active" id="matrix-crossover-1" style="width: 152px;  float: left; margin-bottom:5px;  margin-left:20px; margin-right:20px"></div>
+            </div>
+        </div>
+        <div style="overflow: hidden;">
+            <div style="">
+                <div  id="board-matrix-crossover-2" style="width: 160px; margin-bottom:5px; float: right;"></div>
+                <div class=" matrixsmall blueopac active" id="matrix-crossover-2" style="width: 152px;  float: right; margin-bottom:5px;  margin-left:20px; margin-right:20px"></div>
+            </div>
+        </div>
         <div style="overflow: hidden; margin: auto auto; width: fit-content">
-            <div style="width: fit-content; float:left; margin-left:5px">
-                <div id="board-matrix-crossover-1" style="width: 160px; margin-bottom:5px"></div>
-
-                <div id="matrix-crossover-1" class="matrixsmall redopac active" style="width: 152px; margin-bottom:5px;  margin-left:2px; margin-right:20px"></div>
-            </div>
-            <div style="width: fit-content; float:left" >
-                <div id="board-matrix-crossover-2" style="width: 160px; margin-bottom:5px; margin-left:20px; margin-right:2px"></div>
-
-                <div id="matrix-crossover-2" class="matrixsmall blueopac active" style="width: 152px; margin-bottom:5px;  margin-left:20px; margin-right:2px"></div>
+            <div style="margin: auto auto">
+                <input type="range" min="0" max="8" value="4" class="slider" id="myRangeMatrix" style="width: 171px; margin-left: 5px; margin-right: 5px">
             </div>
         </div>
-        <div style="width: fit-content; margin: auto auto">
-            <div style="overflow: visible;  margin-top: 20px; margin-left: 15px; margin-right:5px">
-                <div id="matrix-crossover-1b" class="matrixsmall redopac active" style="width: 152px; margin-bottom:5px;"></div>
-
-                <div id="matrix-crossover-2b" class="matrixsmall blueopac active" style="width: 152px; margin-bottom:5px;"></div>
-
-                <input type="range" min="0" max="8" value="4" class="slider" id="myRangeMatrix" style="width: 171px; margin-left: -10px">
-            </div>
-        </div>
-        <div style="overflow: hidden; margin: auto auto; width: fit-content; margin-top:20px">
+        <div style="overflow: hidden; margin: auto auto; width: fit-content; margin-top:5px">
             <div style="width:fit-content; float:left; margin-right:5px; margin-left:5px">
                 <div id="matrix-crossover-3" class="matrixsmall" style="width: 152px; margin-bottom:5px; margin-left:2px; margin-right: 2px"></div>
 
                 <div id="board-matrix-crossover-3" style="width: 160px; margin-bottom:5px"></div>
             </div>
         </div>
-        <div class="caption">
-            Move the slider to shift the cutoff point. See how the child changes according to the crossover of its parents.
-        </div>
     </div>
+
     <script type="module" src="chessboard/chessboard_matrix_1point_crossover.js"></script>
 
 

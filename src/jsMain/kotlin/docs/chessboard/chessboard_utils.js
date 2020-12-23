@@ -180,6 +180,30 @@ export function position_to_binary_board(position){
     return [binary_board, unsafe_positions, safe_positions];
 }
 
+
+/**
+ *
+ * @param binary_board
+ * @returns {""}
+ */
+export function binary_board_to_position(binary_board){
+    let position = {};
+    for(let i=0; i<8; i++){
+
+        for(let j=0; j<8; j++){
+            if (binary_board[i][j]==="1"){
+                let row = 8-j;
+                let column = index_to_col_name[i];
+                position[column+row] = "bQ";
+            }
+        }
+    }
+
+    return position;
+}
+
+
+
 /**
  * Removes the css class of all cells of the provided board and adds threatcssclass and safecssclass according to the
  * safety of each queens position.
