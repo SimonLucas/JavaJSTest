@@ -9,6 +9,12 @@ let boards = initializeBoards([
     ["board-shuffle-mutation-2", "#shuffle-mutation-child"],
 ]);
 
+let divsParentInversion = $(boards[0].table).find("div");
+let divsChildInversion = $(boards[1].table).find("div");
+
+let divsParentShuffle = $(boards[2].table).find("div");
+let divsChildShuffle = $(boards[3].table).find("div");
+
 $( function() {
     $( "#slider-range-inversion" ).slider({
         range: true,
@@ -18,11 +24,9 @@ $( function() {
         slide: function( event, ui ) {
             if (ui.values[0] === ui.values[1])
                 return false;
-            $( "#amount" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
+            updateVectorsInversion(ui.values, divsParentInversion, divsChildInversion, boards[0], boards[1]);
         }
     });
-    $( "#amount" ).val( "$" + $( "#slider-range-inversion" ).slider( "values", 0 ) +
-        " - $" + $( "#slider-range-inversion" ).slider( "values", 1 ) );
 } );
 
 $( function() {
@@ -34,65 +38,60 @@ $( function() {
         slide: function( event, ui ) {
             if (ui.values[0] === ui.values[1])
                 return false;
-            $( "#amount" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
+            console.log(ui.values);
+            updateVectorsShuffle(ui.values, divsParentShuffle, divsChildShuffle, boards[2], boards[3]);
         }
     });
-    $( "#amount" ).val( "$" + $( "#slider-range-shuffle" ).slider( "values", 0 ) +
-        " - $" + $( "#slider-range-shuffle" ).slider( "values", 1 ) );
 } );
 
-/*
-// initialize crossover result
-let vector1 = createVector(position_to_column_vector(boards[0].position()), "#vector-crossover-1b");
-let vector2 = createVector(position_to_column_vector(boards[1].position()), "#vector-crossover-2b");
-let divsParent1 = $(vector1).find("div");
-let divsParent2 = $(vector2).find("div");
-let divsChild = $("#vector-crossover-3").find("div");
+updateVectorsInversion([ 3, 5 ], divsParentInversion, divsChildInversion, boards[0], boards[1]);
+updateVectorsShuffle([ 3, 5 ], divsParentShuffle, divsChildShuffle, boards[2], boards[3]);
 
-var rangeInput = document.getElementById("myRange");
-updateVectors(rangeInput.getAttribute("value"), divsParent1, divsParent2);
 
-rangeInput.addEventListener("input", function(e) {
-    updateVectors(e.target.value, divsParent1, divsParent2);
-}, false);
-
-*/
-function updateVectors(value, divsParent1, divsParent2){
+function updateVectorsInversion(values, divsParent, divsChild, boardParent, boardChild){
     //retrieve the x first elements
     let newVector = [];
-    for (let i = 0; i < 8; i++){
-        if (i < value){
-            // read value
-            newVector[i] = 8-parseInt(divsParent1[i].innerHTML);
-
-            //newVector[i] = $(vector2).find("div")[i].style.backgroundColor = "#ffffff";
-            divsParent2[i].classList.add("inactive");
-            divsParent2[i].classList.remove("active");
-
-            divsParent1[i].classList.add("active");
-            divsParent1[i].classList.remove("inactive");
-
-            const style = getComputedStyle(divsParent1[i]);
-            divsChild[i].style.backgroundColor = style["background-color"];
-        } else {
-            // read value
-            newVector[i] = 8-parseInt(divsParent2[i].innerHTML);
-
-            divsParent2[i].classList.add("active");
-            divsParent2[i].classList.remove("inactive");
-
-            divsParent1[i].classList.add("inactive");
-            divsParent1[i].classList.remove("active");
-
-            const style = getComputedStyle(divsParent2[i]);
-            divsChild[i].style.backgroundColor = style["background-color"];
-        }
-
-        divsChild[i].innerHTML = 8-newVector[i];
+    for (let i = 0; i < 8; i++) {
+        newVector[i] = 8-parseInt(divsParent[i].innerHTML);
+        divsChild[i].innerHTML = divsParent[i].innerHTML;
+        divsChild[i].style.backgroundColor = null;
     }
-    //console.log(newVector, column_vector_to_position(newVector));
 
-    boards[2].position(column_vector_to_position(newVector));
+    for (let i = 0; i < (values[1]-values[0]); i++){
+        newVector[values[0] + i] = 8-parseInt(divsParent[values[1]-(i+1)].innerHTML);
+        divsChild[values[0] +i].innerHTML = divsParent[values[1]-(i+1)].innerHTML;
+        divsChild[values[0] + i].style.backgroundColor = "red";
+    }
+
+    boardChild.position(column_vector_to_position(newVector));
+}
+
+function updateVectorsShuffle(values, divsParent, divsChild, boardParent, boardChild){
+    //retrieve the x first elements
+    let newVector = [];
+    for (let i = 0; i < 8; i++) {
+        newVector[i] = 8-parseInt(divsParent[i].innerHTML);
+        divsChild[i].innerHTML = divsParent[i].innerHTML;
+    }
+
+    let shuffleValues = newVector.slice(values[0], values[1]);
+    shuffle(shuffleValues);
+
+    for (let i = 0; i < (values[1]-values[0]); i++){
+        newVector[values[0] + i] = shuffleValues[i];
+        divsChild[values[0] +i].innerHTML = 8-shuffleValues[i];
+        divsChild[values[0] + i].style.backgroundColor = "red";
+    }
+
+    boardChild.position(column_vector_to_position(newVector));
+}
+
+function shuffle(a) {
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
 }
 
 function initializeBoards(boardContainers){
@@ -111,6 +110,7 @@ function initializeBoards(boardContainers){
         });
         let table = createVector(position_to_column_vector(board.position()), vectorContainer);
         $("div", table).click(function(){ mutateQueen(this, board);});
+        board.table = table;
         boards[i] = board;
     }
     return boards;
