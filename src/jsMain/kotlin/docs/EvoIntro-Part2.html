@@ -493,6 +493,21 @@
         However, swap mutations are still applicable.
     </p>
 
+    <div>
+        <div style="overflow: hidden; margin: auto auto; width: max-content">
+            <div style="text-align: center">Permutation Vector</div>
+            <div style="width: max-content; margin-left:auto; margin-right: auto">
+                <div id="board-permutation-example-4" style="width: 160px; margin-bottom:5px;  margin-left:auto; margin-right: auto"></div>
+
+                <div id="board-permutation-4" class="matrixsmall greyopac" style="width: 152px; margin-bottom:5px; margin-left: 10px; margin-right: 10px"></div>
+            </div>
+        </div>
+        <div class="caption">
+            Click on two queens or their respective vector cells to swap their position.
+        </div>
+        <script type="module" src="chessboard/chessboard_permutation_representation2.js"></script>
+    </div>
+
     <p>
         More interesting alternatives are the inversion and shuffle mutations.
         Each operate on a subsequence of the original permutation vector.
@@ -504,24 +519,24 @@
     <div>
         <div style="overflow: hidden; margin: auto auto; width: max-content">
             <div style="width: 180px; float:left; margin-left: 20px">
-                <div style="width: 160px; text-align: center; margin-top: 5px">Inversion</div>
+                <div style="width: 160px; text-align: center; margin-top: 5px; font-size: 17px">Inversion Mutation</div>
                 <div id="board-inversion-mutation-1" style="width: 160px; margin-bottom:5px"></div>
 
                 <div id="inversion-mutation-parent" class="matrixsmall" style="width: 152px; margin-bottom:5px; margin-left:2px"></div>
 
-                <div id="slider-range-inversion" style="width: 160px"></div>
+                <div id="slider-range-inversion" style="width: 160px; margin-top: 10px; margin-bottom: 10px; margin-left: -3px;"></div>
 
                 <div id="inversion-mutation-child" class="matrixsmall" style="width: 152px; margin-bottom:5px; margin-left:2px"></div>
 
                 <div id="board-inversion-mutation-2" style="width: 160px; margin-bottom:5px"></div>
             </div>
             <div style="width: 180px; float:left; margin-left: 20px">
-                <div style="width: 160px; text-align: center; margin-top: 5px">Shuffle Vector</div>
+                <div style="width: 160px; text-align: center; margin-top: 5px; font-size: 17px">Shuffle Mutation</div>
                 <div id="board-shuffle-mutation-1" style="width: 160px; margin-bottom:5px"></div>
 
                 <div id="shuffle-mutation-parent" class="matrixsmall" style="width: 152px; margin-bottom:5px; margin-left:2px"></div>
 
-                <div id="slider-range-shuffle" style="width: 160px"></div>
+                <div id="slider-range-shuffle" style="width: 160px; margin-top: 10px; margin-bottom: 10px; margin-left: -3px;"></div>
 
                 <div id="shuffle-mutation-child" class="matrixsmall" style="width: 152px; margin-bottom:5px; margin-left:2px"></div>
 
@@ -534,13 +549,10 @@
     </div>
     <script type="module" src="./chessboard/inversion_shuffle_mutation.js"></script>
 
-
     <p>
-        Comparison
+        The same can be done for the matrix representations.
+        Here, we would not just swap a single cell, but the whole column or row of the board.
     </p>
-
-
-
 
 
     <h2>Crossover</h2>
@@ -552,7 +564,10 @@
     </p>
 
     <p>
-        One point Crossover matrix
+        The first and most basic variant is the single-point crossover.
+        Here, we first choose a cutoff point.
+        Elements to the left of this cutoff point will be filled with information from parent 1,
+        whereas elements to the right will be filled with information from parent 2.
     </p>
 
     <div>
@@ -580,21 +595,17 @@
                     <div class=" matrixsmall redopac active" id="matrix-crossover-3" style="width: 152px;  float: left; margin-bottom:5px;  margin-left:20px; margin-right:20px"></div>
                 </div>
             </div>
-            <!--
-            <div style="overflow: hidden; margin: auto auto; width: max-content; margin-top:5px">
-                <div style="width:max-content; float:left; margin-right:5px; margin-left:5px">
-                    <div id="matrix-crossover-3" class="matrixsmall" style="width: 152px; margin-bottom:5px; margin-left:2px; margin-right: 2px"></div>
-
-                    <div id="board-matrix-crossover-3" style="width: 160px; margin-bottom:5px"></div>
-                </div>
-            </div>-->
+            <div class="caption">
+                Move the slider to shift the cutoff point. See how the child matrix consists of elements of both its parents.
+            </div>
         </div>
     </div>
     <script type="module" src="chessboard/chessboard_matrix_1point_crossover.js"></script>
 
 
     <p>
-        The one-point crossover vector
+        The same concept can be applied to vector representations.
+        See below, the single-point crossover for the column vector representation.
     </p>
     <div>
         <div style="overflow: hidden; margin: auto auto; width: max-content">
@@ -633,10 +644,55 @@
     <script type="module" src="chessboard/chessboard_vector_1point_crossover.js"></script>
 
     <p>
-        The uniform crossover
+        The two-point crossover uses not just one but two cutoff points.
+        Elements in between both points will be selected from the second parent,
+        whereas elements outside will be picked from parent 1.
     </p>
 
+    <div>
+        <div style="overflow: hidden; margin: auto auto; width: max-content">
+            <div style="width: max-content; float:left; margin-left:5px">
+                <div style="text-align: center;  margin-left:2px; margin-right:20px">Parent 1</div>
+                <div id="board-vector-2point-crossover-1" style="width: 160px; margin-bottom:5px"></div>
 
+                <div id="vector-2point-crossover-1" class="matrixsmall redopac active" style="width: 152px; margin-bottom:5px;  margin-left:2px; margin-right:20px"></div>
+            </div>
+            <div style="width: max-content; float:left" >
+                <div style="text-align: center;  margin-left:20px; margin-right:2px">Parent 2</div>
+                <div id="board-vector-2point-crossover-2" style="width: 160px; margin-bottom:5px; margin-left:20px; margin-right:2px"></div>
+
+                <div id="vector-2point-crossover-2" class="matrixsmall blueopac active" style="width: 152px; margin-bottom:5px;  margin-left:20px; margin-right:2px"></div>
+            </div>
+        </div>
+        <div style="width: max-content; margin: auto auto">
+            <div style="overflow: visible;  margin-top: 20px; margin-left: 15px; margin-right:5px">
+                <div id="vector-2point-crossover-1b" class="matrixsmall redopac" style="width: 152px; margin-bottom:5px;"></div>
+                <div id="vector-2point-crossover-2b" class="matrixsmall blueopac" style="width: 152px; margin-bottom:5px;"></div>
+                <div id="myRange2Point" style="width: 160px; margin-top: 10px; margin-bottom: 10px; margin-left: -3px;"></div>
+            </div>
+        </div>
+        <div style="overflow: hidden; margin: auto auto; width: max-content; margin-top:20px">
+            <div style="width:max-content; float:left; margin-right:5px; margin-left:5px">
+                <div id="vector-2point-crossover-3" class="matrixsmall" style="width: 152px; margin-bottom:5px; margin-left:2px; margin-right: 2px"></div>
+
+                <div id="board-vector-2point-crossover-3" style="width: 160px; margin-bottom:5px"></div>
+                <div style="text-align: center">Child</div>
+            </div>
+        </div>
+        <div class="caption">
+            Move both slider markers to shift the cutoff area. See how the child changes according to the crossover of its parents.
+        </div>
+    </div>
+    <script type="module" src="chessboard/chessboard_vector_2point_crossover.js"></script>
+
+    <p>
+        We can further generalize the concept by selecting event more cutoff points.
+        A more variable approach is the uniform crossover in which we randomly pick
+        the parent to sample the next element from.
+        Consider throwing a coin for each child element.
+        If head turns up, we sample the element from the first parent,
+        for tail we sample the element from the second parent.
+    </p>
     <div>
         <div style="overflow: hidden; margin: auto auto; width: max-content">
             <div style="width: max-content; float:left; margin-left:5px">
@@ -673,13 +729,12 @@
     </div>
     <script type="module" src="chessboard/chessboard_vector_uniform_crossover.js"></script>
 
-
     <p>
-        Multi Parent uniform Crossover
+        Many crossover methods are not limited to two parents but can be extended to multiple parents.
+        Below we see the three parent uniform crossover.
     </p>
 
-
-    <div>
+    <div style="overflow: hidden; margin: auto auto;">
         <div style="overflow: hidden; margin: auto auto; width: max-content">
             <div style="width: max-content; float:left; margin-left:5px">
                 <div style="text-align: center;  margin-left:2px; margin-right:20px">Parent 1</div>
@@ -715,21 +770,73 @@
                 <div style="text-align: center">Child</div>
             </div>
         </div>
-        <div class="caption">
-            Click on the parents in the middle to choose which number should be inherited by the child.
-            See how the child changes according to the crossover of its parents.
-        </div>
+    </div>
+    <div class="caption">
+        Click on the parents in the middle to choose which number should be inherited by the child.
+        See how the child changes according to the crossover of its parents.
     </div>
     <script type="module" src="chessboard/chessboard_vector_multi_parent_uniform_crossover.js"></script>
 
 
-
     <p>
-        Cycle Crossover
+        All the crossover methods we have seen so far, can be applied to matrix and vector representations.
+        However, they are not suitable for permutations.
+        The cycle crossover is a specialized crossover method which keeps permutations intact.
     </p>
 
+    <p>
+        Given the vectors of two parents, we first identify the so-called cycles.
+        Therefore, we start with the first value of parent 1 and parent 2.
+        The value of parent 1 will be added to the set of cycle numbers, while
+        the value of parent 2 is the next number we search for in parent 1.
+        Once again, we add the number of parent 1 to the set of cycle numbers and search for
+        the value of parent 2 at the same index in parent 1.
+        This repeats until we have hit a number that is already present in the set of cycle numbers.
+        The found cycle will be removed from both parents and the process
+        repeats until all cycles have been identified.
+        The graphic below shows the process of identifying all cycles.
+    </p>
+    <div>
+        <div style="width: max-content; margin: auto auto">
+            <div style="overflow: visible;  margin-top: 20px; margin-right:5px">
+                <div style="text-align: center">Parents</div>
+                <div id="cycle-crossover-parent-1" class="matrixsmall redopac active" style="width: 152px; margin-bottom:5px;"></div>
+                <div id="cycle-crossover-parent-2" class="matrixsmall blueopac active" style="width: 152px; margin-bottom:5px;"></div>
 
+                <div style="text-align: center">Cycle Vector</div>
+                <div id="cycle-crossover-cycle-vector" class="matrixsmall blueopac" style="width: 152px; margin-bottom:5px;"></div>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="chessboard/chessboard_cycle_identification.js"></script>
 
+    <p>
+        To produce the child vector, we first copy the values of the first cycle of parent 1 to their respective indices in the child vector.
+        Thereafter, we copy the values of the second cycle from parent 2.
+        We repeat this process, by switching between both parents for each consecutive cycle.
+        The graphic below shows the process for producing a child given the cycle vectors.
+    </p>
+
+    <div>
+        <div style="width: max-content; margin: auto auto">
+            <div style="overflow: visible;  margin-top: 20px; margin-right:5px">
+                <div style="text-align: center">Parents</div>
+                <div id="cycle-crossover-parent-1b" class="matrixsmall redopac active" style="width: 152px; margin-bottom:5px;"></div>
+                <div id="cycle-crossover-parent-2b" class="matrixsmall blueopac active" style="width: 152px; margin-bottom:5px;"></div>
+                <div style="text-align: center">Cycle Vector</div>
+                <div id="cycle-crossover-cycle-vectorb" class="matrixsmall" style="width: 152px; margin-bottom:5px;"></div>
+            </div>
+        </div>
+        <div style="overflow: hidden; margin: auto auto; width: max-content; margin-top:20px">
+            <div style="width:max-content; float:left; margin-right:5px; margin-left:5px">
+                <div style="text-align: center">Child</div>
+                <div id="cycle-crossover-child-vectorb" class="matrixsmall" style="width: 152px; margin-bottom:5px; margin-left:2px; margin-right: 2px"></div>
+
+                <div id="board-cycle-crossover" style="width: 160px; margin-bottom:5px"></div>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="chessboard/chessboard_cycle_crossover_child.js"></script>
 
     <dt-cite key="gregor2015draw"></dt-cite>
 

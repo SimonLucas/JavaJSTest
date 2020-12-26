@@ -265,6 +265,24 @@ export function random_vector(){
     return x;
 }
 
+export function random_permutation(){
+    let x = [];
+    for (let i = 0; i < 8; i++){
+        x[i] = i+1;
+    }
+
+    return shuffle(x);
+}
+
+export function shuffle(a) {
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+
+
 export const example_positions = [
     {
         a1: "bQ",

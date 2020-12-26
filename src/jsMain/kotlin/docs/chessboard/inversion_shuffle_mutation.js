@@ -1,6 +1,6 @@
 
 import {position_to_column_vector, field_to_index, index_to_field, example_positions, column_vector_to_position,
-    random_vector, createVector, index_to_col_name} from "./chessboard_utils.js";
+    random_vector, createVector, index_to_col_name, shuffle} from "./chessboard_utils.js";
 
 let boards = initializeBoards([
     ["board-inversion-mutation-1", "#inversion-mutation-parent"],
@@ -60,7 +60,7 @@ function updateVectorsInversion(values, divsParent, divsChild, boardParent, boar
     for (let i = 0; i < (values[1]-values[0]); i++){
         newVector[values[0] + i] = 8-parseInt(divsParent[values[1]-(i+1)].innerHTML);
         divsChild[values[0] +i].innerHTML = divsParent[values[1]-(i+1)].innerHTML;
-        divsChild[values[0] + i].style.backgroundColor = "red";
+        divsChild[values[0] + i].style.backgroundColor = "mistyrose";
     }
 
     boardChild.position(column_vector_to_position(newVector));
@@ -72,6 +72,7 @@ function updateVectorsShuffle(values, divsParent, divsChild, boardParent, boardC
     for (let i = 0; i < 8; i++) {
         newVector[i] = 8-parseInt(divsParent[i].innerHTML);
         divsChild[i].innerHTML = divsParent[i].innerHTML;
+        divsChild[i].style.backgroundColor = null;
     }
 
     let shuffleValues = newVector.slice(values[0], values[1]);
@@ -80,19 +81,12 @@ function updateVectorsShuffle(values, divsParent, divsChild, boardParent, boardC
     for (let i = 0; i < (values[1]-values[0]); i++){
         newVector[values[0] + i] = shuffleValues[i];
         divsChild[values[0] +i].innerHTML = 8-shuffleValues[i];
-        divsChild[values[0] + i].style.backgroundColor = "red";
+        divsChild[values[0] + i].style.backgroundColor = "mistyrose";
     }
 
     boardChild.position(column_vector_to_position(newVector));
 }
 
-function shuffle(a) {
-    for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
-}
 
 function initializeBoards(boardContainers){
     let boards = [];

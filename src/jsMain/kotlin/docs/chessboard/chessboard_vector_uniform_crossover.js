@@ -134,4 +134,3 @@ function initializeBoards(boardContainers){
 
 
 
-
