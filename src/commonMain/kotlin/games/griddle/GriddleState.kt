@@ -2,6 +2,7 @@ package games.griddle
 
 import games.griddle.ai.LetterGridModel
 import games.griddle.ai.MCPlayer
+import games.griddle.ai.ScoredCell
 import games.griddle.deck.StatDeck
 import games.griddle.words.GridScan
 import games.griddle.words.GridWord
@@ -33,11 +34,17 @@ class GriddleGame (var control: GriddleControl = DefaultControl()){
     var currentScore = 0
     var words: List<GridWord> = ArrayList<GridWord>()
 
+    var scored:List<ScoredCell> = ArrayList<ScoredCell>()
+
     fun emptyGrid() = Array<CharArray>(nCols) { CharArray(nRows) { vacant } }
 
     fun grid() = a
 
     val enableAI = true
+
+    val showEstimates = true
+
+    // var scored:
 
     fun nextState(cell: GridCell? = null) {
         when (state) {
@@ -46,8 +53,15 @@ class GriddleGame (var control: GriddleControl = DefaultControl()){
                 if (letter != null) {
                     current = letter
                     state = GriddleState.GameOn
+                    if (showEstimates) {
+                        val tempPlayer = MCPlayer(dict)
+                        tempPlayer.getAction(LetterGridModel(a), deck, current)
+                        scored = tempPlayer.sorted
+//                        scored.forEach { println("${it.cell} \t ${it.score}") }
+                    }
                 } else {
                     deck = StatDeck().getDeck(control.getSeed())
+                    scored = ArrayList<ScoredCell>()
                 }
             }
             GriddleState.GameOn -> {
@@ -60,6 +74,8 @@ class GriddleGame (var control: GriddleControl = DefaultControl()){
                     // playedCell =
                     val player = MCPlayer(dict)
                     playedCell = player.getAction(LetterGridModel(a), deck, current)
+                    player.sorted.forEach { println("${it.cell} \t ${it.score}") }
+                    println()
                 }
 
                 if (playedCell != null && a[playedCell.x][playedCell.y] == vacant) {

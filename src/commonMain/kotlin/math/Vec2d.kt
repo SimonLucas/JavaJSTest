@@ -20,6 +20,8 @@ data class Vec2d(val x: Double = 0.0, val y: Double = 0.0) {
         return v(x * cos - y * sin, x * sin + y * cos)
     }
 
+    fun angleTo(v: Vec2d) = atan2(v.y-y, v.x-x)
+
     fun isInRect(topLeft: Vec2d, size: Vec2d) = (x >= topLeft.x) && (x <= topLeft.x + size.x) &&
             (y >= topLeft.y) && (y <= topLeft.y + size.y)
 

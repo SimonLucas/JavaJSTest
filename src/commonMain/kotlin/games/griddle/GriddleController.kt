@@ -1,5 +1,6 @@
 package games.griddle
 
+import games.griddle.ai.ScoredCell
 import gui.*
 
 interface GriddleControl {
@@ -39,7 +40,7 @@ class GriddleController (var control: GriddleControl = DefaultControl()): XApp {
             // println(e.s)
             val cell = gv.getGridCell(e.s)
             game.nextState(cell)
-            gv.setData(game.grid(), game.current, game.score())
+            gv.setData(game.grid(), game.current, game.score(), game.scored)
 
             val xg = xgTemp
             if (xg != null) {

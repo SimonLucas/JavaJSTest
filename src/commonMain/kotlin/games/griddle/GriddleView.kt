@@ -1,5 +1,6 @@
 package games.griddle
 
+import games.griddle.ai.ScoredCell
 import gui.*
 import math.Vec2d
 import kotlin.math.min
@@ -77,10 +78,14 @@ class GriddleView(val nCols: Int, val nRows: Int) {
         if (text!=null) xg.draw(text)
     }
 
-    fun setData(a: Array<CharArray>, ch: Char, score:Int = 0) {
+    var scored: List<ScoredCell> = ArrayList<ScoredCell>()
+
+    fun setData(a: Array<CharArray>, ch: Char, score:Int = 0,
+                scored: List<ScoredCell> = ArrayList<ScoredCell>()) {
         setGrid(a)
         setLetter(ch)
         this.score = score
+        this.scored = scored
     }
 
     fun setGrid(a: Array<CharArray>?) {
@@ -107,6 +112,8 @@ class GriddleView(val nCols: Int, val nRows: Int) {
         // println("cellSize = $cellSize")
         val tStyle = TStyle(size = cellSize)
         val text = XText(" ", centre, tStyle, style)
+
+
 
         for (i in 0 until nCols) {
             for (j in 0 until nRows) {

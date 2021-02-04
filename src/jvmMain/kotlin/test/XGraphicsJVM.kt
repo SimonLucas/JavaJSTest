@@ -147,6 +147,7 @@ class XGraphicsJVM(val jc: JComponent) : XGraphics {
             if (toDraw is XEllipse) drawEllipse(toDraw)
             if (toDraw is XPoly) drawPoly(toDraw)
             if (toDraw is XLine) drawLine(toDraw)
+            if (toDraw is XQuadCurve) drawQuadCurve(toDraw)
             if (toDraw is XText) drawText(toDraw)
 
             if (bounds != null) {
@@ -252,6 +253,23 @@ class XGraphicsJVM(val jc: JComponent) : XGraphics {
             }
         }
     }
+
+    private fun drawQuadCurve(quadCurve: XQuadCurve) {
+        val g = graphics2D
+        if (g != null) {
+            with(quadCurve) {
+                val q2d = java.awt.geom.QuadCurve2D.Double(a.x, a.y, b.x, b.y, c.x, c.y)
+                with(dStyle) {
+                    if (stroke) {
+                        g.color = getColor(lc)
+                        g.stroke = BasicStroke(lineWidth.toFloat())
+                        g.draw(q2d)
+                    }
+                }
+            }
+        }
+    }
+
 
     fun drawText(text: XText) {
         val g = graphics2D

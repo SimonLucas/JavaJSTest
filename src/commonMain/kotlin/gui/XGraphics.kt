@@ -204,6 +204,11 @@ data class XLine(
     override var dStyle: XStyle = XStyle(), override var rotation: Double = 0.0
 ) : Drawable
 
+data class XQuadCurve(
+    var a: Vec2d, var b: Vec2d, var c: Vec2d,
+    override var dStyle: XStyle = XStyle(), override var rotation: Double = 0.0
+) : Drawable
+
 data class XText(
     var str: String, var p: Vec2d, var tStyle: TStyle = TStyle(),
     override var dStyle: XStyle = XStyle(), override var rotation: Double = 0.0

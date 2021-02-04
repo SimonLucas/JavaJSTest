@@ -15,7 +15,7 @@ fun main() {
     val xg = XGraphicsJVM(ec)
     ec.xg = xg
     class MyControl : GriddleControl {
-        override fun getSeed(): Long = 13
+        override fun getSeed(): Long = 77
     }
 
     val game: GriddleController = GriddleController( MyControl() )
