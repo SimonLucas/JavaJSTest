@@ -59,7 +59,7 @@ class GraphLearner(val filters: ArrayList<StateFilter>, var control: GridDemoCon
 
 
         var ix =  Random.nextInt(2) // Random.nextInt(models.size)
-        // ix = Random.nextInt(models.size)
+//         ix = Random.nextInt(models.size)
         var model = models[ix]
         // model = models[0]
         return model.leastVisited(states)
