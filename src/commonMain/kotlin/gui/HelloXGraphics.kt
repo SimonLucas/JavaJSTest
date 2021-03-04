@@ -45,7 +45,7 @@ class HelloXGraphics : XApp {
         xg.draw(roundedRect)
 
         // val message = Character
-        val text = XText("Hello XKG", centre, TStyle(fg=XColor.black), XStyle())
+        val text = XText("Hello XKG", centre, TStyle(fg=XColor.black), XStyle(), rotation = hexAngle)
         xg.draw(text)
 
     }

@@ -4,6 +4,7 @@ import agents.PolicyEvoAgent
 import games.tetris.TetrisController
 import games.tetris.TetrisModel
 import gui.*
+import plot.EasyGraphPlot
 
 class TetrisDemoLayout : XApp {
 

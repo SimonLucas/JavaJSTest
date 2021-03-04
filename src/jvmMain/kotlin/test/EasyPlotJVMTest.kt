@@ -1,7 +1,6 @@
 package test
 
-import gui.EasyGraphPlot
-import gui.HelloXGraphics
+import plot.EasyGraphPlot
 import utilities.JEasyFrame
 
 fun main() {

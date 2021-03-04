@@ -279,9 +279,14 @@ class XGraphicsJVM(val jc: JComponent) : XGraphics {
                     g.color = getColor(fg)
                     g.setFont(Font("Monospaced", Font.BOLD, size.toInt()))
                     val rect: Rectangle2D = g.getFontMetrics().getStringBounds(str, g)
-                    val sx = p.x.toInt() - rect.width.toInt() / 2
-                    val sy: Int = p.y.toInt() + rect.height.toInt() / 2 - g.getFontMetrics().getDescent()
+                    val sx = -rect.width.toInt() / 2
+                    val sy = (rect.height.toInt() / 2 - g.getFontMetrics().getDescent())
+
+                    val at = g.transform
+                    g.translate(p.x, p.y)
+                    g.rotate(rotation)
                     g.drawString(str, sx, sy)
+                    g.transform = at
                 }
             }
         }

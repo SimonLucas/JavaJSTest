@@ -3,6 +3,7 @@ package gui.layout
 import agents.PolicyEvoAgent
 import games.arcade.SpriteEngineApp
 import gui.*
+import plot.EasyGraphPlot
 
 class LayoutTest : XApp {
 
