@@ -27,3 +27,15 @@ data class TetrisHeightFilter(var list: ArrayList<Int> = ArrayList<Int>()) : Sta
 
 }
 
+data class TetrisWallFilter(var list: ArrayList<Int> = ArrayList<Int>()) : StateFilter {
+    override fun setKey(state: Any): StateFilter {
+        if (state is TetrisGame) {
+            list = state.tm.getWall(true)
+        }
+        return this
+    }
+
+    override fun cp() = TetrisWallFilter(list.clone() as ArrayList<Int>)
+
+}
+

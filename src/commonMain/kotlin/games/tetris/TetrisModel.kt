@@ -25,7 +25,7 @@ class TetrisModel(var nCols: Int = defaultCols, var nRows: Int = defaultRows) {
         if (tetronSprite == null) newShape()
     }
 
-    fun copy() : TetrisModel {
+    fun copy(): TetrisModel {
         val tm = TetrisModel(nCols, nRows)
         tm.score = score
         tm.blockCount = blockCount
@@ -34,6 +34,19 @@ class TetrisModel(var nCols: Int = defaultCols, var nRows: Int = defaultRows) {
             for (j in 0 until nRows)
                 tm.a[i][j] = a[i][j]
         return tm
+    }
+
+    fun getWall(binarise: Boolean = true): ArrayList<Int> {
+        val al = ArrayList<Int>()
+        for (i in 0 until nCols)
+            for (j in 0 until nRows) {
+                val v = a[i][j]
+                val x = if (binarise)
+                    if (v == BG) 0 else 1
+                else v
+                al.add(v)
+            }
+        return al
     }
 
     // this is called after every accepted move
@@ -97,7 +110,7 @@ class TetrisModel(var nCols: Int = defaultCols, var nRows: Int = defaultRows) {
         }
     }
 
-    fun gameOn() : Boolean {
+    fun gameOn(): Boolean {
         val ts = tetronSprite
         return (ts != null && ts.valid(a))
     }
@@ -107,16 +120,15 @@ class TetrisModel(var nCols: Int = defaultCols, var nRows: Int = defaultRows) {
         // validity
 
         val tType =
-                if (cyclicBlockType) {
-                    blockCount % Tetrons.shapes.size
-                }
-                 else {
-                    rand.nextInt(Tetrons.shapes.size)
-                }
+            if (cyclicBlockType) {
+                blockCount % Tetrons.shapes.size
+            } else {
+                rand.nextInt(Tetrons.shapes.size)
+            }
         // increment the block count whether we use it to determine block type or not
         blockCount++
         val tColor = if (randomShapeColours) rand.nextInt(Tetrons.shapes.size) else tType
-        val x = (nCols / 2) -1
+        val x = (nCols / 2) - 1
         val y = 2
         val rotation = if (randomInitialRotation) rand.nextInt(4) else 0
         val ts = TetronSprite(x, y, rotation, tType, tColor)

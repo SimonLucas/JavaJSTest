@@ -16,15 +16,15 @@ class TetrisTransitionModelTest (
     var control: GridDemoControl = GridDemoControl()
         ){
 
-    fun runModel(nRolls: Int = 10, seqLength: Int = 100): TransitionModel {
+    fun runModel(nRolls: Int = 1000, seqLength: Int = 1000): TransitionModel {
 
-        var filters = arrayListOf<StateFilter>(
-            TetrisShapeFilter(),
+        val filters = arrayListOf<StateFilter>(
             TetrisHeightFilter(),
-            // TetrisWallFilter(),
+            TetrisShapeFilter(),
+            TetrisWallFilter(),
         )
 
-        val test = TransitionModel(filters, control)
+        val test = TransitionModel(filters)
         val state = TetrisGame()
 
         repeat(nRolls) {

@@ -5,6 +5,7 @@ import math.Vec2d
 import util.RangeMapper
 import util.StatSummary
 import kotlin.math.PI
+import kotlin.math.abs
 import kotlin.random.Random
 
 
@@ -24,8 +25,9 @@ class GraphPlotter(
     var yLabel: String = "Label Y Axis",
     val labelTStyle: TStyle = TStyle(fg = XColor.black),
     var drawGrid: Boolean = true,
-    var lineWidth:Double  = 3.0,
+    var lineWidth: Double = 3.0,
     var seed: Int = 1,
+    var hist: Boolean = true,
 ) : XApp {
 
     val xp = XPalette(50, 0.2)
@@ -39,7 +41,7 @@ class GraphPlotter(
         drawXLabel(xg)
         drawYLabel(xg)
         drawGrid(xg)
-        dataLines(xg, data).forEach { xg.draw(it) }
+        dataShapes(xg, data).forEach { xg.draw(it) }
     }
 
     private fun drawGrid(xg: XGraphics) {
@@ -117,41 +119,120 @@ class GraphPlotter(
         xg.draw(XText(yLabel, centre, labelTStyle, rotation = 3 * PI / 2))
     }
 
-    fun dataLines(xg: XGraphics, data: List<DoubleArray>?): List<Drawable> {
-        val lines = ArrayList<XPoly>()
-        if (data == null) return lines
+    fun dataShapes(xg: XGraphics, data: List<DoubleArray>?): List<Drawable> {
+        val shapes = ArrayList<Drawable>()
+        if (data == null) return shapes
         // make a random line for each color
         val ss = StatSummary("Score Data")
         // all the arrays are empty if maxLen is null
         for (a in data) ss.add(a.asList())
-//        val ssy = StatSummary("Y")
-//        val ssx = StatSummary("X")
 
-        for (i in 0 until data.size) {
+        for (i in data.indices) {
             val style = XStyle(lc = xp.getColor(i), fill = false, lineWidth = lineWidth)
-            // make a random set of points
-            val points = ArrayList<Vec2d>()
             val da = data[i]
-            with (borders) {
-                val xMap = RangeMapper(0.0, da.size - 1.0,
-                    xg.width() * (left+inset),
-                    xg.width() * (1.0 - (right + inset)) )
-                val yMap = RangeMapper(ss.min(), ss.max(),
-                    xg.height() * (1.0 - (bottom+inset)),
-                    xg.height() * (top + inset))
-//                println(xMap)
-//                println(yMap)
-                for (j in 0 until da.size) {
-                    val p = Vec2d(xMap.f(j.toDouble()), yMap.f(da[j]))
-                    points.add(p)
-//                    ssx.add(p.x)
-//                    ssy.add(p.y)
-                }
+            if (hist) {
+                style.fill = true
+                style.fg = XColor(1.0f, 0.0f, 0.5f, 0.1f)
+                shapes.addAll(getCols(xg, style, da, ss))
             }
-            val line = XPoly(points = points, dStyle = style, closed = false)
-            lines.add(line)
+            else {
+                val points = dat2vec(xg, da, ss)
+                val line = XPoly(points = points, dStyle = style, closed = false)
+                shapes.add(line)
+            }
         }
-        return lines
+        return shapes
+    }
+
+    fun histogramCols(xg: XGraphics, data: List<DoubleArray>?): List<Drawable> {
+        // note: this is just a first attempt at histogram bars;
+        // unlike lines, more care could be needed to separate
+        // them e.g. draw the different coloured bars side by side
+        // or stack them: these need to be options
+        val cols = ArrayList<XRect>()
+        if (data == null) return cols;
+        // make a random line for each color
+        val ss = StatSummary("Hist Data")
+        // all the arrays are empty if maxLen is null
+        for (a in data) ss.add(a.asList())
+        for (i in data.indices) {
+            val style = XStyle(lc = xp.getColor(i), fill = true, lineWidth = lineWidth)
+            cols.addAll(getCols(xg, style, data[i], ss))
+        }
+        return cols
+    }
+
+
+    private fun getCols(xg: XGraphics, style: XStyle, da: DoubleArray, ss: StatSummary): ArrayList<XRect> {
+        val cols = ArrayList<XRect>()
+        with (borders) {
+            val xMap = RangeMapper(
+                0.0, da.size - 1.0,
+                xg.width() * (left + inset),
+                xg.width() * (1.0 - (right + inset))
+            )
+            val yMap = RangeMapper(
+                ss.min(), ss.max(),
+                xg.height() * (1.0 - (bottom + inset)),
+                xg.height() * (top + inset)
+            )
+            for (i in da.indices) {
+                val colX = xMap.f(i.toDouble())
+                val colTop = yMap.f(da[i])
+                val colBottom = yMap.f(0.0)
+                val centre = Vec2d(colX, (colTop + colBottom) / 2)
+                val colWidth = 0.5 * (xMap.f(1.0) - xMap.f(0.0))
+                cols.add(XRect(centre, colWidth, abs(colBottom - colTop), style))
+            }
+//            println("${xMap.f(1.0 / da.size)}  \t ${xMap.f(1.0) }")
+        }
+
+        return cols
+    }
+
+
+    private fun dat2vec(xg: XGraphics, da: DoubleArray, ss: StatSummary): ArrayList<Vec2d> {
+        val points = ArrayList<Vec2d>()
+        with(borders) {
+            val xMap = RangeMapper(
+                0.0, da.size - 1.0,
+                xg.width() * (left + inset),
+                xg.width() * (1.0 - (right + inset))
+            )
+            val yMap = RangeMapper(
+                ss.min(), ss.max(),
+                xg.height() * (1.0 - (bottom + inset)),
+                xg.height() * (top + inset)
+            )
+            for (j in da.indices) {
+                val p = Vec2d(xMap.f(j.toDouble()), yMap.f(da[j]))
+                points.add(p)
+            }
+        }
+        return points
+    }
+
+    private fun dat2Hist(xg: XGraphics, da: DoubleArray, ss: StatSummary): ArrayList<Vec2d> {
+        val points = ArrayList<Vec2d>()
+        with(borders) {
+            val xMap = RangeMapper(
+                0.0, da.size - 1.0,
+                xg.width() * (left + inset),
+                xg.width() * (1.0 - (right + inset))
+            )
+            val yMap = RangeMapper(
+                ss.min(), ss.max(),
+                xg.height() * (1.0 - (bottom + inset)),
+                xg.height() * (top + inset)
+            )
+            for (j in da.indices) {
+                val p1 = Vec2d(xMap.f(j.toDouble()), yMap.f(da[j]))
+                val p2 = Vec2d(xMap.f(j.toDouble() + 1.0), yMap.f(da[j]))
+                points.add(p1)
+                points.add(p2)
+            }
+        }
+        return points
     }
 
     override fun handleMouseEvent(e: XMouseEvent) {

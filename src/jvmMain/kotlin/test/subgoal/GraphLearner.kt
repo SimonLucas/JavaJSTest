@@ -18,7 +18,7 @@ class GraphLearner(val filters: ArrayList<StateFilter>, var control: GridDemoCon
 
     init {
         for (f in filters) {
-            models.add(FilterTransitionModel(f, control))
+            models.add(FilterTransitionModel(f))
         }
         if (control.exploringAgent) {
             agent = ActionExplorerAgent(models)

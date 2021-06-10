@@ -28,7 +28,7 @@ data class GridDemoControl(
     var exploringAgent: Boolean = true,
     var epsilon: Double = 1e-5,
 
-)
+    )
 
 class TransitionModelTest(
     var control: GridDemoControl = GridDemoControl()
@@ -143,8 +143,9 @@ class ActionCounter {
     }
 }
 
-class FilterTransitionModel(val filter: StateFilter, val control: GridDemoControl) {
+class FilterTransitionModel(val filter: StateFilter) {
     val count = VisitCount()
+    val eps = 0.1
 
     // val actionCount = ActionCount()
     val transitionMap = TransitionMap()
@@ -183,15 +184,13 @@ class FilterTransitionModel(val filter: StateFilter, val control: GridDemoContro
     }
 
     fun report() {
+//        for (c in count) {
+//            println(c)
+//            transitionMap[c.key]?.report()
+//        }
+        println("Max visits to a cell: ${maxVisits()}")
         println("Total visits = $total")
         println("nNodes = ${count.size}")
-        for (c in count) {
-            println(c)
-            val actionCounter = transitionMap[c.key]
-            if (actionCounter != null)
-                actionCounter.report()
-        }
-        println("Max visits to a cell: ${maxVisits()}")
         println()
     }
 
@@ -231,7 +230,7 @@ class FilterTransitionModel(val filter: StateFilter, val control: GridDemoContro
 //    }
 
     fun leastVisited(states: Iterable<AbstractGameState>): AbstractGameState? {
-        val eps = control.epsilon
+        // val eps = control.epsilon
         val picker = Picker<AbstractGameState>(Picker.MIN_FIRST)
         var size = 0
         for (s in states) {
@@ -272,16 +271,17 @@ class ActionExplorerAgent(val models: ArrayList<FilterTransitionModel>) : Simple
 // class GraphLearn
 
 
-class TransitionModel(val filters: ArrayList<StateFilter>, val control: GridDemoControl) {
+class TransitionModel(val filters: ArrayList<StateFilter>) {
+    // val control: GridDemoControl) {
     val models = ArrayList<FilterTransitionModel>()
+    // temporary measure
     var agent: SimplePlayerInterface = RandomAgent()
 
     init {
         for (f in filters) {
-            models.add(FilterTransitionModel(f, control))
+            models.add(FilterTransitionModel(f))
         }
-        if (control.exploringAgent)
-            agent = ActionExplorerAgent(models)
+        agent = ActionExplorerAgent(models)
     }
 
     fun gatherStats(state: AbstractGameState, seqLen: Int) {

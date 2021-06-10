@@ -4,16 +4,35 @@ import utilities.ElapsedTimer
 import kotlin.random.Random
 
 fun main() {
-    val t = ElapsedTimer()
-    val n = 2e8.toInt()
-//    val rand = Random(1)
-    val a = DoubleArray(n) { Random.nextDouble() }
-//    val a = ArrayList<Double>(n)
-//    repeat (n) { a.add(Random.nextDouble()) }
-    println(t)
-    t.reset()
-    val sum = a.sum()
-    println("Sum = %.2e".format(sum))
-    println(t)
+    RandSumTest().testArray()
+    RandSumTest().testArrayList()
 }
+
+class RandSumTest(val n: Int = 1e8.toInt()) {
+    fun testArrayList() {
+        val t = ElapsedTimer()
+        val a = ArrayList<Double>(n)
+        repeat(n) { a.add(it.toDouble()) }
+        println(t)
+        t.reset()
+        val sum = a.sum()
+        println("Sum = %.2e".format(sum))
+        println(t)
+        println()
+    }
+
+    fun testArray() {
+        val t = ElapsedTimer()
+        var i:Double = 0.0
+        val a = DoubleArray(n) { i++ }
+        println(t)
+        t.reset()
+        val sum = a.sum()
+        println("Sum = %.2e".format(sum))
+        println(t)
+        println()
+    }
+}
+
+
 
