@@ -1,5 +1,12 @@
 package games.arcade
 
+// todo: add a new type of rock / obstacle that is indestructible
+// todo: add a clean way to make new game states
+// todo: add a route-plan facility as a sequence of waypoints -
+//  will be displayed but the only interaction will be as a navigation aid
+// todo: add a way to show the view from each vehicle, either as arc or to start with as a circle
+// todo: add enemy ships that can fire missiles
+
 import games.arcade.SpriteData.Companion.d
 import games.arcade.vehicles.Asteroid
 import games.arcade.vehicles.Ship
@@ -62,7 +69,7 @@ class RockSprite(var sd: SpriteData, val sizeIndex: Int = 0) : ISprite {
 
 class SpriteShip(val sd: SpriteData, var wait: Int = 0) : ISprite {
 
-    constructor(s: Vec2d) : this (makeData(s))
+    constructor(s: Vec2d) : this(makeData(s))
 
     override fun data() = sd
     override fun copy(): ISprite = SpriteShip(sd.copy(), wait)
@@ -110,20 +117,32 @@ interface CollisionAction {
 
 typealias Collider = (ISprite, ISprite, SpriteGame?) -> Unit
 
-val rockHit: Collider = {a, b, g ->
+
+val rockHit: Collider = { a, b, g ->
     // if (a.data())
-    // println("Colliding: " + a + " : "  + g)
-    if (g != null && a is RockSprite) {
+//    println("Colliding: " + a + " : " + g)
+
+    if (g != null) g.scoreX += 100
+    val nSpawn = 2
+    if (g != null && a is RockSprite && a.sizeIndex < g.update.rockSizes.size - 1) {
         // println("Rock was hit at ${a.sd.s}")
-        val child = g.update.spawnHeading(a.sd, XEllipse(Vec2d(), 10.0, 20.0),
-            ObjectType.AlienObject, a.sd.v.mag*2)
-        g.addObject(RockSprite(a.sd.copy(alive = true, rot = a.sd.rot + PI / 2), sizeIndex = 1))
-        g.scoreX += 100
+
+        repeat (nSpawn) {
+            val childRock = g.update.randRock(a.sizeIndex + 1, a.sd.s)
+            g.addObject(childRock)
+        }
+
+
+//        g.addObject(RockSprite(a.sd.copy(alive = true, rot = a.sd.rot + PI / 2), sizeIndex = 1))
     }
 }
 
 // some updates wrap, so need to know the dimensions of the arena
 class Update(var w: Double, var h: Double, var game: SpriteGame? = null) {
+    val rand = Random
+    val bm = BoxMuller()
+    val rockSizes = arrayOf(0.06, 0.04, 0.02)
+    val velocityFactor = 1.0
 
     // fun spawn
 
@@ -166,40 +185,6 @@ class Update(var w: Double, var h: Double, var game: SpriteGame? = null) {
 
     fun wrap(s: Vec2d) = Vec2d((s.x + w) % w, (s.y + h) % h)
 
-}
-
-class SampleSpriteGame(val w: Double = 640.0, val h: Double = 480.0) {
-    val bm = BoxMuller()
-    val sprites = ArrayList<ISprite>()
-    val rockSizes = arrayOf(0.06, 0.04, 0.02)
-    val velocityFactor = 1.0
-    val rand = Random
-
-    fun asteroids(): SpriteGame {
-        val update = Update(w, h)
-        createRocks()
-        addShip()
-        return SpriteGame(update, sprites)
-    }
-
-    private fun addShip() {
-        sprites.add(SpriteShip(Vec2d(w / 2, h / 2)))
-    }
-
-    fun createRocks(sizeIndex: Int = 0) {
-        val rocks = ArrayList<ISprite>()
-        val nRocks = 10
-        while (rocks.size < nRocks) {
-            val rock = randRock(sizeIndex)
-            if (acceptRock(rock.data())) rocks.add(rock)
-        }
-        sprites.addAll(rocks)
-    }
-
-    fun acceptRock(sprite: SpriteData): Boolean {
-        return (Vec2d(w / 2, h / 2).distanceTo(sprite.s) > min(w / 4, h / 4))
-    }
-
     fun randRock(sizeIndex: Int, s: Vec2d = randPosition()): RockSprite {
         val size = min(w, h)
         val rad = size * rockSizes[sizeIndex]
@@ -211,10 +196,43 @@ class SampleSpriteGame(val w: Double = 640.0, val h: Double = 480.0) {
         poly.dStyle = style
         // return Sprite(ellipse, ObjectType.AlienObject, s, v)
         val rotRate = 2 * bm.nextGaussian() * PI / 180
-        return RockSprite(SpriteData(poly, ObjectType.AlienObject, s, v, rotRate = rotRate))
+        return RockSprite(SpriteData(poly, ObjectType.AlienObject, s, v, rotRate = rotRate), sizeIndex = sizeIndex)
+    }
+    fun randPosition() = Vec2d(rand.nextDouble(w), rand.nextDouble(h))
+
+
+}
+
+class SampleSpriteGame(val w: Double = 640.0, val h: Double = 480.0) {
+    val sprites = ArrayList<ISprite>()
+    val rand = Random
+
+    fun asteroids(): SpriteGame {
+        val update = Update(w, h)
+        createRocks(0, update)
+        addShip()
+        return SpriteGame(update, sprites)
     }
 
-    fun randPosition() = Vec2d(rand.nextDouble(w), rand.nextDouble(h))
+    private fun addShip() {
+        sprites.add(SpriteShip(Vec2d(w / 2, h / 2)))
+    }
+
+    fun createRocks(sizeIndex: Int = 0, update: Update) {
+        val rocks = ArrayList<ISprite>()
+        val nRocks = 10
+        while (rocks.size < nRocks) {
+            val rock = update.randRock(sizeIndex)
+            if (acceptRock(rock.data())) rocks.add(rock)
+        }
+        sprites.addAll(rocks)
+    }
+
+    fun acceptRock(sprite: SpriteData): Boolean {
+        return (Vec2d(w / 2, h / 2).distanceTo(sprite.s) > min(w / 4, h / 4))
+    }
+
+
 
 }
 
@@ -235,7 +253,7 @@ class SpriteGame(
             ObjectType.P1Missile to arrayListOf(ObjectType.AlienObject)
         )
 
-        val colliders = hashMapOf<ObjectType,Collider>(
+        val colliders = hashMapOf<ObjectType, Collider>(
             ObjectType.AlienObject to rockHit
         )
     }
@@ -308,9 +326,9 @@ class SpriteGame(
         }
     }
 
-    private fun collides (a: ISprite, b: ISprite) =
+    private fun collides(a: ISprite, b: ISprite) =
         a.data().alive && b.data().alive &&
-        a.data().s.distanceTo(b.data().s) <=
+                a.data().s.distanceTo(b.data().s) <=
                 a.data().geom.radius() + b.data().geom.radius()
 
     fun spriteMap(sprites: List<ISprite>): HashMap<ObjectType, ArrayList<ISprite>> {

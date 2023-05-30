@@ -9,12 +9,12 @@ fun main() {
     // position in the graph...
 
     // todo: this experiment control is currently ignored, apart from useHashset flag
-    val control = GridDemoControl(useHashSet = true, useXYFilter = false, useRTHetaFilter = false)
+    val control = GridDemoControl(useHashSet = true, useXYFilter = false, useRTHetaFilter = true)
 
-    val transTest = TransitionModelTest(control).runModel(20, 100)
+    val transTest = TransitionModelTest(control).runModel(20, 200)
     AppLauncher(GridXYFilterLayout(
         transTest.getXYDataSource(),
         transTest.getXDataSource(),
-        transTest.getYDataSource()
+        transTest.getYDataSource(),
     )).launch()
 }

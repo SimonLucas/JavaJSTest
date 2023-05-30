@@ -72,11 +72,13 @@ class AsteroidsGame(
     val nSpawns = 3
 
     fun handleRockDeath(rock: Rock) {
+        print("Rock died")
         intScore += rockScores[rock.sizeIndex]
         val nextIndex = rock.sizeIndex + 1
         // add new rocks if needed
         if (nextIndex < rockSizes.size)
             for (i in 0 until nSpawns)
+                print("Adding rock $i")
                 addObject(randRock(nextIndex, rock.s))
 
     }
@@ -121,12 +123,12 @@ class AsteroidsGame(
         // if there is no avatar then the game is over
         avatarAlive = gobMap[ObjectType.Avatar] != null
         rockCount = gobMap[ObjectType.AlienObject]?.size ?: 0
-
+        print("Rock count = $rockCount")
         testCollisions(gobMap)
     }
 
     fun testCollisions(obMap: Map<ObjectType, List<GameObject>>) {
-        // loop over th objecct types testing for collisions in each case
+        // loop over th object types testing for collisions in each case
         for (a in collisionMap.keys) {
             val canCollideWith = collisionMap[a]
             if (canCollideWith != null) {
@@ -254,7 +256,7 @@ open class GameObject(
     fun testCollision(b: GameObject): Boolean {
         // the effects of the collision may depend on many things
         // in each case we currently leave the game object to take
-        // the actions it needs to, then return whether or not the collision occured
+        // the actions it needs to, then return whether the collision occured
         if (collides(this, b)) {
             applyCollision(b)
             return true

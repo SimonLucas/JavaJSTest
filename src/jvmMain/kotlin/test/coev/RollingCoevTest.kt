@@ -22,6 +22,8 @@ fun main() {
 
     // TreeTest().addTest()
 
+    print("Hello")
+
     val game = TicTacToe.getGame(3)
     val gameTester = GameTreeBuilder(game, nGames = 50)
     gameTester.runTests()

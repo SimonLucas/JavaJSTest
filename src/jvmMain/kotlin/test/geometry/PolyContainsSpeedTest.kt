@@ -13,7 +13,7 @@ fun main() {
 }
 
 fun timeTest() {
-    val n = 10000
+    val n = 1000000
     val rand = Random
 
     val rad = 10.0

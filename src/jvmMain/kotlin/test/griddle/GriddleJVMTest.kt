@@ -18,7 +18,7 @@ fun main() {
         override fun getSeed(): Long = 77
     }
 
-    val game: GriddleController = GriddleController( MyControl() )
+    val game: GriddleController = GriddleController(MyControl())
 
     // game.game.dict = WordReader().readIntoTrie()
     game.loadWords(WordReader().readWordList())
@@ -34,3 +34,4 @@ fun main() {
         frame.title = "Score = ${game.game.score()}"
     }
 }
+
