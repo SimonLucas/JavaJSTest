@@ -16,3 +16,6 @@ build/
 *.bin
 *.icloud
 .DS_Store
+*.bin
+*.bin
+*.properties

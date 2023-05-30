@@ -231,10 +231,9 @@ class SampleSpriteGame(val w: Double = 640.0, val h: Double = 480.0) {
     fun acceptRock(sprite: SpriteData): Boolean {
         return (Vec2d(w / 2, h / 2).distanceTo(sprite.s) > min(w / 4, h / 4))
     }
-
-
-
 }
+
+
 
 class SpriteGame(
     val update: Update = Update(640.0, 480.0),

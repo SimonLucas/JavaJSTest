@@ -37,8 +37,8 @@ class TestArcadeAI() {
             discountFactor = 0.99,
             totallyRandomMutations = false
         )
-        // agent = RandomAgent()
-        agent = MctsAgent(rolloutLength = 100, nPlayouts = 20)
+        agent = RandomAgent()
+//        agent = MctsAgent(rolloutLength = 100, nPlayouts = 20)
 //        agent = PolicyEvoAgent(useShiftBuffer = true, sequenceLength = 100)
 //        agent = PolicyEvoAgent(nEvals = 50, sequenceLength = 50, probMutation = 0.20,
 //            useMutationTransducer = true, discountFactor = 0.99, useShiftBuffer = true)
