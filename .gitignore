@@ -15,3 +15,4 @@ build/
 *.lock
 *.bin
 *.icloud
+.DS_Store
