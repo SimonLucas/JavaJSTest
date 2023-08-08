@@ -4501,10 +4501,10 @@
     switch (this.state.name) {
       case 'Ready':
         var letter = unboxChar(this.deck.next());
+        this.words = ArrayList_init();
         if (letter != null) {
           this.current = toBoxedChar(letter);
           this.state = GriddleState$GameOn_getInstance();
-          this.words = ArrayList_init();
           if (this.showEstimates) {
             var tempPlayer = new MCPlayer(this.dict);
             tempPlayer.getAction_x2ua0m$(new LetterGridModel(this.a), this.deck, unboxChar(this.current));
@@ -4536,7 +4536,6 @@
           else {
             this.current = toBoxedChar(63);
             this.state = GriddleState$GameOver_getInstance();
-            this.words = ArrayList_init();
           }
         }
         break;
@@ -4793,7 +4792,7 @@
     if (ch === 32) {
       style.stroke = true;
       style.lc = XColor$Companion_getInstance().blue;
-      style.fg = XColor$Companion_getInstance().pink;
+      style.fg = XColor$Companion_getInstance().purple;
       xg.draw_dvdmun$(rect);
     } else {
       text.str = String.fromCharCode(ch);
@@ -9032,6 +9031,7 @@
     this.black = new XColor();
     this.gray = new XColor(0.5, 0.5, 0.5);
     this.pink = new XColor(1.0, 0.5, 0.5);
+    this.purple = new XColor(0.5, void 0, 0.5);
   }
   XColor$Companion.$metadata$ = {
     kind: Kind_OBJECT,

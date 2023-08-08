@@ -217,7 +217,7 @@ class LetterTile {
         if (ch == ' ') {
             style.stroke = true
             style.lc = XColor.blue
-            style.fg = XColor.pink
+            style.fg = XColor.purple
             xg.draw(rect)
         } else {
             // draw the char

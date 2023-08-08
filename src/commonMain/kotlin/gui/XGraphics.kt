@@ -19,7 +19,7 @@ data class XColor(var r: Float = 0f, var g: Float = 0f, var b: Float = 0f, var a
         val black = XColor()
         val gray = XColor(r = 0.5f, g = 0.5f, b = 0.5f)
         val pink = XColor(r = 1f, g = 0.5f, b = 0.5f)
-
+        val purple = XColor(r = 0.5f, b = 0.5f)
     }
 }
 
