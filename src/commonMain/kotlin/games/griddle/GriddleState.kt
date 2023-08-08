@@ -95,6 +95,7 @@ class GriddleGame (var control: GriddleControl = DefaultControl()){
                 state = GriddleState.Ready
                 a= emptyGrid()
                 deck = StatDeck().getDeck(control.getSeed())
+                words = ArrayList<GridWord>()
             }
         }
     }

@@ -4542,6 +4542,7 @@
         this.state = GriddleState$Ready_getInstance();
         this.a = this.emptyGrid();
         this.deck = (new StatDeck()).getDeck_s8cxhz$(this.control.getSeed());
+        this.words = ArrayList_init();
         break;
     }
   };
