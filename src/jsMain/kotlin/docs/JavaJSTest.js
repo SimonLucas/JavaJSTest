@@ -25,10 +25,13 @@
   var toDoubleArray = Kotlin.kotlin.collections.toDoubleArray_tcduak$;
   var asList = Kotlin.kotlin.collections.asList_us0mfu$;
   var throwCCE = Kotlin.throwCCE;
-  var throwUPAE = Kotlin.throwUPAE;
   var math = Kotlin.kotlin.math;
+  var throwUPAE = Kotlin.throwUPAE;
   var Kind_OBJECT = Kotlin.Kind.OBJECT;
   var L10 = Kotlin.Long.fromInt(10);
+  var HashSet_init = Kotlin.kotlin.collections.HashSet_init_287e2$;
+  var Comparator = Kotlin.kotlin.Comparator;
+  var sortWith = Kotlin.kotlin.collections.sortWith_nqfjgj$;
   var Kind_INTERFACE = Kotlin.Kind.INTERFACE;
   var Enum = Kotlin.kotlin.Enum;
   var throwISE = Kotlin.throwISE;
@@ -49,12 +52,12 @@
   var unboxChar = Kotlin.unboxChar;
   var toBoxedChar = Kotlin.toBoxedChar;
   var charArray = Kotlin.charArray;
+  var mapOf = Kotlin.kotlin.collections.mapOf_qfcya0$;
   var StringBuilder_init = Kotlin.kotlin.text.StringBuilder_init;
   var RuntimeException_init = Kotlin.kotlin.RuntimeException_init_pdl1vj$;
   var shuffle = Kotlin.kotlin.collections.shuffle_vvxzk3$;
   var sortedWith = Kotlin.kotlin.collections.sortedWith_eknfly$;
   var wrapFunction = Kotlin.wrapFunction;
-  var Comparator = Kotlin.kotlin.Comparator;
   var iterator = Kotlin.kotlin.text.iterator_gw00vp$;
   var split = Kotlin.kotlin.text.split_ip8yn$;
   var Random_1 = Kotlin.kotlin.random.Random_s8cxhz$;
@@ -62,21 +65,25 @@
   var copyToArray = Kotlin.kotlin.collections.copyToArray;
   var trim = Kotlin.kotlin.text.trim_gw00vp$;
   var Exception = Kotlin.kotlin.Exception;
+  var ArrayDeque_init = Kotlin.kotlin.collections.ArrayDeque_init_287e2$;
+  var ArrayDeque_init_0 = Kotlin.kotlin.collections.ArrayDeque_init_mqih57$;
   var kotlin_js_internal_DoubleCompanionObject = Kotlin.kotlin.js.internal.DoubleCompanionObject;
   var asSequence = Kotlin.kotlin.collections.asSequence_abgq59$;
   var toCollection = Kotlin.kotlin.sequences.toCollection_gtszxp$;
   var L2 = Kotlin.Long.fromInt(2);
   var trimIndent = Kotlin.kotlin.text.trimIndent_pdl1vz$;
-  var HashSet_init = Kotlin.kotlin.collections.HashSet_init_287e2$;
   var lines = Kotlin.kotlin.text.lines_gw00vp$;
   var IntRange = Kotlin.kotlin.ranges.IntRange;
   var addAll = Kotlin.kotlin.collections.addAll_ye1y7v$;
   var equals = Kotlin.equals;
   var Exception_init = Kotlin.kotlin.Exception_init_pdl1vj$;
   var NoSuchElementException_init = Kotlin.kotlin.NoSuchElementException_init;
-  var max = Kotlin.kotlin.collections.max_exjks8$;
   var L1 = Kotlin.Long.ONE;
   var L76 = Kotlin.Long.fromInt(76);
+  var max = Kotlin.kotlin.collections.max_exjks8$;
+  var IndexOutOfBoundsException = Kotlin.kotlin.IndexOutOfBoundsException;
+  var Iterator = Kotlin.kotlin.collections.Iterator;
+  var Iterable = Kotlin.kotlin.collections.Iterable;
   var numberToDouble = Kotlin.numberToDouble;
   var Comparable = Kotlin.kotlin.Comparable;
   var contains = Kotlin.kotlin.text.contains_li3zpu$;
@@ -111,6 +118,8 @@
   GriddleState.prototype.constructor = GriddleState;
   Dir.prototype = Object.create(Enum.prototype);
   Dir.prototype.constructor = Dir;
+  CardType.prototype = Object.create(Enum.prototype);
+  CardType.prototype.constructor = CardType;
   Actions.prototype = Object.create(Enum.prototype);
   Actions.prototype.constructor = Actions;
   CellState.prototype = Object.create(Enum.prototype);
@@ -1274,6 +1283,84 @@
     simpleName: 'Tree',
     interfaces: []
   };
+  function GeomUtil() {
+  }
+  GeomUtil.prototype.bisector_yw3f10$ = function (a, b) {
+    var mid = a.plus_5lk9kw$(b).times_14dthe$(0.5);
+    var v = b.minus_5lk9kw$(a).normalized.rotatedBy_14dthe$(math.PI * 0.5);
+    var len = 200.0;
+    return new RLine(mid, v, len);
+  };
+  GeomUtil.prototype.intercept_je4koc$ = function (l1, l2) {
+    var tmp$, tmp$_0;
+    if ((tmp$ = l1.v) != null ? tmp$.equals(l2.v) : null)
+      return null;
+    var mat = new Mat2d(l1.v.x, -l2.v.x, l1.v.y, -l2.v.y);
+    tmp$_0 = mat.inverse();
+    if (tmp$_0 == null) {
+      return null;
+    }var inv = tmp$_0;
+    var diffVec = new Vec2d(l2.s.x - l1.s.x, l2.s.y - l1.s.y);
+    var ab = inv.times_5lk9kw$(diffVec);
+    return l1.s.plus_5lk9kw$(l1.v.times_14dthe$(ab.x));
+  };
+  GeomUtil.prototype.closestPointOnLine_b0sueg$ = function (p, line) {
+    var normal = new RLine(p, line.v.rotatedBy_14dthe$(math.PI * 0.5), 1.0);
+    return this.intercept_je4koc$(normal, line);
+  };
+  GeomUtil.prototype.mirrorPoint_b0sueg$ = function (p, line) {
+    var tmp$;
+    tmp$ = this.closestPointOnLine_b0sueg$(p, line);
+    if (tmp$ == null) {
+      return null;
+    }var q = tmp$;
+    return p.plus_5lk9kw$(q.minus_5lk9kw$(p).times_14dthe$(2.0));
+  };
+  GeomUtil.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'GeomUtil',
+    interfaces: []
+  };
+  function RLine(s, v, len) {
+    this.s = s;
+    this.v = v;
+    this.len = len;
+  }
+  RLine.prototype.getXLine = function () {
+    var a = this.s.plus_5lk9kw$(this.v.times_14dthe$(0.5 * this.len));
+    var b = this.s.minus_5lk9kw$(this.v.times_14dthe$(0.5 * this.len));
+    return new XLine(a, b);
+  };
+  RLine.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'RLine',
+    interfaces: []
+  };
+  RLine.prototype.component1 = function () {
+    return this.s;
+  };
+  RLine.prototype.component2 = function () {
+    return this.v;
+  };
+  RLine.prototype.component3 = function () {
+    return this.len;
+  };
+  RLine.prototype.copy_i0k35q$ = function (s, v, len) {
+    return new RLine(s === void 0 ? this.s : s, v === void 0 ? this.v : v, len === void 0 ? this.len : len);
+  };
+  RLine.prototype.toString = function () {
+    return 'RLine(s=' + Kotlin.toString(this.s) + (', v=' + Kotlin.toString(this.v)) + (', len=' + Kotlin.toString(this.len)) + ')';
+  };
+  RLine.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.s) | 0;
+    result = result * 31 + Kotlin.hashCode(this.v) | 0;
+    result = result * 31 + Kotlin.hashCode(this.len) | 0;
+    return result;
+  };
+  RLine.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.s, other.s) && Kotlin.equals(this.v, other.v) && Kotlin.equals(this.len, other.len)))));
+  };
   function Positioner() {
   }
   Positioner.$metadata$ = {
@@ -1485,6 +1572,238 @@
     simpleName: 'DrawNode',
     interfaces: []
   };
+  function VoronoiApp(n) {
+    if (n === void 0)
+      n = 1;
+    this.n = n;
+    this.centre = new Vec2d();
+    this.points = ArrayList_init();
+    this.tPoints = ArrayList_init();
+    this.xPolys = ArrayList_init();
+    this.rand = Random.Default;
+    this.pointRad = 0.02;
+    this.xp = new XPalette(this.n, void 0, void 0, L10);
+    this.voronoiModel = null;
+    this.randPoints();
+  }
+  VoronoiApp.prototype.randPoints = function () {
+    this.points.clear();
+    if (this.n === 1) {
+      this.points.add_11rb$(new Vec2d(0.4, 0.6));
+      return;
+    }var times = this.n;
+    for (var index = 0; index < times; index++) {
+      this.points.add_11rb$(new Vec2d(this.rand.nextDouble(), this.rand.nextDouble()));
+    }
+  };
+  VoronoiApp.prototype.transformPoints_hud4nr$ = function (ps, xg) {
+    var tmp$;
+    this.tPoints.clear();
+    tmp$ = ps.iterator();
+    while (tmp$.hasNext()) {
+      var p = tmp$.next();
+      this.tPoints.add_11rb$(new Vec2d(p.x * xg.width(), p.y * xg.height()));
+    }
+    println('====== tPoints: ' + this.tPoints);
+    return this.tPoints;
+  };
+  VoronoiApp.prototype.getLines_2v2kdv$ = function (ps) {
+    var tmp$, tmp$_0;
+    var lines = ArrayList_init();
+    tmp$ = ps.size - 1 | 0;
+    for (var i = 0; i < tmp$; i++) {
+      tmp$_0 = ps.size;
+      for (var j = i + 1 | 0; j < tmp$_0; j++) {
+        lines.add_11rb$((new GeomUtil()).bisector_yw3f10$(ps.get_za3lpa$(i), ps.get_za3lpa$(j)));
+      }
+    }
+    return lines;
+  };
+  VoronoiApp.prototype.compute_vzjx8w$ = function (xg) {
+    this.transformPoints_hud4nr$(this.points, xg);
+    this.voronoiModel = new VoronoiModel(this.tPoints, new Vec2d(0.0, 0.0), new Vec2d(xg.width(), xg.height()));
+    this.setPolys_0();
+  };
+  VoronoiApp.prototype.paint_vzjx8w$ = function (xg) {
+    var tmp$;
+    if (!((tmp$ = this.centre) != null ? tmp$.equals(xg.centre()) : null)) {
+      this.centre = xg.centre();
+      println('XG Centre: ' + this.centre);
+      this.compute_vzjx8w$(xg);
+    }xg.draw_dvdmun$(new XRect(xg.centre(), xg.width(), xg.height()));
+    var a = xg.width();
+    var b = xg.height();
+    var size = Math_0.min(a, b);
+    var tmp$_0;
+    tmp$_0 = this.xPolys.iterator();
+    while (tmp$_0.hasNext()) {
+      var element = tmp$_0.next();
+      xg.draw_dvdmun$(element);
+    }
+    var dotSize = size * this.pointRad;
+    var ix = 0;
+    for (var tmp$_1 = this.tPoints.iterator(); tmp$_1.hasNext(); ++ix) {
+      var p = tmp$_1.next();
+      var style = new XStyle(this.xp.getColor_za3lpa$(ix), void 0, void 0, false);
+      xg.draw_dvdmun$(new XEllipse(p, dotSize, dotSize, style));
+    }
+  };
+  VoronoiApp.prototype.setPolys_0 = function () {
+    var tmp$;
+    this.xPolys.clear();
+    var xp = new XPalette(this.points.size);
+    var ix = {v: 0};
+    if ((tmp$ = this.voronoiModel) != null) {
+      var tmp$_0, tmp$_1;
+      tmp$_0 = tmp$.cPolys.iterator();
+      while (tmp$_0.hasNext()) {
+        var cPoly = tmp$_0.next();
+        var style = new XStyle(xp.getColor_za3lpa$((tmp$_1 = ix.v, ix.v = tmp$_1 + 1 | 0, tmp$_1)));
+        this.xPolys.add_11rb$(new XPoly(cPoly.centre, cPoly.poly, style));
+      }
+    }};
+  VoronoiApp.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'VoronoiApp',
+    interfaces: [XApp]
+  };
+  function CPoly(centre, poly) {
+    this.centre = centre;
+    this.poly = poly;
+  }
+  CPoly.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'CPoly',
+    interfaces: []
+  };
+  CPoly.prototype.component1 = function () {
+    return this.centre;
+  };
+  CPoly.prototype.component2 = function () {
+    return this.poly;
+  };
+  CPoly.prototype.copy_j8a7hb$ = function (centre, poly) {
+    return new CPoly(centre === void 0 ? this.centre : centre, poly === void 0 ? this.poly : poly);
+  };
+  CPoly.prototype.toString = function () {
+    return 'CPoly(centre=' + Kotlin.toString(this.centre) + (', poly=' + Kotlin.toString(this.poly)) + ')';
+  };
+  CPoly.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.centre) | 0;
+    result = result * 31 + Kotlin.hashCode(this.poly) | 0;
+    return result;
+  };
+  CPoly.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.centre, other.centre) && Kotlin.equals(this.poly, other.poly)))));
+  };
+  function VoronoiModel(points, topLeft, bottomRight) {
+    this.points = points;
+    this.topLeft = topLeft;
+    this.bottomRight = bottomRight;
+    this.epsilon = 1.0;
+    this.bounds = ArrayList_init();
+    this.cPolys = ArrayList_init();
+    this.setBounds_0();
+    this.computePolys_0();
+  }
+  VoronoiModel.prototype.setBounds_0 = function () {
+    this.bounds.clear();
+    var a = this.topLeft;
+    var b = new Vec2d(this.bottomRight.x, this.topLeft.y);
+    var c = this.bottomRight;
+    var d = new Vec2d(this.topLeft.x, this.bottomRight.y);
+    this.bounds.add_11rb$(easyLine(a, b));
+    this.bounds.add_11rb$(easyLine(b, c));
+    this.bounds.add_11rb$(easyLine(c, d));
+    this.bounds.add_11rb$(easyLine(d, a));
+    println('Made bounds: ');
+    var tmp$;
+    tmp$ = this.bounds.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      println('    -> ' + element);
+    }
+  };
+  VoronoiModel.prototype.computePolys_0 = function () {
+    var tmp$, tmp$_0, tmp$_1;
+    this.cPolys.clear();
+    tmp$ = this.points.iterator();
+    while (tmp$.hasNext()) {
+      var p = tmp$.next();
+      var tp = ArrayList_init();
+      tp.addAll_brywnq$(this.points);
+      tmp$_0 = this.bounds.iterator();
+      while (tmp$_0.hasNext()) {
+        var line = tmp$_0.next();
+        if ((tmp$_1 = (new GeomUtil()).mirrorPoint_b0sueg$(p, line)) != null) {
+          tp.add_11rb$(tmp$_1);
+        }}
+      this.cPolys.add_11rb$(this.getPoly_j8a7hb$(p, tp));
+    }
+  };
+  function VoronoiModel$getPoly$lambda(closure$p) {
+    return function (a, b) {
+      return Kotlin.compareTo(closure$p.angleTo_5lk9kw$(a), closure$p.angleTo_5lk9kw$(b));
+    };
+  }
+  VoronoiModel.prototype.getPoly_j8a7hb$ = function (p, points) {
+    var tmp$, tmp$_0, tmp$_1;
+    println('For ' + p + ', considering ' + points.size + ' points: ' + points);
+    var poly = ArrayList_init();
+    var pointSet = HashSet_init();
+    tmp$ = points.iterator();
+    while (tmp$.hasNext()) {
+      var other = tmp$.next();
+      if (!(p != null ? p.equals(other) : null)) {
+        var dir = other.minus_5lk9kw$(p).normalized;
+        var picker = new Picker(Picker$Companion_getInstance().MIN_FIRST);
+        tmp$_0 = points.iterator();
+        while (tmp$_0.hasNext()) {
+          var cp = tmp$_0.next();
+          if (!(cp != null ? cp.equals(p) : null)) {
+            var dotProd = dir.sp_5lk9kw$(cp.minus_5lk9kw$(p));
+            if (dotProd > this.epsilon)
+              picker.add_41hqm1$(dotProd, cp);
+          }}
+        if ((tmp$_1 = picker.best) != null) {
+          pointSet.add_11rb$(tmp$_1);
+        }}}
+    var cpList = ArrayList_init();
+    cpList.addAll_brywnq$(pointSet);
+    println('----- Added ' + pointSet.size + ' points from SET');
+    sortWith(cpList, new Comparator(VoronoiModel$getPoly$lambda(p)));
+    var tmp$_2;
+    tmp$_2 = cpList.iterator();
+    while (tmp$_2.hasNext()) {
+      var element = tmp$_2.next();
+      println('    ---->   ' + element);
+    }
+    var $receiver = new GeomUtil();
+    var tmp$_3, tmp$_4;
+    tmp$_3 = cpList.size;
+    for (var i = 0; i < tmp$_3; i++) {
+      if ((tmp$_4 = $receiver.intercept_je4koc$($receiver.bisector_yw3f10$(p, cpList.get_za3lpa$(i)), $receiver.bisector_yw3f10$(p, cpList.get_za3lpa$((i + 1 | 0) % cpList.size)))) != null) {
+        poly.add_11rb$(tmp$_4);
+      }}
+    println('For ' + p);
+    var tmp$_5;
+    tmp$_5 = poly.iterator();
+    while (tmp$_5.hasNext()) {
+      var element_0 = tmp$_5.next();
+      println('  ->   ' + element_0);
+    }
+    println_0();
+    return new CPoly(new Vec2d(), poly);
+  };
+  VoronoiModel.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'VoronoiModel',
+    interfaces: []
+  };
+  function easyLine(a, b) {
+    return new RLine(a.plus_5lk9kw$(b).times_14dthe$(0.5), b.minus_5lk9kw$(a).normalized, a.distanceTo_5lk9kw$(b));
+  }
   function GridDataSource() {
   }
   GridDataSource.$metadata$ = {
@@ -2071,13 +2390,15 @@
   };
   AsteroidsGame.prototype.handleRockDeath_4u4hyu$ = function (rock) {
     var tmp$;
+    print('Rock died');
     this.intScore = this.intScore + this.rockScores[rock.sizeIndex] | 0;
     var nextIndex = rock.sizeIndex + 1 | 0;
     if (nextIndex < this.rockSizes.length) {
       tmp$ = this.nSpawns;
       for (var i = 0; i < tmp$; i++)
-        this.addObject_bqu2si$(this.randRock_1ph2q2$(nextIndex, rock.s));
-    }};
+        print('Adding rock ' + i);
+    }this.addObject_bqu2si$(this.randRock_1ph2q2$(nextIndex, rock.s));
+  };
   AsteroidsGame.prototype.randRock_1ph2q2$ = function (sizeIndex, s) {
     if (s === void 0)
       s = this.randPosition();
@@ -2131,6 +2452,7 @@
     }
     this.avatarAlive = this.gobMap.get_11rb$(ObjectType$Avatar_getInstance()) != null;
     this.rockCount = (tmp$_2 = (tmp$_1 = this.gobMap.get_11rb$(ObjectType$AlienObject_getInstance())) != null ? tmp$_1.size : null) != null ? tmp$_2 : 0;
+    print('Rock count = ' + this.rockCount);
     this.testCollisions_dqfcs2$(this.gobMap);
   };
   AsteroidsGame.prototype.testCollisions_dqfcs2$ = function (obMap) {
@@ -2923,10 +3245,14 @@
     interfaces: []
   };
   function rockHit$lambda(a, b, g) {
-    if (g != null && Kotlin.isType(a, RockSprite)) {
-      var child = g.update.spawnHeading_n5mgon$(a.sd, new XEllipse(new Vec2d(), 10.0, 20.0), ObjectType$AlienObject_getInstance(), a.sd.v.mag * 2);
-      g.addObject_vjoh43$(new RockSprite(a.sd.copy_h8ylko$(void 0, void 0, void 0, void 0, a.sd.rot + math.PI / 2, void 0, void 0, true), 1));
+    if (g != null)
       g.scoreX = g.scoreX + 100;
+    var nSpawn = 2;
+    if (g != null && Kotlin.isType(a, RockSprite) && a.sizeIndex < (g.update.rockSizes.length - 1 | 0)) {
+      for (var index = 0; index < nSpawn; index++) {
+        var childRock = g.update.randRock_1ph2q2$(a.sizeIndex + 1 | 0, a.sd.s);
+        g.addObject_vjoh43$(childRock);
+      }
     }return Unit;
   }
   var rockHit;
@@ -2936,6 +3262,10 @@
     this.w = w;
     this.h = h;
     this.game = game;
+    this.rand = Random.Default;
+    this.bm = new BoxMuller();
+    this.rockSizes = [0.06, 0.04, 0.02];
+    this.velocityFactor = 1.0;
   }
   Update.prototype.spawnHeading_n5mgon$ = function (source, geom, type, speed) {
     return new SpriteData(geom, type, source.s, SpriteData$Companion_getInstance().d.rotatedBy_14dthe$(source.rot).times_14dthe$(speed));
@@ -2968,52 +3298,7 @@
   Update.prototype.wrap_5lk9kw$ = function (s) {
     return new Vec2d((s.x + this.w) % this.w, (s.y + this.h) % this.h);
   };
-  Update.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'Update',
-    interfaces: []
-  };
-  function SampleSpriteGame(w, h) {
-    if (w === void 0)
-      w = 640.0;
-    if (h === void 0)
-      h = 480.0;
-    this.w = w;
-    this.h = h;
-    this.bm = new BoxMuller();
-    this.sprites = ArrayList_init();
-    this.rockSizes = [0.06, 0.04, 0.02];
-    this.velocityFactor = 1.0;
-    this.rand = Random.Default;
-  }
-  SampleSpriteGame.prototype.asteroids = function () {
-    var update = new Update(this.w, this.h);
-    this.createRocks_za3lpa$();
-    this.addShip_0();
-    return new SpriteGame(update, this.sprites);
-  };
-  SampleSpriteGame.prototype.addShip_0 = function () {
-    this.sprites.add_11rb$(SpriteShip_init(new Vec2d(this.w / 2, this.h / 2)));
-  };
-  SampleSpriteGame.prototype.createRocks_za3lpa$ = function (sizeIndex) {
-    if (sizeIndex === void 0)
-      sizeIndex = 0;
-    var rocks = ArrayList_init();
-    var nRocks = 10;
-    while (rocks.size < nRocks) {
-      var rock = this.randRock_1ph2q2$(sizeIndex);
-      if (this.acceptRock_suyxuo$(rock.data()))
-        rocks.add_11rb$(rock);
-    }
-    this.sprites.addAll_brywnq$(rocks);
-  };
-  SampleSpriteGame.prototype.acceptRock_suyxuo$ = function (sprite) {
-    var tmp$ = (new Vec2d(this.w / 2, this.h / 2)).distanceTo_5lk9kw$(sprite.s);
-    var a = this.w / 4;
-    var b = this.h / 4;
-    return tmp$ > Math_0.min(a, b);
-  };
-  SampleSpriteGame.prototype.randRock_1ph2q2$ = function (sizeIndex, s) {
+  Update.prototype.randRock_1ph2q2$ = function (sizeIndex, s) {
     if (s === void 0)
       s = this.randPosition();
     var tmp$;
@@ -3028,10 +3313,52 @@
     var ellipse = new XEllipse(s, rad * 2, rad * 2, style);
     poly.dStyle = style;
     var rotRate = 2 * this.bm.nextGaussian() * math.PI / 180;
-    return new RockSprite(new SpriteData(poly, ObjectType$AlienObject_getInstance(), s, v, void 0, rotRate));
+    return new RockSprite(new SpriteData(poly, ObjectType$AlienObject_getInstance(), s, v, void 0, rotRate), sizeIndex);
   };
-  SampleSpriteGame.prototype.randPosition = function () {
+  Update.prototype.randPosition = function () {
     return new Vec2d(this.rand.nextDouble_14dthe$(this.w), this.rand.nextDouble_14dthe$(this.h));
+  };
+  Update.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Update',
+    interfaces: []
+  };
+  function SampleSpriteGame(w, h) {
+    if (w === void 0)
+      w = 640.0;
+    if (h === void 0)
+      h = 480.0;
+    this.w = w;
+    this.h = h;
+    this.sprites = ArrayList_init();
+    this.rand = Random.Default;
+  }
+  SampleSpriteGame.prototype.asteroids = function () {
+    var update = new Update(this.w, this.h);
+    this.createRocks_jgay8g$(0, update);
+    this.addShip_0();
+    return new SpriteGame(update, this.sprites);
+  };
+  SampleSpriteGame.prototype.addShip_0 = function () {
+    this.sprites.add_11rb$(SpriteShip_init(new Vec2d(this.w / 2, this.h / 2)));
+  };
+  SampleSpriteGame.prototype.createRocks_jgay8g$ = function (sizeIndex, update) {
+    if (sizeIndex === void 0)
+      sizeIndex = 0;
+    var rocks = ArrayList_init();
+    var nRocks = 10;
+    while (rocks.size < nRocks) {
+      var rock = update.randRock_1ph2q2$(sizeIndex);
+      if (this.acceptRock_suyxuo$(rock.data()))
+        rocks.add_11rb$(rock);
+    }
+    this.sprites.addAll_brywnq$(rocks);
+  };
+  SampleSpriteGame.prototype.acceptRock_suyxuo$ = function (sprite) {
+    var tmp$ = (new Vec2d(this.w / 2, this.h / 2)).distanceTo_5lk9kw$(sprite.s);
+    var a = this.w / 4;
+    var b = this.h / 4;
+    return tmp$ > Math_0.min(a, b);
   };
   SampleSpriteGame.$metadata$ = {
     kind: Kind_CLASS,
@@ -4047,7 +4374,7 @@
     if (e.t === XMouseEventType$Down_getInstance()) {
       var cell = this.gv.getGridCell_5lk9kw$(e.s);
       this.game.nextState_5u5kb7$(cell);
-      this.gv.setData_e9vbbz$(this.game.grid(), unboxChar(this.game.current), this.game.score());
+      this.gv.setData_y0kei8$(this.game.grid(), unboxChar(this.game.current), this.game.score(), void 0, this.game.words);
       var xg = this.xgTemp;
       if (xg != null) {
         this.gv.paint_vzjx8w$(xg);
@@ -4056,7 +4383,7 @@
   };
   GriddleController.prototype.newGame = function () {
     this.game.newGame();
-    this.gv.setData_e9vbbz$(this.game.grid(), unboxChar(this.game.current), this.game.score());
+    this.gv.setData_y0kei8$(this.game.grid(), unboxChar(this.game.current), this.game.score());
     var xg = this.xgTemp;
     if (xg != null) {
       this.gv.paint_vzjx8w$(xg);
@@ -4130,7 +4457,9 @@
     this.current = toBoxedChar(63);
     this.currentScore = 0;
     this.words = ArrayList_init();
+    this.scored = ArrayList_init();
     this.enableAI = true;
+    this.showEstimates = true;
   }
   function GriddleGame$Companion() {
     GriddleGame$Companion_instance = this;
@@ -4175,8 +4504,13 @@
         if (letter != null) {
           this.current = toBoxedChar(letter);
           this.state = GriddleState$GameOn_getInstance();
-        } else {
+          if (this.showEstimates) {
+            var tempPlayer = new MCPlayer(this.dict);
+            tempPlayer.getAction_x2ua0m$(new LetterGridModel(this.a), this.deck, unboxChar(this.current));
+            this.scored = tempPlayer.sorted;
+          }} else {
           this.deck = (new StatDeck()).getDeck_s8cxhz$(this.control.getSeed());
+          this.scored = ArrayList_init();
         }
 
         break;
@@ -4185,6 +4519,13 @@
         if (cell == null && this.enableAI) {
           var player = new MCPlayer(this.dict);
           playedCell = player.getAction_x2ua0m$(new LetterGridModel(this.a), this.deck, unboxChar(this.current));
+          var tmp$;
+          tmp$ = player.sorted.iterator();
+          while (tmp$.hasNext()) {
+            var element = tmp$.next();
+            println(element.cell.toString() + ' ' + '\t' + ' ' + element.score);
+          }
+          println_0();
         }
         if (playedCell != null && this.a[playedCell.x][playedCell.y] === unboxChar(GriddleGame$Companion_getInstance().vacant)) {
           this.placeLetter_svxxs3$(playedCell, unboxChar(this.current));
@@ -4286,7 +4627,10 @@
     this.messageText = null;
     this.scoreText = new XText('', new Vec2d(), new TStyle(), new XStyle());
     this.message = '?';
+    this.wordLenColors = mapOf([to(2, new XColor(0.0, 0.0, 1.0, 0.4)), to(3, new XColor(0.0, 1.0, 0.0, 0.4)), to(4, new XColor(0.0, 0.5, 0.6, 0.4)), to(5, new XColor(0.0, 0.5, 0.3, 0.4)), to(6, new XColor(0.0, 0.5, 1.0, 0.4))]);
     this.score = 0;
+    this.scored = ArrayList_init();
+    this.words = ArrayList_init();
   }
   GriddleView.prototype.paint_vzjx8w$ = function (xg) {
     this.calcCellSize_vzjx8w$(xg);
@@ -4329,12 +4673,18 @@
     if (text != null)
       xg.draw_dvdmun$(text);
   };
-  GriddleView.prototype.setData_e9vbbz$ = function (a, ch, score) {
+  GriddleView.prototype.setData_y0kei8$ = function (a, ch, score, scored, words) {
     if (score === void 0)
       score = 0;
+    if (scored === void 0)
+      scored = ArrayList_init();
+    if (words === void 0)
+      words = ArrayList_init();
     this.setGrid_tpqcw7$(a);
     this.setLetter_s8itvh$(ch);
     this.score = score;
+    this.scored = scored;
+    this.words = words;
   };
   GriddleView.prototype.setGrid_tpqcw7$ = function (a) {
     this.a = a;
@@ -4348,8 +4698,32 @@
     style.fg = XColor$Companion_getInstance().black;
     xg.draw_dvdmun$(rect);
   };
+  GriddleView.prototype.drawWordUnderlays_vzjx8w$ = function (xg) {
+    var tmp$;
+    tmp$ = this.words.iterator();
+    while (tmp$.hasNext()) {
+      var gridWord = tmp$.next();
+      var style = new XStyle();
+      var color = this.wordLenColors.get_11rb$(gridWord.s.length);
+      style.fg = color != null ? color : new XColor(0.0, 0.0, 0.0, 0.9);
+      style.bg = color != null ? color : new XColor(0.0, 0.0, 0.0, 0.9);
+      style.lc = color != null ? color : new XColor(0.0, 0.0, 0.0, 0.9);
+      var startCell = gridWord.start;
+      var endCell = gridWord.dir.stepBy_x0di76$(startCell, gridWord.s.length - 1 | 0);
+      var start = new Vec2d((startCell.x + 0.5) * this.cellSize, (startCell.y + 0.5) * this.cellSize);
+      var end = new Vec2d((endCell.x + 0.5) * this.cellSize, (endCell.y + 0.5) * this.cellSize);
+      var centre = start.plus_5lk9kw$(end).times_14dthe$(0.5);
+      var minDim = this.cellSize * (gridWord.s.length - 1 | 0) / 5.0;
+      var a = end.x - start.x;
+      var width = Math_0.max(a, minDim);
+      var a_0 = end.y - start.y;
+      var height = Math_0.max(a_0, minDim);
+      var rect = new XRoundedRect(centre, width, height, 0.5, void 0, style);
+      xg.draw_dvdmun$(rect);
+    }
+  };
   GriddleView.prototype.draw_w2bsgl$ = function (xg, a) {
-    var tmp$, tmp$_0;
+    var tmp$, tmp$_0, tmp$_1, tmp$_2;
     if (a == null)
       return;
     var style = new XStyle();
@@ -4360,7 +4734,16 @@
       tmp$_0 = this.nRows;
       for (var j = 0; j < tmp$_0; j++) {
         var centre = new Vec2d((i + 0.5) * this.cellSize, (j + 0.5) * this.cellSize);
-        (new LetterTile()).draw_pxm805$(xg, centre, this.cellSize, a[i][j]);
+        (new LetterTile()).drawTile_pxm805$(xg, centre, this.cellSize, a[i][j]);
+      }
+    }
+    this.drawWordUnderlays_vzjx8w$(xg);
+    tmp$_1 = this.nCols;
+    for (var i_0 = 0; i_0 < tmp$_1; i_0++) {
+      tmp$_2 = this.nRows;
+      for (var j_0 = 0; j_0 < tmp$_2; j_0++) {
+        var centre_0 = new Vec2d((i_0 + 0.5) * this.cellSize, (j_0 + 0.5) * this.cellSize);
+        (new LetterTile()).drawLetter_pxm805$(xg, centre_0, this.cellSize, a[i_0][j_0]);
       }
     }
   };
@@ -4395,7 +4778,7 @@
   function LetterTile() {
     this.size = 0.9;
   }
-  LetterTile.prototype.draw_pxm805$ = function (xg, centre, cellSize, ch) {
+  LetterTile.prototype.drawTile_pxm805$ = function (xg, centre, cellSize, ch) {
     var style = new XStyle();
     var rect = new XRoundedRect(centre, cellSize * this.size, cellSize * this.size, 0.1, void 0, style);
     var tStyle = new TStyle(void 0, void 0, cellSize * this.size);
@@ -4407,7 +4790,7 @@
     if (ch === 32) {
       style.stroke = true;
       style.lc = XColor$Companion_getInstance().blue;
-      style.fg = XColor$Companion_getInstance().green;
+      style.fg = XColor$Companion_getInstance().pink;
       xg.draw_dvdmun$(rect);
     } else {
       text.str = String.fromCharCode(ch);
@@ -4415,6 +4798,17 @@
       xg.draw_dvdmun$(text);
     }
   };
+  LetterTile.prototype.drawLetter_pxm805$ = function (xg, centre, cellSize, ch) {
+    var style = new XStyle();
+    var tStyle = new TStyle(void 0, void 0, cellSize * this.size);
+    var text = new XText(' ', centre, tStyle, style);
+    style.fg = XColor$Companion_getInstance().red;
+    style.stroke = true;
+    style.lc = XColor$Companion_getInstance().gray;
+    if (ch !== 32) {
+      text.str = String.fromCharCode(ch);
+      xg.draw_dvdmun$(text);
+    }};
   LetterTile.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'LetterTile',
@@ -5600,6 +5994,212 @@
   MaxGame.prototype.equals = function (other) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.n, other.n) && Kotlin.equals(this.m, other.m)))));
   };
+  function CardType(name, ordinal) {
+    Enum.call(this);
+    this.name$ = name;
+    this.ordinal$ = ordinal;
+  }
+  function CardType_initFields() {
+    CardType_initFields = function () {
+    };
+    CardType$Character_instance = new CardType('Character', 0);
+    CardType$Location_instance = new CardType('Location', 1);
+    CardType$Weapon_instance = new CardType('Weapon', 2);
+  }
+  var CardType$Character_instance;
+  function CardType$Character_getInstance() {
+    CardType_initFields();
+    return CardType$Character_instance;
+  }
+  var CardType$Location_instance;
+  function CardType$Location_getInstance() {
+    CardType_initFields();
+    return CardType$Location_instance;
+  }
+  var CardType$Weapon_instance;
+  function CardType$Weapon_getInstance() {
+    CardType_initFields();
+    return CardType$Weapon_instance;
+  }
+  CardType.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'CardType',
+    interfaces: [Enum]
+  };
+  function CardType$values() {
+    return [CardType$Character_getInstance(), CardType$Location_getInstance(), CardType$Weapon_getInstance()];
+  }
+  CardType.values = CardType$values;
+  function CardType$valueOf(name) {
+    switch (name) {
+      case 'Character':
+        return CardType$Character_getInstance();
+      case 'Location':
+        return CardType$Location_getInstance();
+      case 'Weapon':
+        return CardType$Weapon_getInstance();
+      default:throwISE('No enum constant games.murder.CardType.' + name);
+    }
+  }
+  CardType.valueOf_61zpoe$ = CardType$valueOf;
+  function Card(str, cardType) {
+    this.str = str;
+    this.cardType = cardType;
+  }
+  Card.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Card',
+    interfaces: []
+  };
+  Card.prototype.component1 = function () {
+    return this.str;
+  };
+  Card.prototype.component2 = function () {
+    return this.cardType;
+  };
+  Card.prototype.copy_f7gt12$ = function (str, cardType) {
+    return new Card(str === void 0 ? this.str : str, cardType === void 0 ? this.cardType : cardType);
+  };
+  Card.prototype.toString = function () {
+    return 'Card(str=' + Kotlin.toString(this.str) + (', cardType=' + Kotlin.toString(this.cardType)) + ')';
+  };
+  Card.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.str) | 0;
+    result = result * 31 + Kotlin.hashCode(this.cardType) | 0;
+    return result;
+  };
+  Card.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.str, other.str) && Kotlin.equals(this.cardType, other.cardType)))));
+  };
+  function Solution(who, location, weapon) {
+    this.who = who;
+    this.location = location;
+    this.weapon = weapon;
+  }
+  Solution.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Solution',
+    interfaces: []
+  };
+  Solution.prototype.component1 = function () {
+    return this.who;
+  };
+  Solution.prototype.component2 = function () {
+    return this.location;
+  };
+  Solution.prototype.component3 = function () {
+    return this.weapon;
+  };
+  Solution.prototype.copy_vm9diy$ = function (who, location, weapon) {
+    return new Solution(who === void 0 ? this.who : who, location === void 0 ? this.location : location, weapon === void 0 ? this.weapon : weapon);
+  };
+  Solution.prototype.toString = function () {
+    return 'Solution(who=' + Kotlin.toString(this.who) + (', location=' + Kotlin.toString(this.location)) + (', weapon=' + Kotlin.toString(this.weapon)) + ')';
+  };
+  Solution.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.who) | 0;
+    result = result * 31 + Kotlin.hashCode(this.location) | 0;
+    result = result * 31 + Kotlin.hashCode(this.weapon) | 0;
+    return result;
+  };
+  Solution.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.who, other.who) && Kotlin.equals(this.location, other.location) && Kotlin.equals(this.weapon, other.weapon)))));
+  };
+  function GameSetup() {
+    GameSetup_instance = this;
+    this.characters = arrayListOf([new Card('Miss Scarlet', CardType$Character_getInstance()), new Card('Mrs White', CardType$Character_getInstance()), new Card('Col. Mustard', CardType$Character_getInstance())]);
+    this.rooms = arrayListOf([new Card('Billiard Room', CardType$Location_getInstance()), new Card('Study', CardType$Location_getInstance()), new Card('Kitchen', CardType$Location_getInstance())]);
+    this.weapons = arrayListOf([new Card('Dagger', CardType$Weapon_getInstance()), new Card('Lead Piping', CardType$Weapon_getInstance()), new Card('Revolver', CardType$Weapon_getInstance())]);
+  }
+  GameSetup.$metadata$ = {
+    kind: Kind_OBJECT,
+    simpleName: 'GameSetup',
+    interfaces: []
+  };
+  var GameSetup_instance = null;
+  function GameSetup_getInstance() {
+    if (GameSetup_instance === null) {
+      new GameSetup();
+    }return GameSetup_instance;
+  }
+  function MurderMonteCarlo(characters, locations, weapons, nPlayers) {
+    if (characters === void 0)
+      characters = ArrayDeque_init_0(GameSetup_getInstance().characters);
+    if (locations === void 0)
+      locations = ArrayDeque_init_0(GameSetup_getInstance().rooms);
+    if (weapons === void 0)
+      weapons = ArrayDeque_init_0(GameSetup_getInstance().weapons);
+    if (nPlayers === void 0)
+      nPlayers = 4;
+    this.characters = characters;
+    this.locations = locations;
+    this.weapons = weapons;
+    this.nPlayers = nPlayers;
+    this.players = ArrayList_init();
+    var tmp$;
+    shuffle(this.characters);
+    shuffle(this.locations);
+    shuffle(this.weapons);
+    tmp$ = this.nPlayers;
+    for (var i = 0; i < tmp$; i++)
+      this.players.add_11rb$(new Player_0());
+  }
+  MurderMonteCarlo.prototype.decideMurder = function () {
+    var who = this.characters.removeFirst();
+    var location = this.locations.removeFirst();
+    var weapon = this.weapons.removeFirst();
+    return new Solution(who, location, weapon);
+  };
+  MurderMonteCarlo.prototype.getDeck = function () {
+    var deck = ArrayDeque_init();
+    deck.addAll_brywnq$(this.characters);
+    deck.addAll_brywnq$(this.locations);
+    deck.addAll_brywnq$(this.weapons);
+    shuffle(deck);
+    return deck;
+  };
+  MurderMonteCarlo.prototype.deal = function () {
+    var tmp$;
+    var deck = this.getDeck();
+    tmp$ = deck.size;
+    for (var i = 0; i < tmp$; i++) {
+      this.players.get_za3lpa$(i % this.nPlayers).cards.add_11rb$(deck.get_za3lpa$(i));
+    }
+  };
+  MurderMonteCarlo.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'MurderMonteCarlo',
+    interfaces: []
+  };
+  function Player_0(cards) {
+    if (cards === void 0)
+      cards = ArrayDeque_init();
+    this.cards = cards;
+  }
+  Player_0.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Player',
+    interfaces: []
+  };
+  Player_0.prototype.component1 = function () {
+    return this.cards;
+  };
+  Player_0.prototype.copy_9b4y59$ = function (cards) {
+    return new Player_0(cards === void 0 ? this.cards : cards);
+  };
+  Player_0.prototype.toString = function () {
+    return 'Player(cards=' + Kotlin.toString(this.cards) + ')';
+  };
+  Player_0.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.cards) | 0;
+    return result;
+  };
+  Player_0.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && Kotlin.equals(this.cards, other.cards))));
+  };
   function Graph(g) {
     Graph$Companion_getInstance();
     if (g === void 0)
@@ -6745,6 +7345,22 @@
         tm.a[i][j] = this.a[i][j];
     }
     return tm;
+  };
+  TetrisModel.prototype.getWall_6taknv$ = function (binarise) {
+    if (binarise === void 0)
+      binarise = true;
+    var tmp$, tmp$_0;
+    var al = ArrayList_init();
+    tmp$ = this.nCols;
+    for (var i = 0; i < tmp$; i++) {
+      tmp$_0 = this.nRows;
+      for (var j = 0; j < tmp$_0; j++) {
+        var v = this.a[i][j];
+        var x = binarise ? v === TetrisConstants_getInstance().BG ? 0 : 1 : v;
+        al.add_11rb$(v);
+      }
+    }
+    return al;
   };
   TetrisModel.prototype.checkRows = function () {
     var flag = false;
@@ -7914,6 +8530,96 @@
     simpleName: 'ArrayAsGrid',
     interfaces: []
   };
+  function GraphDrawApp(g, drawCurves, lineWeight, centrePull) {
+    if (g === void 0)
+      g = (new GraphMaker()).gilbert_5wr77w$();
+    if (drawCurves === void 0)
+      drawCurves = true;
+    if (lineWeight === void 0)
+      lineWeight = 0.01;
+    if (centrePull === void 0)
+      centrePull = 0.5;
+    this.g = g;
+    this.drawCurves = drawCurves;
+    this.lineWeight = lineWeight;
+    this.centrePull = centrePull;
+  }
+  GraphDrawApp.prototype.paint_vzjx8w$ = function (xg) {
+    var tmp$, tmp$_0;
+    xg.draw_dvdmun$(new XRect(xg.centre(), xg.width(), xg.height()));
+    var a = xg.width();
+    var b = xg.height();
+    var rad = Math_0.min(a, b) / 2;
+    var nodeRad = rad * 0.05;
+    var xp = new XPalette();
+    var lineWidth = this.lineWeight * rad;
+    var tmp$_1 = void 0;
+    var tmp$_2 = void 0;
+    var tmp$_3 = void 0;
+    var tmp$_4 = void 0;
+    var tmp$_5 = void 0;
+    var a_0 = this.lineWeight * rad;
+    var lineStyle = new XStyle(tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5, Math_0.max(a_0, 2.0));
+    var nodePos = HashMap_init();
+    var times = this.g.size;
+    for (var index = 0; index < times; index++) {
+      var theta = (index * 2 | 0) * math.PI / this.g.size;
+      var s = xg.centre().plus_5lk9kw$(Vec2d$Companion_getInstance().polar_lu1900$(rad, theta));
+      nodePos.put_xwzc9p$(index, s);
+      xg.draw_dvdmun$(new XEllipse(s, nodeRad, nodeRad, new XStyle(xp.getColor_za3lpa$(index))));
+    }
+    tmp$ = this.g.entries.iterator();
+    while (tmp$.hasNext()) {
+      var tmp$_6 = tmp$.next();
+      var from = tmp$_6.key;
+      var links = tmp$_6.value;
+      tmp$_0 = links.iterator();
+      while (tmp$_0.hasNext()) {
+        var to = tmp$_0.next();
+        if (this.drawCurves) {
+          var mid = ensureNotNull(nodePos.get_11rb$(from)).plus_5lk9kw$(xg.centre().times_14dthe$(this.centrePull)).plus_5lk9kw$(ensureNotNull(nodePos.get_11rb$(to))).times_14dthe$(1.0 / (2 + this.centrePull));
+          xg.draw_dvdmun$(new XQuadCurve(ensureNotNull(nodePos.get_11rb$(from)), mid, ensureNotNull(nodePos.get_11rb$(to)), lineStyle));
+        } else
+          xg.draw_dvdmun$(new XLine(ensureNotNull(nodePos.get_11rb$(from)), ensureNotNull(nodePos.get_11rb$(to)), lineStyle));
+      }
+    }
+  };
+  GraphDrawApp.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'GraphDrawApp',
+    interfaces: [XApp]
+  };
+  function GraphMaker() {
+    this.rand = Random.Default;
+  }
+  GraphMaker.prototype.gilbert_5wr77w$ = function (n, p) {
+    if (n === void 0)
+      n = 100;
+    if (p === void 0)
+      p = 0.02;
+    var g = HashMap_init();
+    for (var index = 0; index < n; index++) {
+      var value = HashSet_init();
+      g.put_xwzc9p$(index, value);
+    }
+    var times = numberToInt(Kotlin.imul(n, n) * p);
+    for (var index_0 = 0; index_0 < times; index_0++) {
+      var from = this.rand.nextInt_za3lpa$(n);
+      var to = this.rand.nextInt_za3lpa$(n);
+      var hs = g.get_11rb$(from);
+      if (hs == null) {
+        hs = HashSet_init();
+        var value_0 = hs;
+        g.put_xwzc9p$(from, value_0);
+      }hs.add_11rb$(to);
+    }
+    return g;
+  };
+  GraphMaker.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'GraphMaker',
+    interfaces: []
+  };
   function ShortestPath() {
   }
   ShortestPath.$metadata$ = {
@@ -7939,79 +8645,6 @@
   ColorGradientApp.$metadata$ = {
     kind: Kind_CLASS,
     simpleName: 'ColorGradientApp',
-    interfaces: [XApp]
-  };
-  function EasyGraphPlot(seed) {
-    if (seed === void 0)
-      seed = 1;
-    this.seed = seed;
-    this.xp = new XPalette(50, 0.2);
-    this.rand = Random_0(this.seed);
-    this.data_0 = null;
-  }
-  EasyGraphPlot.prototype.paint_vzjx8w$ = function (xg) {
-    var tmp$;
-    tmp$ = this.dataLines_rj0ub1$(xg, this.data_0).iterator();
-    while (tmp$.hasNext()) {
-      var element = tmp$.next();
-      xg.draw_dvdmun$(element);
-    }
-  };
-  EasyGraphPlot.prototype.dataLines_rj0ub1$ = function (xg, data) {
-    var tmp$, tmp$_0;
-    var lines = ArrayList_init();
-    if (data == null)
-      return lines;
-    var ss = new StatSummary('Score Data');
-    var destination = ArrayList_init_0(collectionSizeOrDefault(data, 10));
-    var tmp$_1;
-    tmp$_1 = data.iterator();
-    while (tmp$_1.hasNext()) {
-      var item = tmp$_1.next();
-      destination.add_11rb$(item.length);
-    }
-    var maxLen = max(destination);
-    if (maxLen == null)
-      return lines;
-    tmp$ = data.iterator();
-    while (tmp$.hasNext()) {
-      var a = tmp$.next();
-      ss.add_d3e2cz$(asList(a));
-    }
-    ss.add_3p81yu$(0);
-    ss.add_3p81yu$(5250);
-    var ssy = new StatSummary('Y');
-    var ssx = new StatSummary('X');
-    tmp$_0 = data.size;
-    for (var i = 0; i < tmp$_0; i++) {
-      var style = new XStyle(void 0, void 0, this.xp.getColor_za3lpa$(i), void 0, false);
-      var points = ArrayList_init();
-      var xStep = xg.width() / maxLen;
-      var da = data.get_za3lpa$(i);
-      for (var j = 0; j < da.length; j++) {
-        var p = new Vec2d(j * xStep, xg.height() * (1.0 - this.yVal_rtzl64$(da[j], ss)));
-        points.add_11rb$(p);
-        ssx.add_14dthe$(p.x);
-        ssy.add_14dthe$(p.y);
-      }
-      var line = new XPoly(void 0, points, style, void 0, false);
-      lines.add_11rb$(line);
-    }
-    return lines;
-  };
-  EasyGraphPlot.prototype.yVal_rtzl64$ = function (y, ss) {
-    return (0.01 + y - ss.min()) / (1.0 + ss.max() - ss.min());
-  };
-  EasyGraphPlot.prototype.handleMouseEvent_x4hb96$ = function (e) {
-  };
-  EasyGraphPlot.prototype.handleKeyEvent_wtf8cg$ = function (e) {
-  };
-  EasyGraphPlot.prototype.setData_s13lqp$ = function (data) {
-    this.data_0 = data;
-  };
-  EasyGraphPlot.$metadata$ = {
-    kind: Kind_CLASS,
-    simpleName: 'EasyGraphPlot',
     interfaces: [XApp]
   };
   function HelloXGraphics() {
@@ -8043,7 +8676,7 @@
     xg.draw_dvdmun$(poly);
     var roundedRect = new XRoundedRect(new Vec2d(xg.width() / 8, xg.height() / 8), xg.width() / 4, xg.height() / 4, 50.0, false, void 0, this.hexAngle);
     xg.draw_dvdmun$(roundedRect);
-    var text = new XText('Hello XKG', centre, new TStyle(XColor$Companion_getInstance().black), new XStyle());
+    var text = new XText('Hello XKG', centre, new TStyle(XColor$Companion_getInstance().black), new XStyle(), this.hexAngle);
     xg.draw_dvdmun$(text);
   };
   HelloXGraphics.prototype.handleMouseEvent_x4hb96$ = function (e) {
@@ -9270,6 +9903,71 @@
   XLine.prototype.equals = function (other) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.a, other.a) && Kotlin.equals(this.b, other.b) && Kotlin.equals(this.dStyle, other.dStyle) && Kotlin.equals(this.rotation, other.rotation)))));
   };
+  function XQuadCurve(a, b, c, dStyle, rotation) {
+    if (dStyle === void 0)
+      dStyle = new XStyle();
+    if (rotation === void 0)
+      rotation = 0.0;
+    this.a = a;
+    this.b = b;
+    this.c = c;
+    this.dStyle_vo7hdq$_0 = dStyle;
+    this.rotation_dtrnvz$_0 = rotation;
+  }
+  Object.defineProperty(XQuadCurve.prototype, 'dStyle', {
+    get: function () {
+      return this.dStyle_vo7hdq$_0;
+    },
+    set: function (dStyle) {
+      this.dStyle_vo7hdq$_0 = dStyle;
+    }
+  });
+  Object.defineProperty(XQuadCurve.prototype, 'rotation', {
+    get: function () {
+      return this.rotation_dtrnvz$_0;
+    },
+    set: function (rotation) {
+      this.rotation_dtrnvz$_0 = rotation;
+    }
+  });
+  XQuadCurve.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'XQuadCurve',
+    interfaces: [Drawable]
+  };
+  XQuadCurve.prototype.component1 = function () {
+    return this.a;
+  };
+  XQuadCurve.prototype.component2 = function () {
+    return this.b;
+  };
+  XQuadCurve.prototype.component3 = function () {
+    return this.c;
+  };
+  XQuadCurve.prototype.component4 = function () {
+    return this.dStyle;
+  };
+  XQuadCurve.prototype.component5 = function () {
+    return this.rotation;
+  };
+  XQuadCurve.prototype.copy_k8mmd2$ = function (a, b, c, dStyle, rotation) {
+    return new XQuadCurve(a === void 0 ? this.a : a, b === void 0 ? this.b : b, c === void 0 ? this.c : c, dStyle === void 0 ? this.dStyle : dStyle, rotation === void 0 ? this.rotation : rotation);
+  };
+  XQuadCurve.prototype.toString = function () {
+    return 'XQuadCurve(a=' + Kotlin.toString(this.a) + (', b=' + Kotlin.toString(this.b)) + (', c=' + Kotlin.toString(this.c)) + (', dStyle=' + Kotlin.toString(this.dStyle)) + (', rotation=' + Kotlin.toString(this.rotation)) + ')';
+  };
+  XQuadCurve.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.a) | 0;
+    result = result * 31 + Kotlin.hashCode(this.b) | 0;
+    result = result * 31 + Kotlin.hashCode(this.c) | 0;
+    result = result * 31 + Kotlin.hashCode(this.dStyle) | 0;
+    result = result * 31 + Kotlin.hashCode(this.rotation) | 0;
+    return result;
+  };
+  XQuadCurve.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.a, other.a) && Kotlin.equals(this.b, other.b) && Kotlin.equals(this.c, other.c) && Kotlin.equals(this.dStyle, other.dStyle) && Kotlin.equals(this.rotation, other.rotation)))));
+  };
   function XText(str, p, tStyle, dStyle, rotation) {
     if (tStyle === void 0)
       tStyle = new TStyle();
@@ -10094,6 +10792,82 @@
   IntVec2d.prototype.equals = function (other) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.x, other.x) && Kotlin.equals(this.y, other.y)))));
   };
+  function m(a, b, c, d) {
+    return new Mat2d(a, b, c, d);
+  }
+  function Mat2d(a, b, c, d) {
+    if (a === void 0)
+      a = 0.0;
+    if (b === void 0)
+      b = 0.0;
+    if (c === void 0)
+      c = 0.0;
+    if (d === void 0)
+      d = 0.0;
+    this.a = a;
+    this.b = b;
+    this.c = c;
+    this.d = d;
+  }
+  Mat2d.prototype.plus_5gjwwc$ = function (m_0) {
+    return m(this.a + m_0.a, this.b + m_0.b, this.c + m_0.c, this.d + m_0.d);
+  };
+  Mat2d.prototype.unaryMinus = function () {
+    return m(-this.a, -this.b, -this.c, -this.d);
+  };
+  Mat2d.prototype.minus_5gjwwc$ = function (m_0) {
+    return m(this.a - m_0.a, this.b - m_0.b, this.c - m_0.c, this.d - m_0.d);
+  };
+  Mat2d.prototype.times_5gjwwc$ = function (m_0) {
+    return m(this.a * m_0.a + this.b * m_0.c, this.a * m_0.b + this.b * m_0.d, this.c * m_0.a + this.d * m_0.c, this.c * m_0.b + this.d * m_0.d);
+  };
+  Mat2d.prototype.times_14dthe$ = function (coef) {
+    return m(this.a * coef, this.b * coef, this.c * coef, this.d * coef);
+  };
+  Mat2d.prototype.times_5lk9kw$ = function (v) {
+    return new Vec2d(this.a * v.x + this.b * v.y, this.c * v.x + this.d * v.y);
+  };
+  Mat2d.prototype.inverse = function () {
+    var denom = this.a * this.d - this.b * this.c;
+    if (denom === 0.0)
+      return null;
+    var det = 1 / denom;
+    return m(det * this.d, -det * this.b, -det * this.c, det * this.a);
+  };
+  Mat2d.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Mat2d',
+    interfaces: []
+  };
+  Mat2d.prototype.component1 = function () {
+    return this.a;
+  };
+  Mat2d.prototype.component2 = function () {
+    return this.b;
+  };
+  Mat2d.prototype.component3 = function () {
+    return this.c;
+  };
+  Mat2d.prototype.component4 = function () {
+    return this.d;
+  };
+  Mat2d.prototype.copy_6y0v78$ = function (a, b, c, d) {
+    return new Mat2d(a === void 0 ? this.a : a, b === void 0 ? this.b : b, c === void 0 ? this.c : c, d === void 0 ? this.d : d);
+  };
+  Mat2d.prototype.toString = function () {
+    return 'Mat2d(a=' + Kotlin.toString(this.a) + (', b=' + Kotlin.toString(this.b)) + (', c=' + Kotlin.toString(this.c)) + (', d=' + Kotlin.toString(this.d)) + ')';
+  };
+  Mat2d.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.a) | 0;
+    result = result * 31 + Kotlin.hashCode(this.b) | 0;
+    result = result * 31 + Kotlin.hashCode(this.c) | 0;
+    result = result * 31 + Kotlin.hashCode(this.d) | 0;
+    return result;
+  };
+  Mat2d.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.a, other.a) && Kotlin.equals(this.b, other.b) && Kotlin.equals(this.c, other.c) && Kotlin.equals(this.d, other.d)))));
+  };
   function v(x, y) {
     return new Vec2d(x, y);
   }
@@ -10132,6 +10906,11 @@
     var sin = Math_0.sin(theta);
     var cos = Math_0.cos(theta);
     return v(this.x * cos - this.y * sin, this.x * sin + this.y * cos);
+  };
+  Vec2d.prototype.angleTo_5lk9kw$ = function (v) {
+    var y = v.y - this.y;
+    var x = v.x - this.x;
+    return Math_0.atan2(y, x);
   };
   Vec2d.prototype.isInRect_yw3f10$ = function (topLeft, size) {
     return this.x >= topLeft.x && this.x <= topLeft.x + size.x && this.y >= topLeft.y && this.y <= topLeft.y + size.y;
@@ -10205,6 +10984,340 @@
   Vec2d.prototype.equals = function (other) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.x, other.x) && Kotlin.equals(this.y, other.y)))));
   };
+  function EasyGraphPlot(seed) {
+    if (seed === void 0)
+      seed = 1;
+    this.seed = seed;
+    this.xp = new XPalette(50, 0.2);
+    this.rand = Random_0(this.seed);
+    this.data_0 = null;
+  }
+  EasyGraphPlot.prototype.paint_vzjx8w$ = function (xg) {
+    var tmp$;
+    tmp$ = this.dataLines_rj0ub1$(xg, this.data_0).iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      xg.draw_dvdmun$(element);
+    }
+  };
+  EasyGraphPlot.prototype.dataLines_rj0ub1$ = function (xg, data) {
+    var tmp$, tmp$_0;
+    var lines = ArrayList_init();
+    if (data == null)
+      return lines;
+    var ss = new StatSummary('Score Data');
+    var destination = ArrayList_init_0(collectionSizeOrDefault(data, 10));
+    var tmp$_1;
+    tmp$_1 = data.iterator();
+    while (tmp$_1.hasNext()) {
+      var item = tmp$_1.next();
+      destination.add_11rb$(item.length);
+    }
+    var maxLen = max(destination);
+    if (maxLen == null)
+      return lines;
+    tmp$ = data.iterator();
+    while (tmp$.hasNext()) {
+      var a = tmp$.next();
+      ss.add_d3e2cz$(asList(a));
+    }
+    ss.add_3p81yu$(0);
+    ss.add_3p81yu$(5250);
+    var ssy = new StatSummary('Y');
+    var ssx = new StatSummary('X');
+    tmp$_0 = data.size;
+    for (var i = 0; i < tmp$_0; i++) {
+      var style = new XStyle(void 0, void 0, this.xp.getColor_za3lpa$(i), void 0, false);
+      var points = ArrayList_init();
+      var xStep = xg.width() / maxLen;
+      var da = data.get_za3lpa$(i);
+      for (var j = 0; j < da.length; j++) {
+        var p = new Vec2d(j * xStep, xg.height() * (1.0 - this.yVal_rtzl64$(da[j], ss)));
+        points.add_11rb$(p);
+        ssx.add_14dthe$(p.x);
+        ssy.add_14dthe$(p.y);
+      }
+      var line = new XPoly(void 0, points, style, void 0, false);
+      lines.add_11rb$(line);
+    }
+    return lines;
+  };
+  EasyGraphPlot.prototype.yVal_rtzl64$ = function (y, ss) {
+    return (0.01 + y - ss.min()) / (1.0 + ss.max() - ss.min());
+  };
+  EasyGraphPlot.prototype.handleMouseEvent_x4hb96$ = function (e) {
+  };
+  EasyGraphPlot.prototype.handleKeyEvent_wtf8cg$ = function (e) {
+  };
+  EasyGraphPlot.prototype.setData_s13lqp$ = function (data) {
+    this.data_0 = data;
+  };
+  EasyGraphPlot.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'EasyGraphPlot',
+    interfaces: [XApp]
+  };
+  function Borders(left, right, top, bottom, inset, xDivs, yDivs) {
+    if (left === void 0)
+      left = 0.1;
+    if (right === void 0)
+      right = 0.02;
+    if (top === void 0)
+      top = 0.02;
+    if (bottom === void 0)
+      bottom = 0.1;
+    if (inset === void 0)
+      inset = 0.02;
+    if (xDivs === void 0)
+      xDivs = 6;
+    if (yDivs === void 0)
+      yDivs = 6;
+    this.left = left;
+    this.right = right;
+    this.top = top;
+    this.bottom = bottom;
+    this.inset = inset;
+    this.xDivs = xDivs;
+    this.yDivs = yDivs;
+  }
+  Borders.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'Borders',
+    interfaces: []
+  };
+  Borders.prototype.component1 = function () {
+    return this.left;
+  };
+  Borders.prototype.component2 = function () {
+    return this.right;
+  };
+  Borders.prototype.component3 = function () {
+    return this.top;
+  };
+  Borders.prototype.component4 = function () {
+    return this.bottom;
+  };
+  Borders.prototype.component5 = function () {
+    return this.inset;
+  };
+  Borders.prototype.component6 = function () {
+    return this.xDivs;
+  };
+  Borders.prototype.component7 = function () {
+    return this.yDivs;
+  };
+  Borders.prototype.copy_jp4nzu$ = function (left, right, top, bottom, inset, xDivs, yDivs) {
+    return new Borders(left === void 0 ? this.left : left, right === void 0 ? this.right : right, top === void 0 ? this.top : top, bottom === void 0 ? this.bottom : bottom, inset === void 0 ? this.inset : inset, xDivs === void 0 ? this.xDivs : xDivs, yDivs === void 0 ? this.yDivs : yDivs);
+  };
+  Borders.prototype.toString = function () {
+    return 'Borders(left=' + Kotlin.toString(this.left) + (', right=' + Kotlin.toString(this.right)) + (', top=' + Kotlin.toString(this.top)) + (', bottom=' + Kotlin.toString(this.bottom)) + (', inset=' + Kotlin.toString(this.inset)) + (', xDivs=' + Kotlin.toString(this.xDivs)) + (', yDivs=' + Kotlin.toString(this.yDivs)) + ')';
+  };
+  Borders.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.left) | 0;
+    result = result * 31 + Kotlin.hashCode(this.right) | 0;
+    result = result * 31 + Kotlin.hashCode(this.top) | 0;
+    result = result * 31 + Kotlin.hashCode(this.bottom) | 0;
+    result = result * 31 + Kotlin.hashCode(this.inset) | 0;
+    result = result * 31 + Kotlin.hashCode(this.xDivs) | 0;
+    result = result * 31 + Kotlin.hashCode(this.yDivs) | 0;
+    return result;
+  };
+  Borders.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.left, other.left) && Kotlin.equals(this.right, other.right) && Kotlin.equals(this.top, other.top) && Kotlin.equals(this.bottom, other.bottom) && Kotlin.equals(this.inset, other.inset) && Kotlin.equals(this.xDivs, other.xDivs) && Kotlin.equals(this.yDivs, other.yDivs)))));
+  };
+  function GraphPlotter(borders, xLabel, yLabel, labelTStyle, drawGrid, lineWidth, seed, hist) {
+    if (borders === void 0)
+      borders = new Borders();
+    if (xLabel === void 0)
+      xLabel = 'Label X Axis';
+    if (yLabel === void 0)
+      yLabel = 'Label Y Axis';
+    if (labelTStyle === void 0)
+      labelTStyle = new TStyle(XColor$Companion_getInstance().black);
+    if (drawGrid === void 0)
+      drawGrid = true;
+    if (lineWidth === void 0)
+      lineWidth = 3.0;
+    if (seed === void 0)
+      seed = 1;
+    if (hist === void 0)
+      hist = true;
+    this.borders = borders;
+    this.xLabel = xLabel;
+    this.yLabel = yLabel;
+    this.labelTStyle = labelTStyle;
+    this.drawGrid = drawGrid;
+    this.lineWidth = lineWidth;
+    this.seed = seed;
+    this.hist = hist;
+    this.xp = new XPalette(50, 0.2);
+    this.rand = Random_0(this.seed);
+    this.data_0 = null;
+  }
+  GraphPlotter.prototype.paint_vzjx8w$ = function (xg) {
+    this.drawPlotAreaBackground_0(xg);
+    this.drawXLabel_vzjx8w$(xg);
+    this.drawYLabel_vzjx8w$(xg);
+    this.drawGrid_0(xg);
+    var tmp$;
+    tmp$ = this.dataShapes_rj0ub1$(xg, this.data_0).iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      xg.draw_dvdmun$(element);
+    }
+  };
+  GraphPlotter.prototype.drawGrid_0 = function (xg) {
+    var $receiver = this.borders;
+    var tmp$, tmp$_0;
+    var xDivs = this.getDivisions_0(this.borders.xDivs, xg.width() * (this.borders.left + this.borders.inset), xg.width() * (1.0 - ($receiver.left + $receiver.right + 2 * $receiver.inset)));
+    var yDivs = this.getDivisions_0(this.borders.xDivs, xg.height() * (this.borders.top + this.borders.inset), xg.height() * (1.0 - ($receiver.top + $receiver.bottom + 2 * $receiver.inset)));
+    var x1 = xg.width() * $receiver.left;
+    var x2 = xg.width() * (1.0 - $receiver.right);
+    var y1 = xg.height() * $receiver.top;
+    var y2 = xg.height() * (1.0 - $receiver.bottom);
+    var gridStyle = new XStyle(void 0, void 0, XColor$Companion_getInstance().gray);
+    tmp$ = xDivs.iterator();
+    while (tmp$.hasNext()) {
+      var x = tmp$.next();
+      xg.draw_dvdmun$(new XLine(new Vec2d(x, y1), new Vec2d(x, y2), gridStyle));
+    }
+    tmp$_0 = yDivs.iterator();
+    while (tmp$_0.hasNext()) {
+      var y = tmp$_0.next();
+      xg.draw_dvdmun$(new XLine(new Vec2d(x1, y), new Vec2d(x2, y), gridStyle));
+    }
+  };
+  GraphPlotter.prototype.drawPlotAreaBackground_0 = function (xg) {
+    var xRect = this.getPlotRect_vzjx8w$(xg);
+    xRect.dStyle = new XStyle(XColor$Companion_getInstance().white, XColor$Companion_getInstance().blue, XColor$Companion_getInstance().black, true);
+    xg.draw_dvdmun$(xRect);
+  };
+  GraphPlotter.prototype.getPlotRect_vzjx8w$ = function (xg) {
+    var $receiver = this.borders;
+    var plotWidth = xg.width() * (1.0 - ($receiver.left + $receiver.right));
+    var plotHeight = xg.height() * (1.0 - ($receiver.top + $receiver.bottom));
+    var plotCenter = new Vec2d(xg.width() * $receiver.left + plotWidth / 2, xg.height() * $receiver.top + plotHeight / 2);
+    return new XRect(plotCenter, plotWidth, plotHeight);
+  };
+  GraphPlotter.prototype.getDataRect_vzjx8w$ = function (xg) {
+    var $receiver = this.borders;
+    var plotWidth = xg.width() * (1.0 - ($receiver.left + $receiver.right + 2 * $receiver.inset));
+    var plotHeight = xg.height() * (1.0 - ($receiver.top + $receiver.bottom + 2 * $receiver.inset));
+    var plotCenter = new Vec2d(xg.width() * $receiver.left + plotWidth / 2, xg.height() * $receiver.top + plotHeight / 2);
+    return new XRect(plotCenter, plotWidth, plotHeight);
+  };
+  GraphPlotter.prototype.getDivisions_0 = function (n, start, span) {
+    var divs = ArrayList_init();
+    var step = span / (n - 1 | 0);
+    for (var index = 0; index < n; index++) {
+      divs.add_11rb$(start + step * index);
+    }
+    return divs;
+  };
+  GraphPlotter.prototype.drawXLabel_vzjx8w$ = function (xg) {
+    var centre = new Vec2d(xg.centre().x, xg.height() * (1.0 - this.borders.bottom / 2));
+    xg.draw_dvdmun$(new XText(this.xLabel, centre, this.labelTStyle));
+  };
+  GraphPlotter.prototype.drawYLabel_vzjx8w$ = function (xg) {
+    var centre = new Vec2d(xg.width() * this.borders.left / 2, xg.centre().y);
+    xg.draw_dvdmun$(new XText(this.yLabel, centre, this.labelTStyle, void 0, 3 * math.PI / 2));
+  };
+  GraphPlotter.prototype.dataShapes_rj0ub1$ = function (xg, data) {
+    var tmp$;
+    var shapes = ArrayList_init();
+    if (data == null)
+      return shapes;
+    var ss = new StatSummary('Score Data');
+    tmp$ = data.iterator();
+    while (tmp$.hasNext()) {
+      var a = tmp$.next();
+      ss.add_d3e2cz$(asList(a));
+    }
+    for (var i = 0; i !== data.size; ++i) {
+      var style = new XStyle(void 0, void 0, this.xp.getColor_za3lpa$(i), void 0, false, this.lineWidth);
+      var da = data.get_za3lpa$(i);
+      if (this.hist) {
+        style.fill = true;
+        style.fg = new XColor(1.0, 0.0, 0.5, 0.1);
+        shapes.addAll_brywnq$(this.getCols_0(xg, style, da, ss));
+      } else {
+        var points = this.dat2vec_0(xg, da, ss);
+        var line = new XPoly(void 0, points, style, void 0, false);
+        shapes.add_11rb$(line);
+      }
+    }
+    return shapes;
+  };
+  GraphPlotter.prototype.histogramCols_rj0ub1$ = function (xg, data) {
+    var tmp$;
+    var cols = ArrayList_init();
+    if (data == null)
+      return cols;
+    var ss = new StatSummary('Hist Data');
+    tmp$ = data.iterator();
+    while (tmp$.hasNext()) {
+      var a = tmp$.next();
+      ss.add_d3e2cz$(asList(a));
+    }
+    for (var i = 0; i !== data.size; ++i) {
+      var style = new XStyle(void 0, void 0, this.xp.getColor_za3lpa$(i), void 0, true, this.lineWidth);
+      cols.addAll_brywnq$(this.getCols_0(xg, style, data.get_za3lpa$(i), ss));
+    }
+    return cols;
+  };
+  GraphPlotter.prototype.getCols_0 = function (xg, style, da, ss) {
+    var cols = ArrayList_init();
+    var $receiver = this.borders;
+    var xMap = new RangeMapper(0.0, da.length - 1.0, xg.width() * ($receiver.left + $receiver.inset), xg.width() * (1.0 - ($receiver.right + $receiver.inset)));
+    var yMap = new RangeMapper(ss.min(), ss.max(), xg.height() * (1.0 - ($receiver.bottom + $receiver.inset)), xg.height() * ($receiver.top + $receiver.inset));
+    for (var i = 0; i !== da.length; ++i) {
+      var colX = xMap.f_14dthe$(i);
+      var colTop = yMap.f_14dthe$(da[i]);
+      var colBottom = yMap.f_14dthe$(0.0);
+      var centre = new Vec2d(colX, (colTop + colBottom) / 2);
+      var colWidth = 0.5 * (xMap.f_14dthe$(1.0) - xMap.f_14dthe$(0.0));
+      var x = colBottom - colTop;
+      cols.add_11rb$(new XRect(centre, colWidth, Math_0.abs(x), style));
+    }
+    return cols;
+  };
+  GraphPlotter.prototype.dat2vec_0 = function (xg, da, ss) {
+    var points = ArrayList_init();
+    var $receiver = this.borders;
+    var xMap = new RangeMapper(0.0, da.length - 1.0, xg.width() * ($receiver.left + $receiver.inset), xg.width() * (1.0 - ($receiver.right + $receiver.inset)));
+    var yMap = new RangeMapper(ss.min(), ss.max(), xg.height() * (1.0 - ($receiver.bottom + $receiver.inset)), xg.height() * ($receiver.top + $receiver.inset));
+    for (var j = 0; j !== da.length; ++j) {
+      var p = new Vec2d(xMap.f_14dthe$(j), yMap.f_14dthe$(da[j]));
+      points.add_11rb$(p);
+    }
+    return points;
+  };
+  GraphPlotter.prototype.dat2Hist_0 = function (xg, da, ss) {
+    var points = ArrayList_init();
+    var $receiver = this.borders;
+    var xMap = new RangeMapper(0.0, da.length - 1.0, xg.width() * ($receiver.left + $receiver.inset), xg.width() * (1.0 - ($receiver.right + $receiver.inset)));
+    var yMap = new RangeMapper(ss.min(), ss.max(), xg.height() * (1.0 - ($receiver.bottom + $receiver.inset)), xg.height() * ($receiver.top + $receiver.inset));
+    for (var j = 0; j !== da.length; ++j) {
+      var p1 = new Vec2d(xMap.f_14dthe$(j), yMap.f_14dthe$(da[j]));
+      var p2 = new Vec2d(xMap.f_14dthe$(j + 1.0), yMap.f_14dthe$(da[j]));
+      points.add_11rb$(p1);
+      points.add_11rb$(p2);
+    }
+    return points;
+  };
+  GraphPlotter.prototype.handleMouseEvent_x4hb96$ = function (e) {
+  };
+  GraphPlotter.prototype.handleKeyEvent_wtf8cg$ = function (e) {
+  };
+  GraphPlotter.prototype.setData_s13lqp$ = function (data) {
+    this.data_0 = data;
+  };
+  GraphPlotter.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'GraphPlotter',
+    interfaces: [XApp]
+  };
   function hello() {
     return 'Hello from JS';
   }
@@ -10254,6 +11367,116 @@
     kind: Kind_CLASS,
     simpleName: 'ElapsedTimer',
     interfaces: []
+  };
+  function IntArrayList(initialSize, growthFactor) {
+    if (initialSize === void 0)
+      initialSize = 10;
+    if (growthFactor === void 0)
+      growthFactor = 2.0;
+    this.initialSize = initialSize;
+    this.growthFactor = growthFactor;
+    this.a = new Int32Array(this.initialSize);
+    this.size = 0;
+  }
+  IntArrayList.prototype.add_za3lpa$ = function (x) {
+    if (this.size >= this.a.length)
+      this.grow_0();
+    this.a[this.size] = x;
+    this.size = this.size + 1 | 0;
+  };
+  IntArrayList.prototype.grow_0 = function () {
+    var ca = new Int32Array(numberToInt(this.size * this.growthFactor));
+    var times = this.size;
+    for (var index = 0; index < times; index++) {
+      ca[index] = this.a[index];
+    }
+    this.a = ca;
+  };
+  IntArrayList.prototype.get_za3lpa$ = function (ix) {
+    if (ix < this.size)
+      return this.a[ix];
+    else
+      throw new IndexOutOfBoundsException(ix.toString() + ' >= array size ' + this.size);
+  };
+  IntArrayList.prototype.iterator = function () {
+    return new IntArrayList$IntArrayListIterator(this);
+  };
+  function IntArrayList$IntArrayListIterator(a) {
+    this.a = a;
+    this.ix = 0;
+  }
+  IntArrayList$IntArrayListIterator.prototype.hasNext = function () {
+    return this.ix < this.a.size;
+  };
+  IntArrayList$IntArrayListIterator.prototype.next = function () {
+    var x = this.a.get_za3lpa$(this.ix);
+    this.ix = this.ix + 1 | 0;
+    return x;
+  };
+  IntArrayList$IntArrayListIterator.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'IntArrayListIterator',
+    interfaces: [Iterator]
+  };
+  IntArrayList.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'IntArrayList',
+    interfaces: [Iterable]
+  };
+  function DoubleArrayList(initialSize, growthFactor) {
+    if (initialSize === void 0)
+      initialSize = 10;
+    if (growthFactor === void 0)
+      growthFactor = 2.0;
+    this.initialSize = initialSize;
+    this.growthFactor = growthFactor;
+    this.a = new Float64Array(this.initialSize);
+    this.size = 0;
+  }
+  DoubleArrayList.prototype.add_14dthe$ = function (x) {
+    if (this.size >= this.a.length)
+      this.grow_0();
+    this.a[this.size] = x;
+    this.size = this.size + 1 | 0;
+  };
+  DoubleArrayList.prototype.grow_0 = function () {
+    var ca = new Float64Array(numberToInt(this.size * this.growthFactor));
+    var times = this.size;
+    for (var index = 0; index < times; index++) {
+      ca[index] = this.a[index];
+    }
+    this.a = ca;
+  };
+  DoubleArrayList.prototype.get_za3lpa$ = function (ix) {
+    if (ix < this.size)
+      return this.a[ix];
+    else
+      throw new IndexOutOfBoundsException(ix.toString() + ' >= array size ' + this.size);
+  };
+  DoubleArrayList.prototype.iterator = function () {
+    return new DoubleArrayList$DoubleArrayListIterator(this);
+  };
+  function DoubleArrayList$DoubleArrayListIterator(a) {
+    this.a = a;
+    this.ix = 0;
+  }
+  DoubleArrayList$DoubleArrayListIterator.prototype.hasNext = function () {
+    return this.ix < this.a.size;
+  };
+  DoubleArrayList$DoubleArrayListIterator.prototype.next = function () {
+    var x = this.a.get_za3lpa$(this.ix);
+    this.ix = this.ix + 1 | 0;
+    return x;
+  };
+  DoubleArrayList$DoubleArrayListIterator.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'DoubleArrayListIterator',
+    interfaces: [Iterator]
+  };
+  DoubleArrayList.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'DoubleArrayList',
+    interfaces: [Iterable]
   };
   function InputFormBuilder() {
   }
@@ -10354,6 +11577,54 @@
     kind: Kind_CLASS,
     simpleName: 'Picker',
     interfaces: []
+  };
+  function RangeMapper(oMin, oMax, nMin, nMax) {
+    if (nMin === void 0)
+      nMin = 0.0;
+    if (nMax === void 0)
+      nMax = 1.0;
+    this.oMin = oMin;
+    this.oMax = oMax;
+    this.nMin = nMin;
+    this.nMax = nMax;
+  }
+  RangeMapper.prototype.f_14dthe$ = function (x) {
+    var y = (x - this.oMin) / (this.oMax - this.oMin);
+    return this.nMin + y * (this.nMax - this.nMin);
+  };
+  RangeMapper.$metadata$ = {
+    kind: Kind_CLASS,
+    simpleName: 'RangeMapper',
+    interfaces: []
+  };
+  RangeMapper.prototype.component1 = function () {
+    return this.oMin;
+  };
+  RangeMapper.prototype.component2 = function () {
+    return this.oMax;
+  };
+  RangeMapper.prototype.component3 = function () {
+    return this.nMin;
+  };
+  RangeMapper.prototype.component4 = function () {
+    return this.nMax;
+  };
+  RangeMapper.prototype.copy_6y0v78$ = function (oMin, oMax, nMin, nMax) {
+    return new RangeMapper(oMin === void 0 ? this.oMin : oMin, oMax === void 0 ? this.oMax : oMax, nMin === void 0 ? this.nMin : nMin, nMax === void 0 ? this.nMax : nMax);
+  };
+  RangeMapper.prototype.toString = function () {
+    return 'RangeMapper(oMin=' + Kotlin.toString(this.oMin) + (', oMax=' + Kotlin.toString(this.oMax)) + (', nMin=' + Kotlin.toString(this.nMin)) + (', nMax=' + Kotlin.toString(this.nMax)) + ')';
+  };
+  RangeMapper.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.oMin) | 0;
+    result = result * 31 + Kotlin.hashCode(this.oMax) | 0;
+    result = result * 31 + Kotlin.hashCode(this.nMin) | 0;
+    result = result * 31 + Kotlin.hashCode(this.nMax) | 0;
+    return result;
+  };
+  RangeMapper.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.oMin, other.oMin) && Kotlin.equals(this.oMax, other.oMax) && Kotlin.equals(this.nMin, other.nMin) && Kotlin.equals(this.nMax, other.nMax)))));
   };
   function StatSummary(name) {
     StatSummary$Companion_getInstance();
@@ -11526,6 +12797,8 @@
   package$coev.TreeNode = TreeNode_0;
   package$coev.Tree = Tree;
   var package$draw = _.draw || (_.draw = {});
+  package$draw.GeomUtil = GeomUtil;
+  package$draw.RLine = RLine;
   package$draw.Positioner = Positioner;
   package$draw.Radial = Radial;
   package$draw.Linear = Linear;
@@ -11534,6 +12807,9 @@
   });
   package$draw.TreeDraw = TreeDraw;
   package$draw.DrawNode = DrawNode;
+  package$draw.VoronoiApp = VoronoiApp;
+  package$draw.CPoly = CPoly;
+  package$draw.VoronoiModel = VoronoiModel;
   var package$evo = _.evo || (_.evo = {});
   package$evo.GridDataSource = GridDataSource;
   package$evo.GridDataView = GridDataView;
@@ -11755,6 +13031,24 @@
   });
   var package$maxgame = package$games.maxgame || (package$games.maxgame = {});
   package$maxgame.MaxGame = MaxGame;
+  Object.defineProperty(CardType, 'Character', {
+    get: CardType$Character_getInstance
+  });
+  Object.defineProperty(CardType, 'Location', {
+    get: CardType$Location_getInstance
+  });
+  Object.defineProperty(CardType, 'Weapon', {
+    get: CardType$Weapon_getInstance
+  });
+  var package$murder = package$games.murder || (package$games.murder = {});
+  package$murder.CardType = CardType;
+  package$murder.Card = Card;
+  package$murder.Solution = Solution;
+  Object.defineProperty(package$murder, 'GameSetup', {
+    get: GameSetup_getInstance
+  });
+  package$murder.MurderMonteCarlo = MurderMonteCarlo;
+  package$murder.Player = Player_0;
   Object.defineProperty(Graph, 'Companion', {
     get: Graph$Companion_getInstance
   });
@@ -11908,10 +13202,11 @@
     get: ArrayAsGrid$Companion_getInstance
   });
   package$graph.ArrayAsGrid = ArrayAsGrid;
+  package$graph.GraphDrawApp = GraphDrawApp;
+  package$graph.GraphMaker = GraphMaker;
   package$graph.ShortestPath = ShortestPath;
   var package$gui = _.gui || (_.gui = {});
   package$gui.ColorGradientApp = ColorGradientApp;
-  package$gui.EasyGraphPlot = EasyGraphPlot;
   package$gui.HelloXGraphics = HelloXGraphics;
   package$gui.HelloXKG = HelloXKG;
   package$gui.RandomGraphPlot = RandomGraphPlot;
@@ -11981,6 +13276,7 @@
   package$gui.XRoundedRect = XRoundedRect;
   package$gui.XEllipse = XEllipse;
   package$gui.XLine = XLine;
+  package$gui.XQuadCurve = XQuadCurve;
   package$gui.XText = XText;
   package$gui.XPoly = XPoly;
   package$gui.PolyUtil = PolyUtil;
@@ -12032,11 +13328,17 @@
   var package$math = _.math || (_.math = {});
   package$math.iv_vux9f0$ = iv;
   package$math.IntVec2d = IntVec2d;
+  package$math.m_6y0v78$ = m;
+  package$math.Mat2d = Mat2d;
   package$math.v_lu1900$ = v;
   Object.defineProperty(Vec2d, 'Companion', {
     get: Vec2d$Companion_getInstance
   });
   package$math.Vec2d = Vec2d;
+  var package$plot = _.plot || (_.plot = {});
+  package$plot.EasyGraphPlot = EasyGraphPlot;
+  package$plot.Borders = Borders;
+  package$plot.GraphPlotter = GraphPlotter;
   var package$sample = _.sample || (_.sample = {});
   package$sample.hello = hello;
   var package$test = _.test || (_.test = {});
@@ -12045,6 +13347,10 @@
   var package$util = _.util || (_.util = {});
   package$util.BoxMuller = BoxMuller;
   package$util.ElapsedTimer = ElapsedTimer;
+  IntArrayList.IntArrayListIterator = IntArrayList$IntArrayListIterator;
+  package$util.IntArrayList = IntArrayList;
+  DoubleArrayList.DoubleArrayListIterator = DoubleArrayList$DoubleArrayListIterator;
+  package$util.DoubleArrayList = DoubleArrayList;
   package$util.InputFormBuilder = InputFormBuilder;
   package$util.Para = Para;
   package$util.IntField = IntField;
@@ -12053,6 +13359,7 @@
     get: Picker$Companion_getInstance
   });
   package$util.Picker = Picker;
+  package$util.RangeMapper = RangeMapper;
   Object.defineProperty(StatSummary, 'Companion', {
     get: StatSummary$Companion_getInstance
   });
@@ -12090,6 +13397,8 @@
   package$test.XGraphicsJS = XGraphicsJS;
   TreeDraw.prototype.handleMouseEvent_x4hb96$ = XApp.prototype.handleMouseEvent_x4hb96$;
   TreeDraw.prototype.handleKeyEvent_wtf8cg$ = XApp.prototype.handleKeyEvent_wtf8cg$;
+  VoronoiApp.prototype.handleMouseEvent_x4hb96$ = XApp.prototype.handleMouseEvent_x4hb96$;
+  VoronoiApp.prototype.handleKeyEvent_wtf8cg$ = XApp.prototype.handleKeyEvent_wtf8cg$;
   GridDataView.prototype.handleMouseEvent_x4hb96$ = XApp.prototype.handleMouseEvent_x4hb96$;
   GridDataView.prototype.handleKeyEvent_wtf8cg$ = XApp.prototype.handleKeyEvent_wtf8cg$;
   MaxSum.prototype.select_1zogng$ = SolutionEvaluator.prototype.select_1zogng$;
@@ -12103,14 +13412,16 @@
   TicTacToe.prototype.resetTotalTicks = ExtendedAbstractGameStateMulti.prototype.resetTotalTicks;
   GridGameApp.prototype.handleKeyEvent_wtf8cg$ = XApp.prototype.handleKeyEvent_wtf8cg$;
   DefaultDemoControl.prototype.useDoorways = SubgoalDemoControl.prototype.useDoorways;
+  GraphDrawApp.prototype.handleMouseEvent_x4hb96$ = XApp.prototype.handleMouseEvent_x4hb96$;
+  GraphDrawApp.prototype.handleKeyEvent_wtf8cg$ = XApp.prototype.handleKeyEvent_wtf8cg$;
   ColorGradientApp.prototype.handleMouseEvent_x4hb96$ = XApp.prototype.handleMouseEvent_x4hb96$;
   ColorGradientApp.prototype.handleKeyEvent_wtf8cg$ = XApp.prototype.handleKeyEvent_wtf8cg$;
   HelloXKG.prototype.handleKeyEvent_wtf8cg$ = XApp.prototype.handleKeyEvent_wtf8cg$;
-  GridXYFilterLayout.prototype.handleKeyEvent_wtf8cg$ = XApp.prototype.handleKeyEvent_wtf8cg$;
   GridXYFilterLayout.prototype.handleMouseEvent_x4hb96$ = XApp.prototype.handleMouseEvent_x4hb96$;
+  GridXYFilterLayout.prototype.handleKeyEvent_wtf8cg$ = XApp.prototype.handleKeyEvent_wtf8cg$;
   XGraphicsJS.prototype.centre = XGraphics.prototype.centre;
-  XGraphicsJS.prototype.restoreTransform = XGraphics.prototype.restoreTransform;
   XGraphicsJS.prototype.saveTransform = XGraphics.prototype.saveTransform;
+  XGraphicsJS.prototype.restoreTransform = XGraphics.prototype.restoreTransform;
   random = Random.Default;
   nodeCount = 0;
   rockHit = rockHit$lambda;
