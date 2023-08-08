@@ -50,9 +50,11 @@ class GriddleGame (var control: GriddleControl = DefaultControl()){
         when (state) {
             GriddleState.Ready -> {
                 val letter = deck.next()
+                words = ArrayList<GridWord>()
                 if (letter != null) {
                     current = letter
                     state = GriddleState.GameOn
+
                     if (showEstimates) {
                         val tempPlayer = MCPlayer(dict)
                         tempPlayer.getAction(LetterGridModel(a), deck, current)
@@ -87,6 +89,7 @@ class GriddleGame (var control: GriddleControl = DefaultControl()){
                     else {
                         current = '?'
                         state = GriddleState.GameOver
+//                        words = ArrayList<GridWord>()
                     }
                 }
             }

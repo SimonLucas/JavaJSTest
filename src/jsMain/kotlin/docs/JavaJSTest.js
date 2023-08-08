@@ -4504,6 +4504,7 @@
         if (letter != null) {
           this.current = toBoxedChar(letter);
           this.state = GriddleState$GameOn_getInstance();
+          this.words = ArrayList_init();
           if (this.showEstimates) {
             var tempPlayer = new MCPlayer(this.dict);
             tempPlayer.getAction_x2ua0m$(new LetterGridModel(this.a), this.deck, unboxChar(this.current));
@@ -4535,6 +4536,7 @@
           else {
             this.current = toBoxedChar(63);
             this.state = GriddleState$GameOver_getInstance();
+            this.words = ArrayList_init();
           }
         }
         break;
@@ -4542,6 +4544,7 @@
         this.state = GriddleState$Ready_getInstance();
         this.a = this.emptyGrid();
         this.deck = (new StatDeck()).getDeck_s8cxhz$(this.control.getSeed());
+        this.words = ArrayList_init();
         break;
     }
   };
