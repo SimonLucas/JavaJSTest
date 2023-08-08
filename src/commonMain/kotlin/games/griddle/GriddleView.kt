@@ -21,6 +21,15 @@ class GriddleView(val nCols: Int, val nRows: Int) {
     var scoreText = XText("", Vec2d(), TStyle(), XStyle())
     var message: String = "?"
 
+    val wordLenColors = mapOf<Int, XColor>(
+        2 to XColor(0.0f, 0.0f, 1.0f, 0.4f),
+        3 to XColor(0.0f, 1.0f, 0.0f, 0.4f),
+        4 to XColor(0.0f, 0.5f, 0.6f, 0.4f),
+        5 to XColor(0.0f, 0.5f, 0.3f, 0.4f),
+        6 to XColor(0.0f, 0.5f, 1.0f, 0.4f),
+    )
+
+
     fun paint(xg: XGraphics) {
 
         // work out the cell size
@@ -109,13 +118,6 @@ class GriddleView(val nCols: Int, val nRows: Int) {
         xg.draw(rect)
     }
 
-    val wordLenColors = mapOf<Int, XColor>(
-        2 to XColor(0.0f, 0.0f, 1.0f, 0.4f),
-        3 to XColor(0.0f, 1.0f, 0.0f, 0.35f),
-        4 to XColor(1.0f, 0.0f, 0.0f, 0.3f),
-        5 to XColor(1.0f, 0.0f, 1.0f, 0.25f),
-        6 to XColor(0.0f, 1.0f, 1.0f, 0.2f),
-    )
 
     fun drawWordUnderlays(xg: XGraphics) {
         for (gridWord in words) {
@@ -131,7 +133,7 @@ class GriddleView(val nCols: Int, val nRows: Int) {
             val start = Vec2d((startCell.x + 0.5) * cellSize, (startCell.y + 0.5) * cellSize)
             val end = Vec2d((endCell.x + 0.5) * cellSize, (endCell.y + 0.5) * cellSize)
             val centre = (start + end) * 0.5
-            val minDim = cellSize * (gridWord.s.length-1) / 6.0
+            val minDim = cellSize * (gridWord.s.length-1) / 5.0
             val width = max(end.x - start.x, minDim)
             val height = max(end.y - start.y, minDim)
             val rect = XRoundedRect(centre, width, height, cornerRad = 0.5, dStyle = style)
@@ -149,14 +151,26 @@ class GriddleView(val nCols: Int, val nRows: Int) {
         val tStyle = TStyle(size = cellSize)
         val text = XText(" ", centre, tStyle, style)
 
-        drawWordUnderlays(xg)
-
+        // draw tiles
         for (i in 0 until nCols) {
             for (j in 0 until nRows) {
                 // println(a[i][j])
                 // need to just set the rectangle to draw
                 val centre = Vec2d((i + 0.5) * cellSize, (j + 0.5) * cellSize)
-                LetterTile().draw(xg, centre, cellSize, a[i][j])
+                LetterTile().drawTile(xg, centre, cellSize, a[i][j])
+            }
+        }
+
+
+        drawWordUnderlays(xg)
+
+        // draw letters
+        for (i in 0 until nCols) {
+            for (j in 0 until nRows) {
+                // println(a[i][j])
+                // need to just set the rectangle to draw
+                val centre = Vec2d((i + 0.5) * cellSize, (j + 0.5) * cellSize)
+                LetterTile().drawLetter(xg, centre, cellSize, a[i][j])
             }
         }
 
@@ -187,7 +201,7 @@ class GriddleView(val nCols: Int, val nRows: Int) {
 
 class LetterTile {
     var size = 0.9
-    fun draw(xg: XGraphics, centre: Vec2d, cellSize: Double, ch: Char) {
+    fun drawTile(xg: XGraphics, centre: Vec2d, cellSize: Double, ch: Char) {
         val style = XStyle()
         val rect = XRoundedRect(centre, cellSize*size, cellSize*size, cornerRad = 0.1, dStyle = style)
 
@@ -209,6 +223,26 @@ class LetterTile {
             // draw the char
             text.str = ch.toString()
             text.p = rect.centre
+            xg.draw(text)
+        }
+    }
+    fun drawLetter(xg: XGraphics, centre: Vec2d, cellSize: Double, ch: Char) {
+        val style = XStyle()
+//        val rect = XRoundedRect(centre, cellSize*size, cellSize*size, cornerRad = 0.1, dStyle = style)
+
+        // println("cellSize = $cellSize")
+        val tStyle = TStyle(size = cellSize * size)
+        val text = XText(" ", centre, tStyle, style)
+
+        style.fg = XColor.red  // colors[a[i][j]]
+        style.stroke = true
+        style.lc = XColor.gray
+//        xg.draw(rect)
+
+        if (ch != ' ') {
+            // draw the char
+            text.str = ch.toString()
+//            text.p = rect.centre
             xg.draw(text)
         }
     }
