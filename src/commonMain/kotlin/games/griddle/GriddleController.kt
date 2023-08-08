@@ -11,7 +11,7 @@ class DefaultControl : GriddleControl {
     override fun getSeed() = -1L
 }
 
-class GriddleController (var control: GriddleControl = DefaultControl()): XApp {
+class GriddleController(var control: GriddleControl = DefaultControl()) : XApp {
 
     var game = GriddleGame(control)
     var gv = GriddleView(game.nCols, game.nRows)
@@ -40,7 +40,7 @@ class GriddleController (var control: GriddleControl = DefaultControl()): XApp {
             // println(e.s)
             val cell = gv.getGridCell(e.s)
             game.nextState(cell)
-            gv.setData(game.grid(), game.current, game.score(), game.scored)
+            gv.setData(game.grid(), game.current, game.score(), words = game.words)
 
             val xg = xgTemp
             if (xg != null) {
@@ -63,7 +63,4 @@ class GriddleController (var control: GriddleControl = DefaultControl()): XApp {
             // println("Immediate repaint: ${game.current}" )
         }
     }
-
-
 }
-

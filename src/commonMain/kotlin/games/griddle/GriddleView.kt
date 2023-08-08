@@ -1,8 +1,10 @@
 package games.griddle
 
 import games.griddle.ai.ScoredCell
+import games.griddle.words.GridWord
 import gui.*
 import math.Vec2d
+import kotlin.math.max
 import kotlin.math.min
 
 class GriddleView(val nCols: Int, val nRows: Int) {
@@ -79,13 +81,17 @@ class GriddleView(val nCols: Int, val nRows: Int) {
     }
 
     var scored: List<ScoredCell> = ArrayList<ScoredCell>()
+    var words: List<GridWord> = ArrayList<GridWord>()
 
     fun setData(a: Array<CharArray>, ch: Char, score:Int = 0,
-                scored: List<ScoredCell> = ArrayList<ScoredCell>()) {
+                scored: List<ScoredCell> = ArrayList<ScoredCell>(),
+                words: List<GridWord> = ArrayList<GridWord>()
+    ) {
         setGrid(a)
         setLetter(ch)
         this.score = score
         this.scored = scored
+        this.words = words
     }
 
     fun setGrid(a: Array<CharArray>?) {
@@ -103,6 +109,36 @@ class GriddleView(val nCols: Int, val nRows: Int) {
         xg.draw(rect)
     }
 
+    val wordLenColors = mapOf<Int, XColor>(
+        2 to XColor(0.0f, 0.0f, 1.0f, 0.4f),
+        3 to XColor(0.0f, 1.0f, 0.0f, 0.35f),
+        4 to XColor(1.0f, 0.0f, 0.0f, 0.3f),
+        5 to XColor(1.0f, 0.0f, 1.0f, 0.25f),
+        6 to XColor(0.0f, 1.0f, 1.0f, 0.2f),
+    )
+
+    fun drawWordUnderlays(xg: XGraphics) {
+        for (gridWord in words) {
+            // draw a shaded rounded rect to show each valid word on the grid
+            // i.e. all the words in this list
+            val style = XStyle()
+            val color = wordLenColors[gridWord.s.length]
+            style.fg = color ?: XColor(0.0f, 0.0f, 0.0f, 0.9f)
+            style.bg = color ?: XColor(0.0f, 0.0f, 0.0f, 0.9f)
+            style.lc = color ?: XColor(0.0f, 0.0f, 0.0f, 0.9f)
+            val startCell = gridWord.start
+            val endCell = gridWord.dir.stepBy(startCell, gridWord.s.length-1)
+            val start = Vec2d((startCell.x + 0.5) * cellSize, (startCell.y + 0.5) * cellSize)
+            val end = Vec2d((endCell.x + 0.5) * cellSize, (endCell.y + 0.5) * cellSize)
+            val centre = (start + end) * 0.5
+            val minDim = cellSize * (gridWord.s.length-1) / 6.0
+            val width = max(end.x - start.x, minDim)
+            val height = max(end.y - start.y, minDim)
+            val rect = XRoundedRect(centre, width, height, cornerRad = 0.5, dStyle = style)
+            xg.draw(rect)
+        }
+
+    }
     fun draw(xg: XGraphics, a: Array<CharArray>?) {
         if (a == null) return
 
@@ -113,7 +149,7 @@ class GriddleView(val nCols: Int, val nRows: Int) {
         val tStyle = TStyle(size = cellSize)
         val text = XText(" ", centre, tStyle, style)
 
-
+        drawWordUnderlays(xg)
 
         for (i in 0 until nCols) {
             for (j in 0 until nRows) {
@@ -123,6 +159,7 @@ class GriddleView(val nCols: Int, val nRows: Int) {
                 LetterTile().draw(xg, centre, cellSize, a[i][j])
             }
         }
+
     }
 
     fun getGridCell(s: Vec2d) : GridCell? {
@@ -166,7 +203,7 @@ class LetterTile {
         if (ch == ' ') {
             style.stroke = true
             style.lc = XColor.blue
-            style.fg = XColor.green
+            style.fg = XColor.pink
             xg.draw(rect)
         } else {
             // draw the char
