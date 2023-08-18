@@ -1,9 +1,21 @@
+buildscript {
+    ext.kotlin_version = '1.9.0'
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
 plugins {
     id 'java'
-    id 'org.jetbrains.kotlin.multiplatform' version '1.4.10'
+    id 'org.jetbrains.kotlin.multiplatform' version '1.9.0'
+//    id 'org.jetbrains.kotlin.jvm' version '1.9.0'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '1.9.0'
 }
 
 apply plugin: "java-library"
+//apply plugin: 'kotlin'
 
 // this didn't work
 tasks.register("count") {
@@ -20,7 +32,7 @@ repositories {
 
 repositories {
     maven {
-        url  "https://dl.bintray.com/kotlin/kotlinx.html"
+        url "https://dl.bintray.com/kotlin/kotlinx.html"
     }
 }
 
@@ -57,6 +69,8 @@ kotlin {
         commonMain {
             dependencies {
                 implementation kotlin('stdlib-common')
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
+
             }
         }
         commonTest {
@@ -84,7 +98,6 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-html-js:0.7.1")
 
 
-
                 // implementation("org.jetbrains.kotlinx")
 
             }
@@ -106,6 +119,9 @@ kotlin {
 }
 
 println("Hello 2")
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+}
 
 //
 //copy {
