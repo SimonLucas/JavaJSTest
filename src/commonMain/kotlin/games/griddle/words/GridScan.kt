@@ -47,7 +47,7 @@ class GridScan {
                 // println("    -> $cur")
                 sb.append(a[cur.x][cur.y])
                 // if (tn != null) System.out.println(a[i+start] + "\t " + tn.isWord);
-                // at the the list of words if the current substring is a word
+                // at the list of words if the current substring is a word
                 if (tn != null && tn.isWord) {
                     // System.out.format("Word starting at %d of length %d\n", start, len);
                     val word = GridWord(sb.toString(), wordStart, dir)
