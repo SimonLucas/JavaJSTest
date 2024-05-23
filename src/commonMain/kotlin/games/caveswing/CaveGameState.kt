@@ -9,7 +9,7 @@ enum class CaveActions { Release, Attach }
 
 class CaveGameState : ExtendedAbstractGameState {
     override fun randomInitialState(): AbstractGameState {
-        println("Resetting after score of ${score()}")
+//        println("Resetting after score of ${score()}")
         state = CaveGameInternalState(params = state.params)
         return this
     }
