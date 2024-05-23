@@ -23,7 +23,7 @@ fun main() {
     val app = SpriteEngineApp()
     app.agent = SimpleEvoAgent(probMutation = 0.2, useMutationTransducer = false, sequenceLength = 100, nEvals = 50, useShiftBuffer = true, discountFactor = 0.99, totallyRandomMutations = false)
 //    app.agent = RandomAgent()
-    app.agent = MctsAgent(rolloutLength = 100, nPlayouts = 50)
+//    app.agent = MctsAgent(rolloutLength = 100, nPlayouts = 50)
     ec.xApp = app
     frame.addKeyListener(XKeyAdapter(app))
     ec.addMouseListener(XMouseAdapter(app))

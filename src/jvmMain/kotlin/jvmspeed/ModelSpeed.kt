@@ -4,6 +4,7 @@ import games.caveswing.CaveGameState
 import games.caveswing.CaveView
 import agents.RandomAgent
 import agents.SimpleEvoAgent
+import games.arcade.SampleSpriteGame
 import ggi.AbstractGameState
 import ggi.ExtendedAbstractGameState
 import gui.XApp
@@ -45,7 +46,7 @@ class ModelSpeed (val state: ExtendedAbstractGameState) {
 fun main() {
     val models = listOf(
         CaveGameState(),
-
+        SampleSpriteGame().asteroids(),
     )
     for (model in models) {
         ModelSpeed(model).main()
