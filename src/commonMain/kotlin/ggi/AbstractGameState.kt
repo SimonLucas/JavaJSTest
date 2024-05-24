@@ -21,6 +21,11 @@ interface AbstractGameState {
 
     fun nTicks(): Int
 
+    // New method with default implementation
+    fun nUnits(): Int {
+        return 1
+    }
+
 }
 
 interface ExtendedAbstractGameState : AbstractGameState {

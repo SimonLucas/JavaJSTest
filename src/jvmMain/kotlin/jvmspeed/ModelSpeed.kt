@@ -4,6 +4,7 @@ import games.caveswing.CaveGameState
 import games.caveswing.CaveView
 import agents.RandomAgent
 import agents.SimpleEvoAgent
+import games.arcade.MultiShipGame
 import games.arcade.SampleSpriteGame
 import ggi.AbstractGameState
 import ggi.ExtendedAbstractGameState
@@ -26,9 +27,14 @@ class ModelSpeed (val state: ExtendedAbstractGameState) {
         val t = System.currentTimeMillis()
         var totalGames = 1
         var nSteps = 0
+        // make an int array with state.nUnits() elements
+//        val actions = intArrayOf()
+        val actions = IntArray(state.nUnits()) { 0 }
         while (System.currentTimeMillis() < (t + 1000)) {
-            val action = player.getAction(state, 0)
-            state.next(intArrayOf(action))
+            repeat (state.nUnits()) {
+                actions[it] = player.getAction(state, it)
+            }
+            state.next(actions)
             nSteps += 1
             if (state.isTerminal()) {
                 state.randomInitialState()
@@ -47,6 +53,9 @@ fun main() {
     val models = listOf(
         CaveGameState(),
         SampleSpriteGame().asteroids(),
+        MultiShipGame(nShips = 1),
+        MultiShipGame(nShips = 2),
+        MultiShipGame(nShips = 10),
     )
     for (model in models) {
         ModelSpeed(model).main()
