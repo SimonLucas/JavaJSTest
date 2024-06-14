@@ -16,9 +16,9 @@ class TetrisDemoLayout : XApp {
     init {
         arcade.agent =  PolicyEvoAgent(
             sequenceLength = 20,
-            nEvals = 100, useMutationTransducer = false,
-            discountFactor = 0.99,
-            probMutation = 0.2
+            nEvals = 100, useMutationTransducer = true,
+            discountFactor = 0.98,
+            probMutation = 0.3
         )
         // PolicyEvoAgent() // SimpleEvoAgent()
         TetrisModel.includeColumnDiffs = true

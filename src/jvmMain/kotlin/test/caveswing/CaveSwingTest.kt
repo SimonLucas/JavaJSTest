@@ -1,6 +1,7 @@
 package test.caveswing
 
 import games.caveswing.CaveSwingApp
+import games.caveswing.CaveSwingLayoutDemo
 import games.caveswing.MovableObject
 import math.Vec2d
 import test.EasyComponent
@@ -11,5 +12,6 @@ import test.launch.AppLauncher
 import utilities.JEasyFrame
 
 fun main() {
-    AppLauncher(CaveSwingApp(), 40).launch()
+//    AppLauncher(CaveSwingApp(), 40).launch()
+    AppLauncher(CaveSwingLayoutDemo(), 40).launch()
 }

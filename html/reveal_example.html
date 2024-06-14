@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Reveal.js Presentation</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js/dist/theme/black.css">
+</head>
+<body>
+<div class="reveal">
+    <div class="slides">
+        <section>
+            <h1>My Presentation</h1>
+        </section>
+        <section>
+            <h2>JavaScript App</h2>
+            <div id="app"></div>
+            <script>
+                // Your JavaScript app code
+                document.getElementById('app').innerHTML = '<button onclick="alert(\'Hello, world!\')">Click me</button>';
+            </script>
+        </section>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.js"></script>
+<script>
+    Reveal.initialize();
+</script>
+</body>
+</html>
