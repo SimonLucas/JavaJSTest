@@ -136,7 +136,7 @@ class GriddleView(val nCols: Int, val nRows: Int) {
             val minDim = cellSize * (gridWord.s.length-1) / 5.0
             val width = max(end.x - start.x, minDim)
             val height = max(end.y - start.y, minDim)
-            val rect = XRoundedRect(centre, width, height, cornerRad = 0.5, dStyle = style)
+            val rect = XRoundedRect(centre, width, height, cornerRad = 0.1, dStyle = style)
             xg.draw(rect)
         }
 
