@@ -1,6 +1,6 @@
 package test
 
-fun main() {
+fun main2() {
     println("Hello")
 }
 

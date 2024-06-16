@@ -114,12 +114,13 @@ class GriddleTest : GriddleControl {
     val frameRate = 10
     val intervalTime = 1000 / frameRate
     var shuffleSeed: HTMLInputElement? = null
+    var shuffleSeedYZ: HTMLInputElement? = null
 
 
     val app: GriddleController
 
     init {
-        document.bgColor = "blue"
+        document.bgColor = "black"
 
         // val textArea = HTMLTextAreaElement()
         val t1 = jsMillis()
@@ -129,7 +130,9 @@ class GriddleTest : GriddleControl {
 
         shuffleSeed =
             document.getElementById("shuffleSeed") as HTMLInputElement
-        println("Shuffle seed input element: $shuffleSeed")
+        println("Shuffle seedyz input element: $shuffleSeed")
+        shuffleSeedYZ = shuffleSeed
+        println("Shuffle seedyz input element: $shuffleSeedYZ")
 
         val button =
             document.getElementById("newGame") as HTMLButtonElement
@@ -184,7 +187,7 @@ class GriddleTest : GriddleControl {
 
     val rect = canvas.getBoundingClientRect();
     fun run() {
-        console.log("In Griddle run()");
+        console.log("In GriddleTestYZ run()");
         println(document.title)
         window.setInterval({ update() }, intervalTime);
 
