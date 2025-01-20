@@ -36,7 +36,7 @@ class AppTest {
         ec.addMouseListener(XMouseAdapter(app))
         ec.addMouseMotionListener(XMouseAdapter(app))
 
-        val frameRate = 5
+        val frameRate = 50
         val delay = 1000 / frameRate
         while (true) {
             ec.repaint()
